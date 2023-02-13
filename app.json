@@ -1,0 +1,62 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/geocoding/geocoding",
+    "pages/regeocoding/regeocoding",
+    "pages/search/search",
+    "pages/practice/contact/contact",
+    "pages/weather/weather",
+    "pages/suggestion/suggestion",
+    "pages/practice/local_life/local_life",
+    "pages/practice/shoplist/shoplist",
+    "pages/forecasts/forecasts"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "Weixin",
+    "navigationBarTextStyle": "black"
+    
+  },
+  "usingComponents": {
+    "navigationBar": "../../Components/navigationBar/navigationBar"
+  },
+  "tabBar": {
+    "color": "#000",
+    "selectedColor": "#4db900",
+    "backgroundColor": "#fbfbfd",
+    "position": "bottom",
+    "list": [
+      {
+        "pagePath": "pages/search/search",
+        "text": "Map",
+        "iconPath": "img/tabbar_icon/map.png",
+        "selectedIconPath": "img/tabbar_icon/map_active.png"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "text": "Index",
+        "iconPath": "img/tabbar_icon/index.png",
+        "selectedIconPath": "img/tabbar_icon/index_active.png"
+      },
+      {
+        "pagePath": "pages/weather/weather",
+        "text": "Weather",
+        "iconPath": "img/tabbar_icon/weather.png",
+        "selectedIconPath": "img/tabbar_icon/weather_active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

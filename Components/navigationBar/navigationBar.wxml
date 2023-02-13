@@ -1,0 +1,20 @@
+<!--Components/navigationBar/navigationBar.wxml-->
+<!--navigationBar.wxml-->
+<view class="navigation-container" style="height:{{navigationBarAndStatusBarHeight}}">
+  <!--空白来占位状态栏-->
+  <view style="{{'height: ' + statusBarHeight}}"></view>
+  <!--自定义导航栏-->
+  <view class="navigation-bar" style="{{'height:' + navigationBarHeight}}">
+    <picker class="region" mode="region" bindchange="bindRegionChange" value="{{region}}" custom-item="{{customItem}}">
+      <view class="picker-item">{{tools.limitchar(region[2])}}</view>
+      <view class="picker-symbol">▼</view>
+      </picker>
+    <iconfont class="nav-img" name='qingtian' size='40' bind:tap='gotofrecasts'></iconfont>
+
+
+    <view class="navigation-title" style="{{'line-height:' + navigationBarHeight}}">{{title}}</view>
+  </view>
+</view>
+<!--空白占位fixed空出的位置-->
+<view style="height: {{navigationBarAndStatusBarHeight}};background: #ffffff; "></view>
+<wxs src="../../utils/tools.wxs" module="tools"></wxs>

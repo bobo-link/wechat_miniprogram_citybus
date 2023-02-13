@@ -1,0 +1,28 @@
+.weather{
+    width: 100%;
+    text-align: center;
+    line-height: 40px;
+    padding-top: 150px;
+    color: rgb(0, 0, 0);
+    font-weight: 600;
+    height: 100%;
+}
+.btn_arr{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: left;
+  justify-content :flex-start;
+  
+}
+.btn_arr button {
+  display: flex;
+  flex-wrap: wrap;
+  width: 200rpx;
+  margin: 5prx;
+  margin-bottom: 20rpx;
+  text-align: center;
+  font-size: 20rpx;
+}
+page {
+    background-color: #ffffff;
+}

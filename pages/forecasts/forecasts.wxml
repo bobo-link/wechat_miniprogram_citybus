@@ -1,0 +1,26 @@
+<!--pages/forecasts/forecasts.wxml-->
+<view class="container">
+  <view class="top">
+    <view class="title">{{location}}</view>
+    <view class="subtitle">{{tools.currentdate()}}</view>
+    <view class="visual">
+      <view class="temperature">
+        {{currenttemp}}°c
+      </view>
+    <view class="weathericon">
+      <!-- <image src='{{weatherIcon}}' style="height:{{iconimageheight}}px;width: {{iconimageheight}}px"></image> -->
+      <iconfont name="{{weatherIcon}}"size="{{iconimageheight}}" />
+    </view>
+    </view>
+  </view>
+  <scroll-view class="list" scroll-y style="height:{{scrollHeight}}px">
+    <view class="list-item" wx:for="{{forecasts}}" wx:key="date">
+      <!-- <image class="list-image" src="{{item.weathericon}}" style="height: 140rpx;width: 140rpx;"></image> -->
+      <iconfont class="list-image" name="{{item.weathericon}}" />
+      <text class="list-day">{{item.week}}</text>
+      <text class="list-high">{{item.high}}°c</text>
+      <text class="list-low">{{item.low}}°c</text>
+    </view>
+  </scroll-view>
+</view>
+<wxs src="../../utils/tools.wxs" module="tools"></wxs>

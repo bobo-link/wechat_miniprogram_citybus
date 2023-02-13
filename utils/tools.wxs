@@ -1,0 +1,29 @@
+function toLower(str){
+  return str.toLowerCase()
+}
+function formatPhone(phone){
+  if (phone.length !==11) return phone
+  var arr = phone.split("")
+  arr.splice(3,0,'-')
+  arr.splice(8,0,'-')
+  return arr.join("")
+}
+function currentdate(){
+  var date = getDate();
+  month = date.getMonth()+1;
+  return date.getFullYear() + '-' + month + '-' + date.getDate() +'  '+ date.getHours() + ':' +date.getMinutes()
+}
+function limitchar(str){
+  console.log(str)
+  if (typeof(str)=='undefined') return
+  if (str.length>3) {
+    return str.substring(0,3)+ '...';
+  }
+  return str
+}
+module.exports = {
+  toLower: toLower,
+  formatPhone:formatPhone,
+  currentdate:currentdate,
+  limitchar:limitchar
+}

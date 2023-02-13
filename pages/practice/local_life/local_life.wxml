@@ -1,0 +1,12 @@
+<!--pages/practice/local_life/local_life.wxml-->
+<swiper indicator-dots circular autoplay interval='5000'>
+  <swiper-item wx:for="{{swiperList}}" wx:key="goods_id" >
+    <image src="{{item.image_src}}"></image>
+  </swiper-item>
+</swiper>
+<view class="grid-list">
+  <navigator wx:for="{{GridList}}" wx:key="id" class="grid-item" url="/pages/practice/shoplist/shoplist?id={{item.id}}&title={{item.name}}">
+    <image src="{{item.icon}}"></image>
+    <text>{{item.name}}</text>
+  </navigator>
+</view>

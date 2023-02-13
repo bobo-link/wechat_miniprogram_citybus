@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "iconfont": "../../Components/iconfont/iconfont"
+  },
+  "enablePullDownRefresh": false,
+  "backgroundTextStyle": "dark",
+  "backgroundColor": "#f6f6f6",
+  "navigationBarBackgroundColor": "#4584d1",
+  "navigationBarTitleText": "天气预报",
+  "navigationBarTextStyle": "white"
+}

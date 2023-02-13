@@ -1,0 +1,51 @@
+/* Components/navigationBar/navigationBar.wxss */
+/* navigationBar.wxss */
+.navigation-container {
+  position: fixed;
+  width: 100%;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  background-color: #f3aa0d;
+}
+.navigation-bar {
+  padding-left: 30rpx;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.navigation-buttons {
+  display: flex;
+  align-items: left;
+  margin-left: 10px;
+  box-sizing: border-box;
+  background-color: transparent;
+}
+.region{
+  width: 60px;
+  height: 20px;
+  margin-right: 10rpx;
+}
+.picker-item{
+  width: 80%;
+  font-weight: 500;
+  font-size: 12px;
+  
+}
+.picker-symbol{
+  font-size: 5px;
+  width: 5px;
+}
+.navigation-title {
+  position: absolute;
+  left: 104px;
+  right: 104px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #000000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

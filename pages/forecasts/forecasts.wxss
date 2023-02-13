@@ -1,0 +1,95 @@
+/* pages/forecasts/forecasts.wxss */
+page{
+  background:#f6f6f6;
+  width: 100%;
+  height: 100%;
+ overflow-y: hidden;
+}
+.container{
+  flex-flow: column nowrap;
+  justify-content: top;
+  align-items: top;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+.top{
+  flex: 0 0 40%;
+  width: 100%;
+  background:linear-gradient(#4990e2,#87c1f1)
+}
+.title{
+  text-align:center;
+  font-size: 28px;
+  color: #ffffff;
+  padding-top:60rpx ;
+  font-weight: 500;
+}
+.subtitle{
+  text-align:center;
+  font-size: 12px;
+  color: #ffffff;
+  padding-top:20rpx ;
+  font-weight: 50;
+}
+.visual{
+  display: flex;
+  height: 220rpx;
+  justify-content: center;
+  padding-top: 30rpx;
+}
+.temperature{
+  text-align:center;
+  padding-top: 20rpx;
+  font-size: 40px;
+  width: 350rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.list{
+  flex:0 0 60%;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+.list-item{
+  background-color: #ffffff;
+  height: 150rpx;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.list-item:nth-child(even){
+  background-color:#f6f9fe;
+}
+.list-image{
+  float: left;
+}
+.list-day{
+  margin-top:50rpx;
+  float:left;
+  margin-left:30rpx;
+  color:#253344;
+}
+.list-high{
+  font-size: 18px;
+  width: 70rpx;
+  margin-top:50rpx;
+  float:right;
+  text-align: left;
+  margin-right:20rpx;
+  color:#253344;
+}
+.list-low{
+  font-size: 18px;
+  width: 70rpx;
+  margin-top:50rpx;
+  float:right;
+  text-align: left;
+  margin-right:35rpx;
+  color:#253344;
+}
+::-webkit-scrollbar{
+  width: 0;
+  height: 0;
+  color: transparent;
+}
