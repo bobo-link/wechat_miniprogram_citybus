@@ -1,5 +1,8 @@
 // index.js
 // 获取应用实例
+import { observable, action } from "mobx-miniprogram";
+import { createStoreBindings } from "mobx-miniprogram-bindings";
+import { store } from "~/store/store";
 var bmap = require('../../libs/bmap-wx.js');
 const app = getApp()
 
@@ -24,6 +27,11 @@ Page({
   },
   onLoad() {
     const that = this
+    this.storeBindings = createStoreBindings(this, {
+      store,
+      fields:['adcode','init_adcode','location'],    
+      actions: ["update_ad_lo"]
+    });   
     if (wx.getUserProfile) {
       this.setData({
         canIUseGetUserProfile: true
@@ -42,11 +50,15 @@ Page({
       }) 
       console.log(that.data.region)
      }
-   })
-
-   
+   })  
   },
-
+  onUnload(){
+    this.storeBindings.destroyStoreBindings();
+  },
+  syncRegionChange(e){
+    console.log('change回调')
+    
+  },
   getUserProfile(e) {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
     wx.getUserProfile({

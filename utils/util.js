@@ -13,7 +13,22 @@ const formatNumber = n => {
   n = n.toString()
   return n[1] ? n : `0${n}`
 }
-
+const getweather_icon = function(weather) {
+  switch (weather) {
+    case '阴':
+      return "yintian"
+    case "小雨" :
+    case "小到中雨":
+      return "xiaoyu"
+    case "多云":
+      return "duoyun"
+    case "阵雨":
+      return "zhenyu"
+    default :
+      return "qingtian"
+  }
+}
 module.exports = {
-  formatTime
+  formatTime,
+  getweather_icon
 }

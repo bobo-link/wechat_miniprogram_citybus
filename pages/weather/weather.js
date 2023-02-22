@@ -20,19 +20,20 @@ Page({
             })
         };
         var success = function(data) {
-            var weatherData = data.currentWeather[0];
-            weatherData = '城市：' + weatherData.currentCity + '\n' + '体感温度：' + weatherData.feels_like + '\n' +'日期：' + weatherData.date + '\n' + '温度：' + weatherData.temperature + '\n' +'天气：' + weatherData.weatherDesc + '\n' +'风力：' + weatherData.wind + '\n';
-            console.log(data.originalData)
+            console.log(data)
+            var res = data.result;
+            var weatherData = '城市：' + res.location.name + '\n' + '体感温度：' + res.now.feels_like + '\n' +'日期：' + 'null' + '\n' + '温度：' + res.now.temp + '\n' +'天气：' + res.now.text + '\n' +'风力：' + res.now.wind_class + '\n';           
             that.setData({
                 weatherData: weatherData,
-                adcode:data.originalData.result.location.id
+                adcode:res.location.id
 
             });
         }
 
         BMap.weather({
             fail: fail,
-            success: success
+            success: success,
+            adcode: getApp().globalData.adcode
         });
          
     },

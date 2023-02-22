@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<navigationBar bindsync="gotofrecasts" region="{{region}}"></navigationBar>
+<navigationBar bindsync="syncRegionChange" region="{{region}}"></navigationBar>
 <view class="container">
  
   <view class="userinfo">

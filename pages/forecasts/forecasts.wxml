@@ -1,16 +1,21 @@
 <!--pages/forecasts/forecasts.wxml-->
 <view class="container">
   <view class="top">
-    <view class="title">{{location}}</view>
+    <view class="title">{{now.location}}</view>
     <view class="subtitle">{{tools.currentdate()}}</view>
     <view class="visual">
-      <view class="temperature">
-        {{currenttemp}}°c
+      <view class="weather-info">
+        <view class="temperature">
+          {{now.temp}}°c
+        </view>
+        <view class="text">
+          {{now.text}}
+        </view>
       </view>
-    <view class="weathericon">
-      <!-- <image src='{{weatherIcon}}' style="height:{{iconimageheight}}px;width: {{iconimageheight}}px"></image> -->
-      <iconfont name="{{weatherIcon}}"size="{{iconimageheight}}" />
-    </view>
+      <view class="weathericon">
+        <!-- <image src='{{weatherIcon}}' style="height:{{iconimageheight}}px;width: {{iconimageheight}}px"></image> -->
+        <iconfont name="{{now.weatherIcon}}" size="{{iconimageheight}}" />
+      </view>
     </view>
   </view>
   <scroll-view class="list" scroll-y style="height:{{scrollHeight}}px">

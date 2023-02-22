@@ -22,20 +22,22 @@
   box-sizing: border-box;
   background-color: transparent;
 }
+picker{
+  width:60px;  
+}
 .region{
-  width: 60px;
-  height: 20px;
-  margin-right: 10rpx;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 .picker-item{
-  width: 80%;
+  width: 45px;
   font-weight: 500;
-  font-size: 12px;
-  
+  font-size: 12px;  
 }
 .picker-symbol{
+  
   font-size: 5px;
-  width: 5px;
 }
 .navigation-title {
   position: absolute;

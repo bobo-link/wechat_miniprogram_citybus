@@ -368,22 +368,7 @@ class BMapWX {
       }
     } 
 
-    //获取当前时间 
-     getDate(){
-      var date = new Date();
-      //console.log(date)
-        var year = date.getFullYear();    //  返回的是年份
-        var month = date.getMonth() + 1;  //  返回的月份上个月的月份，记得+1才是当月
-        var dates = date.getDate();       //  返回的是几号
-        var day = date.getDay();          //  周一返回的是1，周六是6，但是周日是0
-        var arr = [ "星期日","星期一","星期二","星期三","星期四","星期五","星期六",];
-        return {
-        "year": year,
-        "month": month ,
-        "dates": dates , 
-        "day": arr[day]
-        }
-    }
+    
     
     /**
      * 天气检索
@@ -395,78 +380,43 @@ class BMapWX {
       param = param || {};
       let weatherparam = {
         data_type :param['data_type'] || 'all',
-        ak: that.ak
+        ak: that.ak,
+        district_id: param['adcode'] || '',
+        location: param['location'] || '',
       };
       let otherparam = {
         success: param["success"] || function () { },
-        fail: param["fail"] || function () { }
+        fail: param["fail"] || function () { },
+        complete: param["complete"] || function () { }
       };
-      let type = 'gcj02';
-      let rever_success = function (result) {
-        weatherparam["district_id"] = result["adcode"]
-        wx.request({
-          url: 'https://api.map.baidu.com/weather/v1/',
-          data: weatherparam,
-          header: {
-            "content-type": "application/json"
-          },
-          method: 'GET',
-          success(data) {
-            let res = data["data"];
-            if (res["status"] === 0 && res["message"] === 'success') {
-              let weatherArr = res["result"];
-              // outputRes 包含两个对象，
-              // originalData为百度接口返回的原始数据
-              // wxMarkerData为小程序规范的marker格式
-              let outputRes = {};
-              let now = weatherArr["now"];
-              outputRes["originalData"] = res;
-              outputRes["currentWeather"] = [];
-              outputRes["currentWeather"][0] = {
-                currentCity: weatherArr["location"]["name"],
-                feels_like: now["feels_like"] + "℃",     
-                temperature: now["temp"] + "℃",
-                date: (function (){             
-                  let date = that.getDate(); 
-                  return date.month + '月' + date.dates + '日' + " " + date.day;
-                })(),
-                weatherDesc: now["text"],
-                wind: now["wind_class"] + now["wind_dir"]
-              };
-              otherparam.success(outputRes);
-            } else {
-              otherparam.fail({
-                errMsg: res["error"],
-                statusCode: res["status"]
-              });
-            }
-          },
-          fail(data) {
-            otherparam.fail(data);
+      if (!param['adcode'] && !param['location']) {
+        otherparam.fail({errMsg:'Param adcode or location is not exist'});
+        return 
+      }
+      wx.request({
+        url: 'https://api.map.baidu.com/weather/v1/',
+        data: weatherparam,
+        header: {
+          "content-type": "application/json"
+        },
+        method: 'GET',
+        success({data:res}) {
+          if (res["status"] === 0 && res["message"] === 'success') {
+            otherparam.success(res);
+          } else {
+            otherparam.fail({
+              errMsg: res["message"],
+              statusCode: res["status"]
+            });
           }
-        });
-      }
-      let rever_fail = function (result) {
-        otherparam.fail(result);
-      }
-      let rever_complete = function (result) {
-      }
-      if (!param["adcode"]) {
-        console.log("adcode不存在")
-        that.reverse_geocoding({
-          fail:rever_fail,
-          success:rever_success,
-          complete:rever_complete
-        })
-      } else {
-        console.log("adcode存在")
-        let errMsg = 'adcode exist';
-        let res = {
-          errMsg: errMsg,
-          adcode:param["adcode"]
-        };
-        rever_success(res);
-      }
+        },
+        fail(data) {
+          otherparam.fail(data);
+        },
+        complete(data){
+          otherparam.complete(data)
+        }
+      });          
     }
 
     //获取行政区域码
