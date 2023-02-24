@@ -13,6 +13,7 @@ Component({
    * 组件的属性列表
    */
   properties: {
+    weather_info:{},
     region: { // 属性名
       type: Array,
       value: ['广东省', '广州市', '海珠区']

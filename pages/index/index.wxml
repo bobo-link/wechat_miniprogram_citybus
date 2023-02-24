@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<navigationBar bindsync="syncRegionChange" region="{{region}}"></navigationBar>
+<navigationBar bindsync="syncRegionChange" weather_info="{{weather_info}}" region="{{region}}"></navigationBar>
 <view class="container">
  
   <view class="userinfo">

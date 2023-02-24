@@ -1,13 +1,22 @@
 // index.js
 // 获取应用实例
-import { observable, action } from "mobx-miniprogram";
-import { createStoreBindings } from "mobx-miniprogram-bindings";
-import { store } from "~/store/store";
+import {
+  createStoreBindings
+} from "mobx-miniprogram-bindings";
+import {
+  store
+} from "~/store/store";
 var bmap = require('../../libs/bmap-wx.js');
-const app = getApp()
-
+const BMap = new bmap.BMapWX({
+  ak: 'ReGm8Iydv1TqNTg9uddG2RAfqQ8GZYrL'
+});
 Page({
   data: {
+    weather_info: {
+      icon: 'error',
+      text: '×',
+      temp: '×'
+    },
     motto: 'Hello World',
     userInfo: {},
     hasUserInfo: false,
@@ -20,44 +29,49 @@ Page({
     wx.navigateTo({
       url: '../logs/logs'
     })
-    
+
   },
-  gotofrecasts(){
-    url:'/pages/forecasts/forecasts'
+  gotofrecasts() {
+    url: '/pages/forecasts/forecasts'
   },
   onLoad() {
     const that = this
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields:['adcode','init_adcode','location'],    
+      fields: ['adcode', 'init_adcode', 'location'],
       actions: ["update_ad_lo"]
-    });   
+    });
     if (wx.getUserProfile) {
       this.setData({
         canIUseGetUserProfile: true
       })
     }
-    var BMap = new bmap.BMapWX({
-      ak: 'ReGm8Iydv1TqNTg9uddG2RAfqQ8GZYrL'
-    });
-   BMap.reverse_geocoding({
-     fail:function (res) {
-       console.log(res)       
-     },
-     success:function (res) {
-      that.setData({
-        region:[res.origin_data.result.addressComponent.province,res.origin_data.result.addressComponent.city,res.origin_data.result.addressComponent.district]
-      }) 
-      console.log(that.data.region)
-     }
-   })  
+    wx.getLocation({type:'gcj02'})
+    .then((res)=>{
+      let location =res.latitude + ',' + res.longitude
+      BMap.regeocoding_promisify({location: location})
+      .then((res)=>{
+        that.setData({
+          region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district]
+        })
+        this.update_ad_lo({
+          adcode: res.result.addressComponent.adcode,
+          init_adcode: res.result.addressComponent.adcode,
+          location: location,
+        })
+        this.storeBindings.updateStoreBindings()
+      })
+    },(res)=>{
+      console.log('getlocation fail',res)
+    })
+    
   },
-  onUnload(){
+  onUnload() {
     this.storeBindings.destroyStoreBindings();
   },
-  syncRegionChange(e){
+  syncRegionChange(e) {
     console.log('change回调')
-    
+
   },
   getUserProfile(e) {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
@@ -78,6 +92,6 @@ Page({
     this.setData({
       userInfo: e.detail.userInfo,
       hasUserInfo: true
-    }) 
+    })
   }
 })

@@ -3,6 +3,9 @@ var bmap = require('../../libs/bmap-wx.js');
 var tools = require('~/utils/util.js')
 import { createStoreBindings } from "mobx-miniprogram-bindings";
 import { store } from "~/store/store";
+const Bmap = new bmap.BMapWX({
+  ak: 'ReGm8Iydv1TqNTg9uddG2RAfqQ8GZYrL'
+});
 Page({
 
   /**
@@ -61,15 +64,8 @@ Page({
       fields:["adcode"],    
       actions: ["update_ad_lo"]
     });   
+    this.storeBindings.updateStoreBindings()
     that.calcscrollHeight()
-    if (typeof (options) == "undefined") {} else {
-      this.setData({
-        adcode: options.adcode
-      })
-    }
-    var Bmap = new bmap.BMapWX({
-      ak: 'ReGm8Iydv1TqNTg9uddG2RAfqQ8GZYrL'
-    });
     var weather_success = function (res) {
       console.log(res)
       that.setData({

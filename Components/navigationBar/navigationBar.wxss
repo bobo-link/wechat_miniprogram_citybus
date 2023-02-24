@@ -39,6 +39,20 @@ picker{
   
   font-size: 5px;
 }
+.weather-info{
+  display: flex;
+  align-items: center;
+}
+.weather-text{
+  padding-left: 2px;
+  font-size: 13px;
+  font-weight: 400;
+}
+.weather-temp{
+  padding-left: 2px;
+  font-size: 13px;
+  font-weight: 400;
+}
 .navigation-title {
   position: absolute;
   left: 104px;
