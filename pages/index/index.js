@@ -7,6 +7,7 @@ import {
   store
 } from "~/store/store";
 var bmap = require('../../libs/bmap-wx.js');
+const tools = require('~/utils/util.js')
 const BMap = new bmap.BMapWX({
   ak: 'ReGm8Iydv1TqNTg9uddG2RAfqQ8GZYrL'
 });
@@ -52,7 +53,7 @@ Page({
       BMap.regeocoding_promisify({location: location})
       .then((res)=>{
         that.setData({
-          region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district]
+          region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district] || ['广东省', '广州市', '海珠区']
         })
         this.update_ad_lo({
           adcode: res.result.addressComponent.adcode,
@@ -60,6 +61,14 @@ Page({
           location: location,
         })
         this.storeBindings.updateStoreBindings()
+        BMap.weather_promisify({adcode:res.result.addressComponent.adcode})
+        .then((res)=>{
+          this.setData({
+            'weather_info.temp': res.result.now.temp + '℃',
+            'weather_info.text': res.result.now.text,
+            'weather_info.icon': tools.getweather_icon(res.result.now.text),
+          })
+        })
       })
     },(res)=>{
       console.log('getlocation fail',res)
@@ -71,7 +80,14 @@ Page({
   },
   syncRegionChange(e) {
     console.log('change回调')
-
+    BMap.weather_promisify({adcode:e.detail.adcode})
+    .then((res)=>{
+      this.setData({
+        'weather_info.temp': res.result.now.temp + '℃',
+        'weather_info.text': res.result.now.text,
+        'weather_info.icon': tools.getweather_icon(res.result.now.text),
+      })
+    })
   },
   getUserProfile(e) {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗

@@ -571,6 +571,7 @@ class BMapWX {
       }, (res) => {
         Data = res
       })
+    return Data
   }
 }
 module.exports.BMapWX = BMapWX;

@@ -12,14 +12,11 @@
         <view class="picker-symbol" hidden="{{!ifhidden}}">▲</view>
       </view>
     </picker>
-    <view class="weather-info">
-      <iconfont class="weather-img" name='{{weather_info.icon}}' size='32' bind:tap='gotofrecasts'></iconfont>
+    <view class="weather-info" bind:tap='gotofrecasts'>
+      <iconfont class="weather-img" name='{{weather_info.icon}}' size='32' ></iconfont>
       <text class="weather-text">{{weather_info.text}}</text>
       <text class="weather-temp">{{weather_info.temp}}</text>
     </view>
-    
-
-
     <view class="navigation-title" style="{{'line-height:' + navigationBarHeight}}">{{title}}</view>
   </view>
 </view>

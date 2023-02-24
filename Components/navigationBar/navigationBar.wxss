@@ -31,26 +31,26 @@ picker{
   align-items: center;
 }
 .picker-item{
-  width: 45px;
+  width: 48px;
   font-weight: 500;
   font-size: 12px;  
 }
 .picker-symbol{
-  
   font-size: 5px;
 }
 .weather-info{
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .weather-text{
   padding-left: 2px;
-  font-size: 13px;
+  font-size: 9px;
   font-weight: 400;
 }
 .weather-temp{
   padding-left: 2px;
-  font-size: 13px;
+  font-size: 9px;
   font-weight: 400;
 }
 .navigation-title {
