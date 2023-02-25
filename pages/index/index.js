@@ -25,16 +25,7 @@ Page({
     canIUseGetUserProfile: false,
     canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName') // 如需尝试获取用户信息可改为false
   },
-  // 事件处理函数
-  bindViewTap() {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
-
-  },
-  gotofrecasts() {
-    url: '/pages/forecasts/forecasts'
-  },
+  
   onLoad() {
     const that = this
     this.storeBindings = createStoreBindings(this, {
@@ -47,48 +38,87 @@ Page({
         canIUseGetUserProfile: true
       })
     }
-    wx.getLocation({type:'gcj02'})
-    .then((res)=>{
-      let location =res.latitude + ',' + res.longitude
-      BMap.regeocoding_promisify({location: location})
-      .then((res)=>{
-        that.setData({
-          region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district] || ['广东省', '广州市', '海珠区']
-        })
-        this.update_ad_lo({
-          adcode: res.result.addressComponent.adcode,
-          init_adcode: res.result.addressComponent.adcode,
-          location: location,
-        })
-        this.storeBindings.updateStoreBindings()
-        BMap.weather_promisify({adcode:res.result.addressComponent.adcode})
-        .then((res)=>{
-          this.setData({
-            'weather_info.temp': res.result.now.temp + '℃',
-            'weather_info.text': res.result.now.text,
-            'weather_info.icon': tools.getweather_icon(res.result.now.text),
-          })
-        })
-      })
-    },(res)=>{
-      console.log('getlocation fail',res)
-    })
-    
+    this.init_data()
+
   },
   onUnload() {
     this.storeBindings.destroyStoreBindings();
   },
+  onPullDownRefresh() {
+    wx.showLoading({
+      title: 'Loading...',
+    })
+    this.init_data(()=>{
+      wx.hideLoading();
+      wx.stopPullDownRefresh()
+    })
+
+  },
+  //数据初始化的封装函数
+  async init_data(param){
+    var fun = param || function(){}; 
+    let promise_list = [];
+    promise_list[0] = wx.getLocation({
+      type: 'gcj02'
+    })
+    .then((res) => {
+      let location = res.latitude + ',' + res.longitude
+      promise_list[1] = BMap.regeocoding_promisify({
+          location: location
+        })
+        .then((res) => {
+          this.setData({
+            region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district] || ['广东省', '广州市', '海珠区']
+          })
+          this.update_ad_lo({
+            adcode: res.result.addressComponent.adcode,
+            init_adcode: res.result.addressComponent.adcode,
+            location: location,
+          })
+          this.storeBindings.updateStoreBindings()
+          promise_list[2] = BMap.weather_promisify({
+              adcode: res.result.addressComponent.adcode
+            })
+            .then((res) => {
+              console.log('The inner list of be excuted promise is ',promise_list)
+              this.setData({
+                'weather_info.temp': res.result.now.temp + '℃',
+                'weather_info.text': res.result.now.text,
+                'weather_info.icon': tools.getweather_icon(res.result.now.text),
+              })
+              fun()
+            })
+        })
+    }, (res) => {
+      console.log(res)
+      fun(res)
+    })    
+    
+  },
+  // 事件处理函数
+  bindViewTap() {
+    wx.navigateTo({
+      url: '../logs/logs'
+    })
+
+  },
+  gotofrecasts() {
+    url: '/pages/forecasts/forecasts'
+  },
   syncRegionChange(e) {
     console.log('change回调')
-    BMap.weather_promisify({adcode:e.detail.adcode})
-    .then((res)=>{
-      this.setData({
-        'weather_info.temp': res.result.now.temp + '℃',
-        'weather_info.text': res.result.now.text,
-        'weather_info.icon': tools.getweather_icon(res.result.now.text),
+    BMap.weather_promisify({
+        adcode: e.detail.adcode
       })
-    })
+      .then((res) => {
+        this.setData({
+          'weather_info.temp': res.result.now.temp + '℃',
+          'weather_info.text': res.result.now.text,
+          'weather_info.icon': tools.getweather_icon(res.result.now.text),
+        })
+      })
   },
+
   getUserProfile(e) {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
     wx.getUserProfile({

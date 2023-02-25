@@ -334,8 +334,9 @@ class BMapWX {
         if (res["status"] === 0) {
           Data = res;
         } else {
+          console.log(regeocodingparam)
           Data = {
-            errMsg: res["msg"],
+            errMsg: res["message"],
             statusCode: res["status"]
           };
         }
