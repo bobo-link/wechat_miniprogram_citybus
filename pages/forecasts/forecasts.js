@@ -81,7 +81,7 @@ Page({
     Bmap.weather({
       success: weather_success,
       fail: weather_fail,
-      adcode: that.data.adcode
+      adcode: that.data.adcode,
     })
     
     

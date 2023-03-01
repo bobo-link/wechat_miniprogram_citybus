@@ -1,9 +1,16 @@
 /**
  * @file 微信小程序JSAPI
- * @author 崔健 cuijian03@baidu.com 2017.01.10
- * @update 邓淑芳 623996689@qq.com 2019.07.03
+ * 
  */
-
+//const prefix = 'http://47.115.213.83:8080/';
+const prefix = 'http://192.168.1.199:59/';
+const realapi ={
+      weather:'',
+      geocoding:'',
+      regeocoding:'',
+      transit:'',
+      search:''
+}
 /**
  * 百度地图微信小程序API类
  *
@@ -321,7 +328,7 @@ class BMapWX {
       }
     }
     await wx.p.request({
-        url: 'https://api.map.baidu.com/reverse_geocoding/v3',
+        url: prefix + (realapi.regeocoding || 'regeocoding' ),
         data: regeocodingparam,
         header: {
           "content-type": "application/json"
@@ -336,8 +343,8 @@ class BMapWX {
         } else {
           console.log(regeocodingparam)
           Data = {
-            errMsg: res["message"],
-            statusCode: res["status"]
+            errMsg: res["message"] || 'error',
+            statusCode: res["status"] || -1
           };
         }
       }, (res) => {
@@ -450,7 +457,7 @@ class BMapWX {
       }
     }
     await wx.p.request({
-        url: 'https://api.map.baidu.com/geocoding/v3',
+        url: prefix + (realapi.geocoding || 'geocoding' ) ,
         data: geocodingparam,
         header: {
           "content-type": "application/json"
@@ -501,7 +508,7 @@ class BMapWX {
       return
     }
     wx.request({
-      url: 'https://api.map.baidu.com/weather/v1/',
+      url: prefix + (realapi.weather || 'weather' ),
       data: weatherparam,
       header: {
         "content-type": "application/json"
@@ -538,8 +545,6 @@ class BMapWX {
     let Data = null;
     param = param || {};
     let weatherparam = {
-      location: param['location'] || '',
-      adcode: param['adcode'] || '',
       data_type: param['data_type'] || 'all',
       ak: that.ak,
       district_id: param['adcode'] || '',
@@ -551,7 +556,7 @@ class BMapWX {
       }
     }
     await wx.p.request({
-        url: 'https://api.map.baidu.com/weather/v1/',
+        url: prefix + (realapi.weather || 'weather' ),
         data: weatherparam,
         header: {
           "content-type": "application/json"
@@ -574,5 +579,108 @@ class BMapWX {
       })
     return Data
   }
+  /**
+   * 路线规划
+   *
+   * @param {Object} param 检索配置
+   */
+  async transit_promisify(param) {
+    var that = this;
+    let Data = null;
+    param = param || {};
+    let transitparam = {
+      origin: param['origin'] || '',
+      destination: param['destination'] || '',
+      origin_uid: param['origin_uid'] || '',
+      destination_uid: param['destination_uid'] || '',
+      coord_type: param['coord_type'] || 'gcj02',
+      tactics_incity: param['tactics_incity'] || 3,
+      ret_coordtype: param['ret_coordtype'] || 'gcj02',
+      ak: that.ak,
+    };
+    if (!param['origin'] || !param['destination']) {
+      return {
+        errMsg: 'Param origin or destination is not exist'
+      }
+    }
+    await wx.p.request({
+        url: prefix + (realapi.transit || 'transit' ),
+        data: transitparam,
+        header: {
+          "content-type": "application/json"
+        },
+        method: 'GET'
+      })
+      .then(({
+        data: res
+      }) => {
+        if (res["status"] === 0) {
+          Data = res
+        } else {
+          Data = {
+            errMsg: res["message"],
+            statusCode: res["status"]
+          };
+        }
+      }, (res) => {
+        Data = res
+      })
+    return Data
+  }
+  /**
+   * 地点检索
+   * promisify
+   * @param {Object} param 检索配置
+   * 参数对象结构可以参考
+   * https://lbsyun.baidu.com/index.php?title=webapi/guide/webservice-placeapi
+   * 
+   */
+  async search_promisify(param) {
+    var that = this;
+    let Data = null;
+    param = param || {};
+    let searchparam = {
+      location: param['location'] || '',
+      query: param['query'] || '',
+      tag: param['tag'] || '公交车站',
+      radius: param['radius'] || 1000,
+      radius_limit: param['radius_limit'] || true,
+      scope:param['scope'] || 2,
+      coordtype: param["coordtype"] || 'gcj02ll',
+      ret_coordtype: 'gcj02ll',
+      ak: that.ak,
+      sn: param["sn"] || '',
+      output: param["output"] || 'json',
+      
+    };
+    if (!param['query'] || !param['location']) {
+      return {
+        errMsg: 'Param query or location is not exist'
+      }
+    }
+    await wx.p.request({
+        url: prefix + (realapi.search || 'search' ),
+        data: searchparam,
+        header: {
+          "content-type": "application/json"
+        },
+        method: 'GET'
+      })
+      .then(({
+        data: res
+      }) => {
+        if (res["status"] === 0) {
+          Data = res;
+        } else {
+          Data = {
+            errMsg: res["message"] || 'error',
+            statusCode: res["status"] || -1
+          };
+        }
+      }, (res) => {
+        Data = res
+      })
+    return Data
+  };
 }
 module.exports.BMapWX = BMapWX;

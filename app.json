@@ -2,6 +2,10 @@
   "resolveAlias": {
     "~/*": "/*"
   },
+  "useExtendedLib": {
+    "kbone": true,
+    "weui": true
+  },
   "pages": [
     "pages/index/index",
     "pages/logs/logs",
@@ -32,7 +36,8 @@
     
   },
   "usingComponents": {
-    "navigationBar": "../../Components/navigationBar/navigationBar"
+    "navigationBar": "../../Components/navigationBar/navigationBar",
+    "i-swipeout": "../../Components/dist/swipeout/index"
   },
   "tabBar": {
     "color": "#000",

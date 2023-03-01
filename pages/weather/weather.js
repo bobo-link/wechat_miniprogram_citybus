@@ -46,12 +46,10 @@ Page({
       })      
     },
     test_1: function(e){
-      var BMap = new bmap.BMapWX({
-        ak: 'ReGm8Iydv1TqNTg9uddG2RAfqQ8GZYrL'
-      });
-      BMap.reverse_geocoding({
-        fail : null
-      })
+      wx.navigateTo({
+        url: '/pages/suggestion/suggestion',
+      })  
+    
     },
     gotologs:function(){
       wx.navigateTo({

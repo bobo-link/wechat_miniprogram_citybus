@@ -1,6 +1,7 @@
 <view class="section">
-  <input placeholder="输入关键字"  type="text" bindinput="bindKeyInput"/>
+  <mp-searchbar ext-class='suggestion' placeholder="输入关键字"  type="text" bindinput="bindKeyInput" />
+  
 </view>
-<view class="sug_info">
-  <text>{{sugData}}</text>
+<view class="sug_info" wx:for="{{sugData}}" wx:key="name">
+  <view class="item">{{item.name}}</view> 
 </view>
