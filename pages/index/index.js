@@ -42,8 +42,8 @@ Page({
     that.calcscrollHeight();
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ['adcode', 'init_adcode', 'location'],
-      actions: ["update_ad_lo"]
+      fields: ['adcode', 'init_adcode', 'location','searchinfo'],
+      actions: ["update_ad_lo","update_searchinfo"]
     });
     if (wx.getUserProfile) {
       this.setData({
@@ -67,21 +67,22 @@ Page({
 
   },
   i_tap(e){
-    console.log(e)
+    wx.navigateTo({
+      url: '../../pages/buslinelist/buslinelist' + '?uid=' + e.currentTarget.dataset.uid,
+    })  
   },
   i_change(e){
     console.log(e)
   },
   //数据初始化的封装函数
   async init_data(param){
-    var fun = param || function(){}; 
-    let promise_list = [];
-    promise_list[0] = wx.getLocation({
+    var fun = param || function(){};     
+    wx.getLocation({
       type: 'gcj02'
     })
     .then((res) => {
       let location = res.latitude + ',' + res.longitude
-      promise_list[1] = BMap.regeocoding_promisify({
+      BMap.regeocoding_promisify({
           location: location
         })
         .then((res) => {
@@ -107,6 +108,8 @@ Page({
             location: this.data.location,
             query: '站'
           }).then((res)=>{
+            this.update_searchinfo(res.results)
+            console.log('stop',res)
             if (!res.errMsg){
             let stoplist = []
             for (var i = 0; i < res.results.length; i++){
@@ -120,7 +123,7 @@ Page({
               })
             }}
           })
-          promise_list[2] = BMap.weather_promisify({
+          BMap.weather_promisify({
               adcode: res.result.addressComponent.adcode,
               data_type: 'now'
             })
@@ -173,7 +176,6 @@ Page({
   gotofrecasts() {
     url: '/pages/forecasts/forecasts'
   },
-
   syncRegionChange(e) {
     console.log('change回调')
     this.storeBindings.updateStoreBindings();
@@ -192,6 +194,7 @@ Page({
         location: this.data.location,
         query: '站'
       }).then((res)=>{
+       
         if (!res.errMsg){
         let stoplist = []
         for (var i = 0; i < res.results.length; i++){
@@ -206,7 +209,6 @@ Page({
         }}
       })
   },
-
   getUserProfile(e) {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
     wx.getUserProfile({

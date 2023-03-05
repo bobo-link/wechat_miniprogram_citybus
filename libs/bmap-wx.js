@@ -3,7 +3,7 @@
  * 
  */
 //const prefix = 'http://47.115.213.83:8080/';
-const prefix = 'http://192.168.1.199:59/';
+const prefix = 'http://192.168.123.199:59/';
 const realapi ={
       weather:'',
       geocoding:'',

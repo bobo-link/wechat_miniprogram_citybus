@@ -30,8 +30,9 @@
         <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
       </view>
       <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}" >
-        <iconfont name="gongjiaozhanpai" size='80' ></iconfont>
+        <iconfont name="gongjiaozhanpai" size='40' ></iconfont>
         <view class="i-swipeout-des-h2">{{item.name}}</view>
+        <iconfont name="jinrujiantou" size='40' class="detail" ></iconfont>
       </view>
     </view>
   </i-swipeout>

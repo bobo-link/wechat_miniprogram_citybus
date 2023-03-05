@@ -4,6 +4,7 @@ export const store = observable({
   init_adcode:'',
   adcode:'',
   location:'',
+  searchinfo:[],
  
   
 
@@ -19,5 +20,8 @@ export const store = observable({
     }else{
       return false
     }
+  }),
+  update_searchinfo: action(function(param){
+    this.searchinfo = param
   })
 });

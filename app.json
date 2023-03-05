@@ -17,7 +17,9 @@
     "pages/suggestion/suggestion",
     "pages/practice/local_life/local_life",
     "pages/practice/shoplist/shoplist",
-    "pages/forecasts/forecasts"
+    "pages/forecasts/forecasts",
+    "pages/buslinelist/buslinelist",
+    "pages/setting/setting"
   ],
   "permission": {
     "scope.userLocation": {
@@ -33,7 +35,6 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "Weixin",
     "navigationBarTextStyle": "black"
-    
   },
   "usingComponents": {
     "navigationBar": "../../Components/navigationBar/navigationBar",
@@ -62,6 +63,12 @@
         "text": "Weather",
         "iconPath": "img/tabbar_icon/weather.png",
         "selectedIconPath": "img/tabbar_icon/weather_active.png"
+      },
+      {
+        "pagePath": "pages/setting/setting",
+        "text": "Setting",
+        "iconPath": "img/tabbar_icon/setting.png",
+        "selectedIconPath": "img/tabbar_icon/setting_active.png"
       }
     ]
   },

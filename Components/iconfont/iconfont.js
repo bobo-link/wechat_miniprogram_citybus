@@ -1,6 +1,6 @@
 Component({
   properties: {
-    // gongjiaozhanpai | error | qingtian | duoyun | yintian | zhenyu | baoyu | dabaoyu | leizhenyujibanyoubingbao | tedabaoyu | xiaoyu | dayu | leizhenyu | yujiaxue | zhongyu | daxue | xiaoxue | zhongxue | zhenxue | baoxue | qiangshachenbao | fuchen | wu | shachenbao | dongyu | yangsha | mai
+    // jinrujiantou | gongjiaozhanpai | error | qingtian | duoyun | yintian | zhenyu | baoyu | dabaoyu | leizhenyujibanyoubingbao | tedabaoyu | xiaoyu | dayu | leizhenyu | yujiaxue | zhongyu | daxue | xiaoxue | zhongxue | zhenxue | baoxue | qiangshachenbao | fuchen | wu | shachenbao | dongyu | yangsha | mai
     name: {
       type: String,
     },

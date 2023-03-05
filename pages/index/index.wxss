@@ -1,7 +1,5 @@
 /**index.wxss**/
-page{
-  overflow-y: hidden;
-}
+
 .userinfo {
   display: flex;
   flex-direction: column;
@@ -22,17 +20,31 @@ page{
 .usermotto {
   margin-top: 10px;
 }
+.list{
+  overflow-y: hidden;
+  background-color:rgba(244,245,249);
+}
 .i-swipeout-demo-item{
-  height: 160rpx;
+  margin: 0 10px 10px 10px; 
+  border-style: none;
+  border-radius: 8rpx;
+  border: 1rpx solid #ffffff;
 }
 .i-swipeout-des-h2{
   margin-left: 20px;
   font-size: 20px;
   align-content: center;
 }
+.i-swipeout-content {
+  display: flex;
+  align-items: center;
+}
 .i-swipeout-des{
   display: flex;
   align-items: center;
+}
+.detail{
+  margin-left: auto
 }
 ::-webkit-scrollbar{
   width: 0;
