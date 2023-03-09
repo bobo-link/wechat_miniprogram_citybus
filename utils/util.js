@@ -44,7 +44,13 @@ const getweather_icon = function(weather) {
       return "qingtian"
   }
 }
+const adcode_back = function(param){
+  param[-1] = 0
+  param[-2] = 0
+  return param
+}
 module.exports = {
   formatTime,
-  getweather_icon
+  getweather_icon,
+  adcode_back
 }

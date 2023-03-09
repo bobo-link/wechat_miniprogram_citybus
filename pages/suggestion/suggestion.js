@@ -1,47 +1,66 @@
-var bmap = require('../../libs/bmap-wx.js');
+// pages/suggestion/suggestion.js
 Page({
-  data: {
-    sugData: [],
-  },
-  bindKeyInput: function (e) {
-    var that = this;
-    if (e.detail.value === '') {
-      that.setData({
-        sugData: []
-      });
-      return;
-    }
-    var BMap = new bmap.BMapWX({
-      ak: 'Q5Q7pGs2SltrQaC2HjEWxOgFiBR1xVFM'
-    });
-    var fail = function (data) {
-      console.log(data)
-    };
-    var success = function (data) {
-      console.log(data)
-      var tmp_data = [];
-      for (var i = 0; i < data.result.length; i++) {
 
-        tmp_data[i] = {
-          name: data.result[i].name,
-          uid: data.result[i].uid,
-          location: data.result[i].lat + ',' + data.result[i].lng,
-          adcode: data.result[i].adcode,
-          tag: data.result[i].tag,
-        }
-      }
-      console.log(tmp_data)
-      that.setData({
-        sugData: tmp_data
-      });
-    }
-    BMap.suggestion({
-      query: e.detail.value,
-      region: '北京',
-      city_limit: true,
-      fail: fail,
-      success: success
-    });
+  /**
+   * 页面的初始数据
+   */
+  data: {
+
   },
-  
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad(options) {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady() {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide() {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload() {
+
+  },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh() {
+
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom() {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage() {
+
+  }
 })

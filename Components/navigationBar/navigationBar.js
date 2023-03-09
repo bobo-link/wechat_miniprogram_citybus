@@ -117,7 +117,8 @@ Component({
         }))
       promise_item.finally((res) => {
         this.triggerEvent('sync', {
-          adcode: e.detail.code[2]
+          adcode: e.detail.code[2],
+          adcode_up:e.detail.code[1]
         })
       })
 

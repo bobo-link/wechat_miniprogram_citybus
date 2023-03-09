@@ -19,21 +19,34 @@
       <text class="userinfo-nickname">{{userInfo.nickName}}</text>
     </block>
   </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
+  <view class="tab">
+    <view class="tab-item {{tab==0?'active':''}}" bindtap="changeItem" data-item="0">附近</view>
+    <view class="tab-item {{tab==1?'active':''}}" bindtap="changeItem" data-item="1">收藏</view>
   </view>
 </view>
-<scroll-view class="list" scroll-y style="height:{{scrollHeight}}px" >
-  <i-swipeout i-class="i-swipeout-demo-item" actions="{{actions}}" bind:change="i_change" data-index="{{idx}}" data-uid="{{item.uid}}" wx:for="{{stoplist}}" wx:key="name" wx:for-index="idx"  >
-    <view slot="content"  >
-      <view class="i-swipeout-image" style="background:#ff9900;">
-        <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
-      </view>
-      <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}" >
-        <iconfont name="gongjiaozhanpai" size='40' ></iconfont>
-        <view class="i-swipeout-des-h2">{{item.name}}</view>
-        <iconfont name="jinrujiantou" size='40' class="detail" ></iconfont>
-      </view>
-    </view>
-  </i-swipeout>
-</scroll-view>
+
+<view class="content">
+  <swiper current="{{item}}" bindchange="changeTab" style="height:{{scrollHeight}}px">
+    <!-- 每个滑块(swiper-item)都有一个index，也就是current要获取的值 -->
+    <swiper-item  id='swiper-item' >
+      <!-- 滑动列表 -->
+      <scroll-view  class="list" scroll-y style="height:{{scrollHeight}}px">
+        <i-swipeout i-class="i-swipeout-demo-item" actions="{{actions}}"  bind:change="i_change" data-index="{{idx}}" data-uid="{{item.uid}}" wx:for="{{searchinfo}}" wx:key="uid" wx:for-index="idx">
+          <view slot="content" catchtouchmove='catchtouchmove'>
+            <view class="i-swipeout-image" style="background:#ff9900;">
+              <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
+            </view>
+            <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
+              <iconfont name="gongjiaozhanpai" size='40'></iconfont>
+              <view class="i-swipeout-des-h2">{{item.name}}</view>
+              <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
+            </view>
+          </view>
+        </i-swipeout>
+      </scroll-view>
+    </swiper-item>
+    <swiper-item>
+      你好
+    </swiper-item>
+  </swiper>
+</view>

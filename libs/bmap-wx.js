@@ -3,7 +3,7 @@
  * 
  */
 //const prefix = 'http://47.115.213.83:8080/';
-const prefix = 'http://192.168.123.199:59/';
+const prefix = wx.prefix;
 const realapi ={
       weather:'',
       geocoding:'',
@@ -316,9 +316,9 @@ class BMapWX {
       sn: param["sn"] || '',
       output: param["output"] || 'json',
       callback: param["callback"] || function () {},
-      extensions_poi: param["extensions_poi"] || 1,
+      extensions_poi: param["extensions_poi"] || 0,
       extensions_road: param["extensions_road"] || false,
-      extensions_town: param["extensions_town"] || false,
+      extensions_town: param["extensions_town"] || true,
       language: param["language"] || 'zh-CN',
       language_auto: param["language_auto"] || 0
     };

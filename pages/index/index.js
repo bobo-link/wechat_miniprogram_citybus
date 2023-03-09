@@ -13,44 +13,43 @@ const BMap = new bmap.BMapWX({
 });
 Page({
   data: {
-    actions : [
-      {
-          name : '喜欢',
-          color : '#fff',
-          fontsize : '20',
-          width : 100,
-          icon : 'like',
-          background : '#ed3f14'
+    item: 0,
+    tab: 0,
+    actions: [{
+        name: '喜欢',
+        color: '#fff',
+        fontsize: '20',
+        width: 100,
+        icon: 'like',
+        background: '#ed3f14'
       },
-      
-  ],
+
+    ],
     weather_info: {
       icon: 'error',
       text: '×',
       temp: '×'
     },
-    motto: 'Hello World',
-    userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     canIUseGetUserProfile: false,
     canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName') // 如需尝试获取用户信息可改为false
   },
-  
+
   onLoad() {
     const that = this
     that.calcscrollHeight();
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ['adcode', 'init_adcode', 'location','searchinfo'],
-      actions: ["update_ad_lo","update_searchinfo"]
+      fields: ['adcode', 'init_adcode', 'location', 'searchinfo','weather_adcode'],
+      actions: ["update_ad_lo", "update_searchinfo"]
     });
     if (wx.getUserProfile) {
       this.setData({
         canIUseGetUserProfile: true
       })
     }
-    this.init_data()
+    this.init_data();
 
   },
   onUnload() {
@@ -60,99 +59,130 @@ Page({
     wx.showLoading({
       title: 'Loading...',
     })
-    this.init_data(()=>{
+    this.init_data(() => {
       wx.hideLoading();
       wx.stopPullDownRefresh()
     })
 
   },
-  i_tap(e){
+  i_tap(e) {
     wx.navigateTo({
       url: '../../pages/buslinelist/buslinelist' + '?uid=' + e.currentTarget.dataset.uid,
-    })  
+    })
   },
-  i_change(e){
+  i_change(e) {
     console.log(e)
   },
-  //数据初始化的封装函数
-  async init_data(param){
-    var fun = param || function(){};     
-    wx.getLocation({
-      type: 'gcj02'
+  //切换标签页函数
+  changeItem: function (e) {
+    this.setData({
+      item: e.target.dataset.item
     })
-    .then((res) => {
-      let location = res.latitude + ',' + res.longitude
-      BMap.regeocoding_promisify({
-          location: location
-        })
-        .then((res) => {
-          console.log(res)
-          fun()
-          if (res.errMsg ) {
-            wx.showToast({
-              title: '无法连接到服务器',
-              icon: 'none'
-            })            
-            return
-          }
-          this.setData({
-            region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district] || ['广东省', '广州市', '海珠区']
+  },
+  changeTab: function (e) {
+    this.setData({
+      tab: e.detail.current
+    })
+  },
+  //数据初始化的封装函数
+  async init_data(param) {
+    var fun = param || function () {};
+    //微信获取当前位置信息    
+    wx.getLocation({
+        type: 'gcj02'
+      })
+      .then((res) => {
+        let location = res.latitude + ',' + res.longitude
+        //百度逆向地理转换，获取当前城市信息
+        BMap.regeocoding_promisify({
+            location: location
           })
-          this.update_ad_lo({
-            adcode: res.result.addressComponent.adcode,
-            init_adcode: res.result.addressComponent.adcode,
-            location: location,
-          })
-          this.storeBindings.updateStoreBindings();
-          BMap.search_promisify({
-            location: this.data.location,
-            query: '站'
-          }).then((res)=>{
-            this.update_searchinfo(res.results)
-            console.log('stop',res)
-            if (!res.errMsg){
-            let stoplist = []
-            for (var i = 0; i < res.results.length; i++){
-              stoplist[i] = {
-               name: res.results[i].name,
-               location: res.results[i].location.lat + ',' + res.results[i].location.lng,
-               uid: res.results[i].uid
-              }
-              this.setData({
-                stoplist : stoplist     
+          .then((res) => {
+            if (res.errMsg) {
+              wx.showToast({
+                title: '无法连接到服务器',
+                icon: 'none'
               })
-            }}
-          })
-          BMap.weather_promisify({
-              adcode: res.result.addressComponent.adcode,
-              data_type: 'now'
+              fun();
+              return
+            }
+            console.log(res)
+            this.setData({
+              region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district] || ['广东省', '广州市', '海珠区']
             })
-            .then((res) => {
-              console.log('weather data is',res)
-              this.setData({
-                'weather_info.temp': res.result.now.temp + '℃',
-                'weather_info.text': res.result.now.text,
-                'weather_info.icon': tools.getweather_icon(res.result.now.text),
+            this.update_ad_lo({
+              adcode: res.result.addressComponent.adcode,
+              init_adcode: res.result.addressComponent.adcode,
+              location: location,
+            })
+            //百度api获取附近站点信息
+            let promiselist = [];
+            promiselist[0] = BMap.search_promisify({
+              location: location,
+              query: '公交车站'
+            }).then((res) => {              
+              if (!res.errMsg) {
+                this.update_searchinfo(res.results)
+              }
+            })
+            let adcode = res.result.addressComponent.adcode
+            //百度api获取当前城市天气信息
+            promiselist[1] = BMap.weather_promisify({
+                adcode: adcode,
+                data_type: 'now'
               })
+              .then((res) => {
+                if (res.statusCode && res.statusCode == 40) {
+                  wx.showToast({
+                    title: '该区域不支持天气模块，将返回上级市的天气',
+                    icon: 'none'
+                  })
+                  promiselist[1] = BMap.weather_promisify({
+                    adcode: tools.adcode_back(adcode),
+                    data_type: 'now'
+                  }).then((res)=>{
+                    this.update_ad_lo({weather_adcode:tools.adcode_back(adcode)})
+                    this.setData({
+                      'weather_info.temp': res.result.now.temp + '℃',
+                      'weather_info.text': res.result.now.text,
+                      'weather_info.icon': tools.getweather_icon(res.result.now.text),
+                    })
+                  })
+                }else{
+                  this.update_ad_lo({weather_adcode:adcode})
+                  this.setData({
+                    'weather_info.temp': res.result.now.temp + '℃',
+                    'weather_info.text': res.result.now.text,
+                    'weather_info.icon': tools.getweather_icon(res.result.now.text),
+                  })
+                }   
+              })
+            Promise.all(promiselist).then((res) => {
+              this.storeBindings.updateStoreBindings();
               fun()
             })
-        })
-    }, (res) => {
-      console.log(res)
-      fun(res)
-    })    
-    
+          })
+      }, (res) => {
+        console.log(res)
+        fun(res)
+      })
+
   },
+  //滑动事件处理
+  catchtouchmove: function (res) {
+
+  },
+
   // 事件处理函数
   bindViewTap() {
-   BMap.transit_promisify({
-    origin: '29.24531281354,119.97543469878',
-    origin_uid: 'fb272de57780c281a1d23033',
-    destination: '29.265688874471,120.02401577939',
-    destination_uid: '91d6a8b928cb32b69703195e'
-   }).then((res)=>{
-    console.log(res)
-   })
+    BMap.transit_promisify({
+      origin: '29.24531281354,119.97543469878',
+      origin_uid: 'fb272de57780c281a1d23033',
+      destination: '29.265688874471,120.02401577939',
+      destination_uid: '91d6a8b928cb32b69703195e'
+    }).then((res) => {
+      console.log(res)
+    })
 
   },
   calcscrollHeight() {
@@ -184,30 +214,40 @@ Page({
         data_type: 'now'
       })
       .then((res) => {
-        this.setData({
-          'weather_info.temp': res.result.now.temp + '℃',
-          'weather_info.text': res.result.now.text,
-          'weather_info.icon': tools.getweather_icon(res.result.now.text),
-        })
-      })
-      BMap.search_promisify({
-        location: this.data.location,
-        query: '站'
-      }).then((res)=>{
-       
-        if (!res.errMsg){
-        let stoplist = []
-        for (var i = 0; i < res.results.length; i++){
-          stoplist[i] = {
-           name: res.results[i].name,
-           location: res.results[i].location.lat + ',' + res.results[i].location.lng,
-           uid: res.results[i].uid
-          }
-          this.setData({
-            stoplist : stoplist     
+        if (res.statusCode && res.statusCode == 40) {
+          wx.showToast({
+            title: '该区域不支持天气模块，将返回上级市的天气',
+            icon: 'none'
           })
-        }}
+          BMap.weather_promisify({
+            adcode: e.detail.adcode_up,
+            data_type: 'now'
+          }).then((res) => {
+            this.update_ad_lo({weather_adcode:e.detail.adcode_up})
+            this.setData({
+              'weather_info.temp': res.result.now.temp + '℃',
+              'weather_info.text': res.result.now.text,
+              'weather_info.icon': tools.getweather_icon(res.result.now.text),
+            })
+          })
+        } else {
+          console.log(res)
+          this.update_ad_lo({weather_adcode:e.detail.adcode})
+          this.setData({
+            'weather_info.temp': res.result.now.temp + '℃',
+            'weather_info.text': res.result.now.text,
+            'weather_info.icon': tools.getweather_icon(res.result.now.text),
+          })          
+        }
       })
+    BMap.search_promisify({
+      location: this.data.location,
+      query: '公交车站'
+    }).then((res) => {
+      if (!res.errMsg) {
+        this.update_searchinfo(res.results)
+      }
+    })
   },
   getUserProfile(e) {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗

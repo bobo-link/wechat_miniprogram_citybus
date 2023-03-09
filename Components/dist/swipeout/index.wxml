@@ -1,5 +1,5 @@
-<view class="i-swipeout-wrap i-class">
-    <view class="i-swipeout-item" bindtouchstart="handlerTouchstart" bindtouchmove="handlerTouchmove" bindtouchend="handlerTouchend" style="{{parse.setPosition(position)}}">
+<view class="i-swipeout-wrap i-class" id='test'>
+    <view class="i-swipeout-item"  bindtouchstart="handlerTouchstart" bindtouchmove="handlerTouchmove" bindtouchend="handlerTouchend" style="{{parse.setPosition(position)}}">
         <view class="i-swipeout-content">
             <slot name="content"></slot>
         </view>
@@ -21,7 +21,7 @@
                 {{item.name}}
             </view>
         </view>
-        <view class="i-swipeout-button-right-group" catchtouchend="loop" bind:tap="handlerParentButton"  wx:if="{{actions.length === 0}}" style="width:{{operateWidth}}px;right:-{{operateWidth}}px;">
+        <view class="i-swipeout-button-right-group"  catchtouchend="loop" bind:tap="handlerParentButton"  wx:if="{{actions.length === 0}}" style="width:{{operateWidth}}px;right:-{{operateWidth}}px;">
             <slot name="button"></slot>
         </view>
     </view>

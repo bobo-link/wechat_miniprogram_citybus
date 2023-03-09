@@ -1,0 +1,14 @@
+<!--pages/login/login.wxml-->
+<view data-weui-theme="{{theme}}">
+  <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+    <image class="avatar" src="{{avatarUrl}}"></image>
+  </button> 
+  <mp-form>
+    <mp-cells>
+      <mp-cell title="昵称">
+        <input type="nickname" class="weui-input" bindblur="bindblur" placeholder="请输入昵称"/>
+      </mp-cell>
+    </mp-cells>
+  </mp-form>  
+</view>
+<button class="btn_check" type="primary" plain="true" bindtap="login_action">确认</button>

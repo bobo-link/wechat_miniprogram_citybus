@@ -61,7 +61,7 @@ Page({
     const that = this
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields:["adcode"],    
+      fields:["adcode","weather_adcode"],    
       actions: ["update_ad_lo"]
     });   
     this.storeBindings.updateStoreBindings()
@@ -81,7 +81,7 @@ Page({
     Bmap.weather({
       success: weather_success,
       fail: weather_fail,
-      adcode: that.data.adcode,
+      adcode: that.data.weather_adcode,
     })
     
     

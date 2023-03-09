@@ -1,6 +1,7 @@
 // app.js
 import {promisifyAll} from 'miniprogram-api-promise'
 const wxp = wx.p = {}
+const prefix = wx.prefix = 'http://192.168.123.199:59/';
 promisifyAll(wx,wxp)
 App({
   onLaunch() {

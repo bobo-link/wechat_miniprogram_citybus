@@ -19,7 +19,8 @@
     "pages/practice/shoplist/shoplist",
     "pages/forecasts/forecasts",
     "pages/buslinelist/buslinelist",
-    "pages/setting/setting"
+    "pages/setting/setting",
+    "pages/login/login"
   ],
   "permission": {
     "scope.userLocation": {
