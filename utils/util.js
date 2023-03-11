@@ -49,8 +49,29 @@ const adcode_back = function(param){
   param[-2] = 0
   return param
 }
+const unique_list = function (arr) {
+  if (!Array.isArray(arr)) {
+      console.log('错误！')
+      return
+  }
+  var array = [arr[0]];
+  var flag = true;
+  var index = 1
+  for (var i = 1; i < arr.length; i++) {    // 首次遍历数组
+    for  (var j = 0; j < array.length; j++){
+      if (arr[i].location.lat == array[j].location.lat && arr[i].location.lng == array[j].location.lng) {   // 判断索引有没有等于
+        flag = false
+        break
+      }     
+    }
+    if (flag) {array[index++] = arr[i];}
+    flag = true
+  }
+  return array
+}
 module.exports = {
   formatTime,
   getweather_icon,
-  adcode_back
+  adcode_back,
+  unique_list
 }

@@ -12,7 +12,6 @@ Page({
    */
   data: {
     hasUserInfo: false,
-    usr_info:{},
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     if_login: false // 如需尝试获取用户信息可改为false
 
@@ -24,8 +23,8 @@ Page({
   onLoad(options) {
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ["if_login","usr_info"],
-      actions: ["login_switch"]
+      fields: ["if_login","usrinfo"],
+      actions: ["login_switch","update_usr"]
     });
   },
 
@@ -40,8 +39,12 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    console.log('onshow')
+    console.log('onshow')    
     this.storeBindings.updateStoreBindings();
+    this.setData({
+      'usrinfo.avatarUrl' : this.data.usrinfo.avatarUrl
+    })
+    console.log(this.data.usrinfo)
   },
 
   /**
@@ -84,14 +87,98 @@ Page({
     }
   },
   getUserProfile(e) {
- 
-    wx.navigateTo({
-      url: '/pages/login/login',
+    const that = this
+    wx.p.login().
+    then((res)=>{
+      wx.p.request({
+        url: wx.prefix + 'login_check',
+        data:{js_code: res.code},
+        header: {
+          "content-type": "application/json"
+        },
+        method: 'GET',
+      }).then(({data:res})=>{
+        console.log(res)
+        let data = res
+        if (res.status == undefined){
+          console.log(!res.status)
+          wx.showToast({
+            title: '无法连接服务器',
+            icon:'none'
+          })
+          return
+        }
+        if(res.status == 0){
+          wx.p.showModal({
+            title: '提示',
+            content: '是否修改个人信息',   
+            confirmText:'是',
+            cancelText: '否'        
+          }).then((res)=>{
+            if (res.confirm) {
+              wx.navigateTo({
+                url: '/pages/login/login',
+              })
+            } else if (res.cancel) {
+              // 从服务器拉取个人信息并持久化存储，切换登入状态
+              let usrinfo = {...data.usrinfo}
+              usrinfo['avatarUrl'] = wx.env.USER_DATA_PATH + '/' +usrinfo.avatarUrl;
+              wx.setStorageSync('usrinfo',usrinfo)
+              this.update_usr(wx.getStorageSync('usrinfo'))
+              let file = wx.getFileSystemManager()
+              this.storeBindings.updateStoreBindings()
+              
+              try {               
+                file.accessSync(usrinfo['avatarUrl'])
+              } catch (error) {
+                console.log(error)
+                wx.downloadFile({
+                  url: wx.prefix + 'download_avatar'+'?openid='+ data.usrinfo.openid,
+                  filePath:wx.env.USER_DATA_PATH +'/'+ data.usrinfo.avatarUrl,
+                  success(res){
+                    console.log(res)
+                    that.login_switch()
+                  },
+                  fail(res){
+                    console.log(res)
+                  }
+                })
+              }
+            }
+          })
+        }else if(res.status === 101){
+          wx.showToast({
+            title: '无法连接服务器',
+            icon:'none'
+          })  
+        }else{
+          wx.navigateTo({
+            url: '/pages/login/login',
+          })
+        }
+      },(res)=>{
+        wx.showToast({
+          title: '无法连接服务器',
+          icon:'none'
+        })
+      })
     })
+    
   },
   logout(e){
-    this.login_switch()
-    this.storeBindings.updateStoreBindings()
+    wx.p.showModal({
+      title: '提示',
+      content: '确认注销',
+      
+    }).then((res)=>{
+      if (res.confirm) {
+        this.login_switch()
+        this.storeBindings.updateStoreBindings()
+      } else if (res.cancel) {
+        console.log('用户点击取消')
+      }
+    })
+    
   },
   bindViewTap(e) {
     this.setData({

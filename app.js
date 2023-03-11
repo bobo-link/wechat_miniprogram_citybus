@@ -1,7 +1,9 @@
 // app.js
+import {createStoreBindings} from "mobx-miniprogram-bindings";
+import {store} from "~/store/store";
 import {promisifyAll} from 'miniprogram-api-promise'
 const wxp = wx.p = {}
-const prefix = wx.prefix = 'http://192.168.123.199:59/';
+const prefix = wx.prefix = 'http://172.20.10.4:59/';
 promisifyAll(wx,wxp)
 App({
   onLaunch() {
@@ -28,12 +30,31 @@ App({
           platform === 'android' ? 48 : 40
         )
     }
-    // 登录
-    wx.login({
-      success: res => {
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+    this.storeBindings = createStoreBindings(this, {
+      store,
+      actions: ["login_switch", "update_usr"]
+    });
+    /* wx.setStorageSync('usrinfo',{
+      openid: 'ozMCH5XJmo1VZ6mnT1eC3utoVOx8',
+      unionid: '',
+      avatarUrl: 'wxfile://tmp_e311f78dd2a993c4fa92a38f63cfdd6a.jpg',
+      nickname: '文科生'
+    }) */
+    let usrinfo = wx.getStorageSync('usrinfo')
+      if (usrinfo){
+        console.log(usrinfo)
+        this.update_usr(usrinfo)
+        this.login_switch()
       }
-    })
+      try{
+        wx.getFileSystemManager().accessSync('wxfile://usr/tmp_4048b3efb7027bed5faefa25ebb2a86f.jpg')
+        // wx.getFileSystemManager().unlinkSync('wxfile://usr/tmp_4048b3efb7027bed5faefa25ebb2a86f.jpg')
+        console.log('存在')      
+      }
+      catch(e){
+        console.log('不存在')  
+      }
+    this.storeBindings.destroyStoreBindings()
   },
   globalData: {
     userInfo: null

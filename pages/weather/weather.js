@@ -77,8 +77,16 @@ Page({
       })
     },
     gotoforecasts:function(){
-      wx.navigateTo({
-        url: '/pages/forecasts/forecasts?adcode='+this.data.adcode,
-      })
+      try{
+        wx.getFileSystemManager().accessSync('wxfile://usr/tmp_4048b3efb7027bed5faefa25ebb2a86f.jpg')
+        wx.getFileSystemManager().unlinkSync('wxfile://usr/tmp_4048b3efb7027bed5faefa25ebb2a86f.jpg')
+        console.log('存在')      
+      }
+      catch(e){
+        console.log('不存在')  
+      }
+      // wx.navigateTo({
+      //   url: '/pages/forecasts/forecasts?adcode='+this.data.adcode,
+      // })
     }
 })

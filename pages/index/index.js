@@ -98,6 +98,7 @@ Page({
             location: location
           })
           .then((res) => {
+            console.log(res)
             if (res.errMsg) {
               wx.showToast({
                 title: '无法连接到服务器',
@@ -106,7 +107,6 @@ Page({
               fun();
               return
             }
-            console.log(res)
             this.setData({
               region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district] || ['广东省', '广州市', '海珠区']
             })
@@ -122,7 +122,8 @@ Page({
               query: '公交车站'
             }).then((res) => {              
               if (!res.errMsg) {
-                this.update_searchinfo(res.results)
+                let unique = tools.unique_list(res.results)
+                this.update_searchinfo(unique)
               }
             })
             let adcode = res.result.addressComponent.adcode
@@ -245,7 +246,8 @@ Page({
       query: '公交车站'
     }).then((res) => {
       if (!res.errMsg) {
-        this.update_searchinfo(res.results)
+        let unique = tools.unique_list(res.results)
+        this.update_searchinfo(unique)
       }
     })
   },

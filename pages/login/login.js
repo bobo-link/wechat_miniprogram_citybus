@@ -17,79 +17,93 @@ Page({
   },
 
   onChooseAvatar(e) {
-    const {
-      avatarUrl
-    } = e.detail
-    this.setData({
-      avatarUrl,
+    const that = this
+    const avatarUrl = wx.env.USER_DATA_PATH + '/' + e.detail.avatarUrl.split('/').pop()
+    wx.getFileSystemManager().copyFile({
+      srcPath:e.detail.avatarUrl,
+      destPath:avatarUrl,
+      success(res){
+        console.log("success",res)
+        that.setData({
+          avatarUrl,
+        })
+      },
+      fail(res){
+        console.log("fail",res)
+      }
     })
+    
   },
   bindblur(e) {
     this.setData({
       nickname: e.detail.value,
     })
   },
+
   login_action() {
     const that = this
     console.log('data is', this.data)
-    wx.uploadFile({
-      url: wx.prefix + 'avatar', //仅为示例，非真实的接口地址
-      filePath: this.data.avatarUrl,
-      name: 'file',
-      formData: {
-        'user': 'test'
-      },
-      success({
-        data: res
-      }) {
-        res_json = eval('(' + res + ')')
-        console.log(res_json)
-        const filename = res_json.filename
-        wx.p.login()
-          .then((res) => {
-            let data = {
-              js_code: res.code,
-              nickname: that.data.nickname,
-              filename: filename,
-              uptime: new Date()
-            }
-            
-            let re = wx.p.request({
-              url: wx.prefix + 'login',
-              data: data,
-              header: {
-                "content-type": "application/json"
-              },
-              method: 'GET'
-            }).then(({
+    wx.p.login()
+      .then((res) => {
+        let data = {
+          js_code: res.code,
+          nickname: that.data.nickname,
+          filename: that.data.avatarUrl,
+          uptime: new Date()
+        }
+        let re = wx.p.request({
+          url: wx.prefix + 'login',
+          data: data,
+          header: {
+            "content-type": "application/json"
+          },
+          method: 'GET'
+        }).then(({
+          data: res
+        }) => {
+          let openid = res.openid
+          console.log(res)
+          //网络请求success回调
+          wx.uploadFile({
+            url: wx.prefix + 'avatar', 
+            filePath: this.data.avatarUrl,
+            name: 'file',
+            formData: {
+              'user': 'test'
+            },
+            success({
               data: res
-            }) => {
-              //网络请求success回调
+            }) {
+              res_json = eval('(' + res + ')')
+              console.log(res_json)
+              if (res_json.status == 0){
               that.login_switch()
               that.update_usr({
-                avatarUrl:that.data.avatarUrl,
-                openid: res.openid,
+                avatarUrl: that.data.avatarUrl,
+                openid: openid,
                 nickname: that.data.nickname,
               })
-            }, (res) => {
-              //网络请求fail回调
-              wx.showToast({
-                title: '无法连接服务器',
-                icon: 'none'
-              })
-            })
-            re.finally((res)=>{
-              wx.switchTab({
-                url: '/pages/setting/setting',
-              })
-            })
+              }  
+            },
+            fail(res) {
+              console.log('fail', res)
+              //do something
+            }
           })
-      },
-      fail(res) {
-        console.log('fail', res)
-        //do something
-      }
-    })
+        }, (res) => {
+          //网络请求fail回调
+          wx.showToast({
+            title: '无法连接服务器',
+            icon: 'none'
+          })
+        })
+        re.finally((res) => {
+          wx.switchTab({
+            url: '/pages/setting/setting',
+          })
+        })
+      })
+
 
   },
   /**
@@ -98,8 +112,8 @@ Page({
   onLoad(options) {
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ["if_login","usr_info"],
-      actions: ["login_switch","update_usr"]
+      fields: ["if_login", "usrinfo"],
+      actions: ["login_switch", "update_usr"]
     });
   },
 
@@ -114,7 +128,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    
   },
 
   /**

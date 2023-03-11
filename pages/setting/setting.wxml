@@ -8,8 +8,8 @@
       <open-data type="userNickName"></open-data>
     </block>
     <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{usr_info.avatarUrl}}" mode="cover" bindtap="logout"></image>
-      <text class="userinfo-nickname">{{usr_info.nickname}}</text>
+      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{usrinfo.avatarUrl}}" mode="cover" bindtap="logout"></image>
+      <text class="userinfo-nickname">{{usrinfo.nickname}}</text>
     </block>
   </view>
 </view>
@@ -18,7 +18,7 @@
     <view class="title">设置</view>
     <view class="info">如果不能查询请点击这里,允许使用地理位置</view>
   </button>
-  <view class="clear">清楚缓存</view>
+  <view class="clear" bindtap="clear">清楚缓存</view>
 </view>
 <button class="share" hover-class="btn_hover" open-type="share" style="margin:20px 0 0 0;padding:0;width: 100%;">
   <view class='title'>分享</view>

@@ -7,7 +7,7 @@ export const store = observable({
   location:'',
   searchinfo:[],
   if_login:false,
-  usr_info:{
+  usrinfo:{
     nickname:'',
     avatarUrl:'',
     openid:''
@@ -35,9 +35,8 @@ export const store = observable({
     this.if_login =  !this.if_login
   }),
   update_usr:action(function(param){    
-    param.nickname && (this.usr_info = Object.assign({}, this.usr_info, { nickname: param.nickname }))
-    param.avatarUrl && (this.usr_info = Object.assign({}, this.usr_info, { avatarUrl: param.avatarUrl }))
-    param.openid && (this.usr_info = Object.assign({}, this.usr_info, { openid: param.openid }))
-    console.log(this.usr_info)
+    param.nickname && (this.usrinfo = Object.assign({}, this.usrinfo, { nickname: param.nickname }))
+    param.avatarUrl && (this.usrinfo = Object.assign({}, this.usrinfo, { avatarUrl: param.avatarUrl }))
+    param.openid && (this.usrinfo = Object.assign({}, this.usrinfo, { openid: param.openid }))
   })
 });
