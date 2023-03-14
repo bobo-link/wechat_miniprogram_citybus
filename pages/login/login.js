@@ -63,7 +63,7 @@ Page({
         }) => {
           let openid = res.openid
           console.log(res)
-          //网络请求success回调
+          //上传头像文件到服务器
           wx.uploadFile({
             url: wx.prefix + 'avatar', 
             filePath: this.data.avatarUrl,

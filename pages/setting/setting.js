@@ -39,12 +39,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    console.log('onshow')    
     this.storeBindings.updateStoreBindings();
-    this.setData({
-      'usrinfo.avatarUrl' : this.data.usrinfo.avatarUrl
-    })
-    console.log(this.data.usrinfo)
   },
 
   /**
@@ -125,17 +120,18 @@ Page({
               usrinfo['avatarUrl'] = wx.env.USER_DATA_PATH + '/' +usrinfo.avatarUrl;
               wx.setStorageSync('usrinfo',usrinfo)
               this.update_usr(wx.getStorageSync('usrinfo'))
-              let file = wx.getFileSystemManager()
               this.storeBindings.updateStoreBindings()
-              
               try {               
-                file.accessSync(usrinfo['avatarUrl'])
+                //判断文件是否存在，不存在抛出异常
+                wx.getFileSystemManager().accessSync(usrinfo['avatarUrl'])
+                that.login_switch()
               } catch (error) {
-                console.log(error)
+                //文件不存在，从服务器拉取文件
                 wx.downloadFile({
-                  url: wx.prefix + 'download_avatar'+'?openid='+ data.usrinfo.openid,
-                  filePath:wx.env.USER_DATA_PATH +'/'+ data.usrinfo.avatarUrl,
+                  url: wx.prefix + 'download_avatar'+'?openid='+ this.data.usrinfo.openid,
+                  filePath: this.data.usrinfo.avatarUrl,
                   success(res){
+                    //拉取成功，切换登入状态
                     console.log(res)
                     that.login_switch()
                   },
@@ -174,6 +170,8 @@ Page({
       if (res.confirm) {
         this.login_switch()
         this.storeBindings.updateStoreBindings()
+        wx.removeStorageSync("usrinfo")
+        console.log(wx.getStorageInfoSync())
       } else if (res.cancel) {
         console.log('用户点击取消')
       }

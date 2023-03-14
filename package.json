@@ -13,6 +13,7 @@
     "mini-program-iconfont-cli": "^0.6.1"
   },
   "dependencies": {
+    "@vant/weapp": "^1.10.14",
     "miniprogram-api-promise": "^1.0.4",
     "mobx-miniprogram": "^4.13.2",
     "mobx-miniprogram-bindings": "^2.1.5"

@@ -3,9 +3,7 @@ var bmap = require('../../libs/bmap-wx.js');
 var tools = require('~/utils/util.js')
 import { createStoreBindings } from "mobx-miniprogram-bindings";
 import { store } from "~/store/store";
-const Bmap = new bmap.BMapWX({
-  ak: 'ReGm8Iydv1TqNTg9uddG2RAfqQ8GZYrL'
-});
+const Bmap = new bmap.BMapWX();
 Page({
 
   /**

@@ -50,16 +50,16 @@ const adcode_back = function(param){
   return param
 }
 const unique_list = function (arr) {
-  if (!Array.isArray(arr)) {
+  if (!Array.isArray(arr) || arr.length === 0) {
       console.log('错误！')
-      return
+      return arr
   }
   var array = [arr[0]];
   var flag = true;
   var index = 1
   for (var i = 1; i < arr.length; i++) {    // 首次遍历数组
     for  (var j = 0; j < array.length; j++){
-      if (arr[i].location.lat == array[j].location.lat && arr[i].location.lng == array[j].location.lng) {   // 判断索引有没有等于
+      if (arr[i].name == array[j].name) {   // 判断索引有没有等于
         flag = false
         break
       }     
@@ -69,9 +69,20 @@ const unique_list = function (arr) {
   }
   return array
 }
+const isEmptyObject =  function (obj){
+  if (obj === undefined){
+    return false
+  }
+  for (var i in obj) { // 如果不为空，则会执行到这一步，返回true
+    return true
+}
+  return false
+}
+
 module.exports = {
   formatTime,
   getweather_icon,
   adcode_back,
-  unique_list
+  unique_list,
+  
 }

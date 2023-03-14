@@ -9,18 +9,16 @@
   "pages": [
     "pages/index/index",
     "pages/logs/logs",
-    "pages/geocoding/geocoding",
-    "pages/regeocoding/regeocoding",
     "pages/search/search",
     "pages/practice/contact/contact",
     "pages/weather/weather",
-    "pages/suggestion/suggestion",
     "pages/practice/local_life/local_life",
     "pages/practice/shoplist/shoplist",
     "pages/forecasts/forecasts",
     "pages/buslinelist/buslinelist",
     "pages/setting/setting",
-    "pages/login/login"
+    "pages/login/login",
+    "pages/transit/transit"
   ],
   "permission": {
     "scope.userLocation": {
@@ -39,7 +37,8 @@
   },
   "usingComponents": {
     "navigationBar": "../../Components/navigationBar/navigationBar",
-    "i-swipeout": "../../Components/dist/swipeout/index"
+    "i-swipeout": "../../Components/dist/swipeout/index",
+    "van-empty": "@vant/weapp/empty/index"
   },
   "tabBar": {
     "color": "#000",

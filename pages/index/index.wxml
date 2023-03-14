@@ -3,20 +3,11 @@
 <view class="container">
 
   <view class="userinfo">
-    <block wx:if="{{canIUseOpenData}}">
+    <block wx:if="{{true}}">
       <view class="userinfo-avatar" bindtap="bindViewTap">
         <open-data type="userAvatarUrl"></open-data>
       </view>
       <open-data type="userNickName"></open-data>
-    </block>
-    <block wx:elif="{{!hasUserInfo}}">
-      <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-      <button wx:elif="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-      <view wx:else> 请使用1.4.4及以上版本基础库 </view>
-    </block>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
     </block>
   </view>
   <view class="tab">
@@ -28,25 +19,32 @@
 <view class="content">
   <swiper current="{{item}}" bindchange="changeTab" style="height:{{scrollHeight}}px">
     <!-- 每个滑块(swiper-item)都有一个index，也就是current要获取的值 -->
-    <swiper-item  id='swiper-item' >
+    <swiper-item id='swiper-item'>
       <!-- 滑动列表 -->
-      <scroll-view  class="list" scroll-y style="height:{{scrollHeight}}px">
-        <i-swipeout i-class="i-swipeout-demo-item" actions="{{actions}}"  bind:change="i_change" data-index="{{idx}}" data-uid="{{item.uid}}" wx:for="{{searchinfo}}" wx:key="uid" wx:for-index="idx">
-          <view slot="content" catchtouchmove='catchtouchmove'>
-            <view class="i-swipeout-image" style="background:#ff9900;">
-              <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
+      <block wx:if="{{!sign_A.flag}}">
+        <scroll-view class="list" scroll-y style="height:{{scrollHeight}}px">
+          <i-swipeout i-class="i-swipeout-demo-item" actions="{{actions}}" bind:change="i_change" data-index="{{idx}}" data-uid="{{item.uid}}" wx:for="{{searchinfo}}" wx:key="uid" wx:for-index="idx">
+            <view slot="content" catchtouchmove='catchtouchmove'>
+              <view class="i-swipeout-image" style="background:#ff9900;">
+                <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
+              </view>
+              <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
+                <iconfont name="gongjiaozhanpai" size='40'></iconfont>
+                <view class="i-swipeout-des-h2">{{item.name}}</view>
+                <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
+              </view>
             </view>
-            <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
-              <iconfont name="gongjiaozhanpai" size='40'></iconfont>
-              <view class="i-swipeout-des-h2">{{item.name}}</view>
-              <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
-            </view>
-          </view>
-        </i-swipeout>
-      </scroll-view>
+          </i-swipeout>
+        </scroll-view>
+      </block>
+      <block wx:if="{{sign_A.flag}}">
+        <van-empty image="{{sign_A.image}}" description="{{sign_A.description}}" />
+      </block>
     </swiper-item>
     <swiper-item>
-      你好
+      <block wx:if="{{true}}">
+        <van-empty description="你还没有收藏" />
+      </block>
     </swiper-item>
   </swiper>
 </view>

@@ -3,7 +3,7 @@ import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "~/store/store";
 import {promisifyAll} from 'miniprogram-api-promise'
 const wxp = wx.p = {}
-const prefix = wx.prefix = 'http://172.20.10.4:59/';
+const prefix = wx.prefix = 'http://192.168.123.199:59/';
 promisifyAll(wx,wxp)
 App({
   onLaunch() {
@@ -44,17 +44,34 @@ App({
       if (usrinfo){
         console.log(usrinfo)
         this.update_usr(usrinfo)
-        this.login_switch()
+        this.storeBindings.updateStoreBindings()              
+        try {               
+          wx.getFileSystemManager().accessSync(usrinfo['avatarUrl'])
+          console.log("avatar exist")
+          this.login_switch()
+          this.storeBindings.destroyStoreBindings()
+        } catch (error) {
+          wx.downloadFile({
+            url: wx.prefix + 'download_avatar'+'?openid='+ usrinfo.openid,
+            filePath: usrinfo.avatarUrl,
+            success(res){
+              console.log(res)  
+              this.login_switch()            
+            },
+            fail(res){
+              console.log(res)
+              wx.showToast({
+                title: '无法连接服务器',
+                icon:'none'
+              })
+            },
+            complete(res){
+              this.storeBindings.destroyStoreBindings()
+            }
+          })
+        }  
       }
-      try{
-        wx.getFileSystemManager().accessSync('wxfile://usr/tmp_4048b3efb7027bed5faefa25ebb2a86f.jpg')
-        // wx.getFileSystemManager().unlinkSync('wxfile://usr/tmp_4048b3efb7027bed5faefa25ebb2a86f.jpg')
-        console.log('存在')      
-      }
-      catch(e){
-        console.log('不存在')  
-      }
-    this.storeBindings.destroyStoreBindings()
+    
   },
   globalData: {
     userInfo: null

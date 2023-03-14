@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "cus-dialog": "../../Components/dialog/dialog"
+  },
+  "navigationBarTitleText": "公交路线"
+}

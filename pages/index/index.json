@@ -1,6 +1,7 @@
 {
   "usingComponents": {
     "iconfont": "../../Components/iconfont/iconfont"
+    
   },
   "navigationStyle":"custom",
   "enablePullDownRefresh":true

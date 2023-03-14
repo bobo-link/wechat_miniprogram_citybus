@@ -24,7 +24,7 @@ class BMapWX {
    * @constructor
    */
   constructor(param) {
-    this.ak = param["ak"];
+    param && (this.ak = param["ak"]);
   }
 
   /**

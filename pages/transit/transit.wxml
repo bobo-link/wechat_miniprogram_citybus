@@ -1,0 +1,45 @@
+<!--pages/transit/transit.wxml-->
+<cus-dialog id="cus-dialog"/>
+<view class="place">
+  <view class="cloumnPlus">
+    <view class="prefix">从</view>
+    <view class="prefix">到</view>
+  </view>
+  <view class="cloumnInput">
+    <view class="columnInput--row" >
+      <view class="input"  bindtap="get_StartPoint" hover-class="input--hover" hover-stay-time="100">
+        {{startpoint.name}}
+      </view>
+    </view>
+    <view class="columnInput--row" bindtap="get_EndPoint" hover-class="input--hover" hover-stay-time="100">
+      <view class="input">
+        {{endpoint.name}}
+      </view>
+    </view>
+  </view>
+  <view class="columnSwitch">
+    <view class="switch-wrap">
+      <image src="/img/route/switch.png" bindtap="switch_wrap" role="aspectFit" class="switch" animation="{{animation}}"></image>
+    </view> 
+    <view class="search-wrap">
+      <image src="/img/route/search.png" bindtap="search" mode="aspectFit" class="search"></image>
+    </view>
+  </view>
+</view>
+<view class="collectedPlaces">
+  <view class="item  allowTap" hover-class="item--hover" hover-stay-time="100">
+    <image src="/img/route/home.png" class='icon' role="aspectFit"></image> 
+    <view class="text">
+      <view class="_text">家</view>
+      <text class="_text address">设置一个地址</text>
+    </view>
+  </view>
+  <view class="item  allowTap" hover-class="item--hover" hover-stay-time="100">
+    <image src="/img/route/company.png" class='icon' role="aspectFit"></image> 
+    <view class="text">
+      <view class="_text">公司</view>
+      <text class="_text address">设置一个地址</text>
+    </view>
+  </view>
+</view>
+<wxs src="../../utils/tools.wxs" module="tools"></wxs>

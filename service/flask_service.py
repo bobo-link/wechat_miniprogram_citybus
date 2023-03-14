@@ -190,6 +190,17 @@ def download_avatar():
        
     return response
 
+""" @app.route("/ApiInfo")
+def ApiInfo():
+    token_data = {
+        "grant_type" : "client_credential",
+        "appid" : appid,
+        "secret" :secret
+    }
+    token = requests.get('https://api.weixin.qq.com/cgi-bin/token',params=token_data,headers=headers).json()
+    print(token)
+    quota = requests.post('https://api.weixin.qq.com/cgi-bin/openapi/quota/get',params={"access_token":token["access_token"]},headers=headers).json()
+    return quota """
 
 def format_dict(dict):
     for key in dict.keys():        
@@ -210,7 +221,8 @@ def mongodb_col(dict):
     db = myclient[dict["db"]]
     col = db[dict["col"]]
     return col
-    
+
+   
 if __name__ == '__main__': 
     # 读取配置信息
     cf = ConfigParser()

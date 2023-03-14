@@ -30,6 +30,20 @@ Page({
       fields: ['adcode', 'init_adcode', 'location','searchinfo'],
       actions: ["update_ad_lo"]
     });
+    
+  },
+  showSearchInfo: function (data, i) {
+    var that = this;
+    that.setData({
+      placeData: {
+        title: '名称：' + data[i].title + '\n',
+        address: '地址：' + data[i].address + '\n',
+        telephone: '电话：' + data[i].telephone
+      }
+    });
+  },
+  onShow(){
+    const that = this
     this.storeBindings.updateStoreBindings();
     if (this.data.searchinfo) {     
       let wxMarkerData = []
@@ -57,16 +71,6 @@ Page({
         longitude: this.data.location.split(',')[1]
       });
     }
-  },
-  showSearchInfo: function (data, i) {
-    var that = this;
-    that.setData({
-      placeData: {
-        title: '名称：' + data[i].title + '\n',
-        address: '地址：' + data[i].address + '\n',
-        telephone: '电话：' + data[i].telephone
-      }
-    });
   },
   changeMarkerColor: function (data, id) {
     var that = this;

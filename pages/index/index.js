@@ -8,9 +8,7 @@ import {
 } from "~/store/store";
 var bmap = require('../../libs/bmap-wx.js');
 const tools = require('~/utils/util.js')
-const BMap = new bmap.BMapWX({
-  ak: 'ReGm8Iydv1TqNTg9uddG2RAfqQ8GZYrL'
-});
+const BMap = new bmap.BMapWX();
 Page({
   data: {
     item: 0,
@@ -30,10 +28,11 @@ Page({
       text: '×',
       temp: '×'
     },
-    hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    canIUseGetUserProfile: false,
-    canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName') // 如需尝试获取用户信息可改为false
+    sign_A:{
+      flag: true,
+      image:'network',
+      description:'Connection Lost'
+    }
   },
 
   onLoad() {
@@ -105,6 +104,7 @@ Page({
                 icon: 'none'
               })
               fun();
+              this.reset_sign('sign_A')
               return
             }
             this.setData({
@@ -124,6 +124,16 @@ Page({
               if (!res.errMsg) {
                 let unique = tools.unique_list(res.results)
                 this.update_searchinfo(unique)
+                this.setData({
+                  'sign_A.flag': false
+                })
+                if (unique.length === 0){
+                  this.setData({
+                    'sign_A.flag': false,
+                    'sign_A.destination':'附近没有站点',
+                    'sign_A.image':'default'
+                  })
+                }
               }
             })
             let adcode = res.result.addressComponent.adcode
@@ -248,8 +258,40 @@ Page({
       if (!res.errMsg) {
         let unique = tools.unique_list(res.results)
         this.update_searchinfo(unique)
+        this.setData({
+          'sign_A.flag': false
+        })
+        if (unique.length === 0){
+          this.setData({
+            'sign_A.flag': false,
+            'sign_A.destination':'附近没有站点',
+            'sign_A.image':'default'
+          })
+        }
+      }else{
+        this.reset_sign('sign_A')
       }
     })
+  },
+  reset_sign(sign){
+    switch (sign) {
+      case 'sign_A':
+        this.setData({
+          sign_A:{
+            flag: true,
+            image:'network',
+            description:'Connection Lost'
+          }
+        });break;
+        case 'sign_B':
+          this.setData({
+            sign_B:{
+              flag: true,
+              image:'network',
+              description:'Connection Lost'
+            }
+          });break;
+    }
   },
   getUserProfile(e) {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗

@@ -1,0 +1,149 @@
+/* pages/transit/transit.wxss */
+page { 
+  overflow-x: hidden
+}
+.place,.shadow {
+  width: 100%
+}
+.shadow { 
+  height: 100%;
+  background: #000;
+  opacity: .3
+}
+.place {  
+  height: 220rpx;
+  padding: 20rpx 0;
+  color: #fff;
+  background: #4287ff;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center
+}
+
+.cloumnPlus{
+  width: 100rpx;
+  height: 180rpx;
+  display: inline-flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+.prefix{
+  height: 90rpx;
+  line-height: 90rpx;
+  font-size: 28rpx;
+  color: #c8dcff;
+}
+
+.cloumnInput{
+  position: relative;
+  width: 550rpx;
+}
+.columnInput--row{  
+  margin: 5rpx 0;
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  color: #c8dcff;
+  background: #689fff;
+  border-radius: 6rpx;
+  overflow: hidden;
+  display: inline-flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+}
+.input--hover{
+  background-color: #4778ce;
+}
+.input{
+  padding-left: 30rpx;
+  font-size: 30rpx;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.columnSwitch{
+  width: 100rpx;
+  height: 180rpx;
+  display: inline-flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+.switch-wrap,.search-wrap{
+  width: 100%;
+  height: 90rpx;
+  display: inline-flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+.switch,.search{
+  width: 32rpx;
+  height: 32rpx;
+}
+.collectedPlaces{
+  margin-bottom: 20rpx;
+  background: #fff;
+  overflow: hidden;
+  
+}
+.collectedPlaces::after{
+  content: '';
+  display:block;
+  margin: auto;
+  top: auto;
+  bottom: 0;
+  right: auto;
+  height: 1px;
+  width: 600rpx;
+  background-color:rgba(115, 114, 117, 0.3)
+}
+.item{
+  box-sizing:border-box;
+  align-items: center;
+  display: flex;
+  
+}
+.item:nth-child(1){
+  border-bottom: 1px solid #5757573a;
+ 
+}
+
+.icon{
+  margin: 30rpx;
+  width: 36rpx;
+  height: 36rpx;
+  flex-shrink: 0;
+}
+.text{
+  margin-right: 30rpx;
+  font-size: 35rpx;
+  display: flex;
+  padding: 30rpx 0;
+  width: 100%;
+  overflow: hidden;
+  word-wrap: normal;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-bottom: 2rpx solid transparent;
+}
+._text{
+  cursor: text
+}
+.address{
+  padding-left: 10rpx;
+  color: #999;
+}
+.item--hover{
+background-color: rgba(154, 154, 155, 0.8)
+}

@@ -7,9 +7,7 @@ Page({
     
     onLoad: function() {
         var that = this;
-        var BMap = new bmap.BMapWX({
-            ak: 'ReGm8Iydv1TqNTg9uddG2RAfqQ8GZYrL'
-        });
+        var BMap = new bmap.BMapWX();
         var fail = function(data) {
             console.log(data)
             wx.getLocation({
@@ -46,9 +44,7 @@ Page({
       })      
     },
     test_1: function(e){
-      wx.navigateTo({
-        url: '/pages/suggestion/suggestion',
-      })  
+      
     
     },
     gotologs:function(){
@@ -56,15 +52,13 @@ Page({
         url: '/pages/logs/logs',
       })
     },
-    gotogeocoding:function(){
+    gototransit:function(){
       wx.navigateTo({
-        url: '/pages/geocoding/geocoding', 
+        url: '/pages/transit/transit',
       })
     },
     gotoregeocoding:function(){
-      wx.navigateTo({
-        url: '/pages/regeocoding/regeocoding',
-      })
+      
     },
     gotocontact:function(){
       wx.navigateTo({

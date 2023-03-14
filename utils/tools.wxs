@@ -21,9 +21,20 @@ function limitchar(str){
   }
   return str
 }
+function limitname(str){
+  console.log(str)
+  if (typeof(str)=='undefined') return
+  if (str.length>8) {
+    return str.substring(0,8)+ '...';
+  }
+  return str
+}
+
+
 module.exports = {
   toLower: toLower,
   formatPhone:formatPhone,
   currentdate:currentdate,
-  limitchar:limitchar
+  limitchar:limitchar,
+  limitname:limitname,
 }

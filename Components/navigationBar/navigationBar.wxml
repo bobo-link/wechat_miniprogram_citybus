@@ -13,7 +13,7 @@
       </view>
     </picker>
     <view class="weather-info" bind:tap='gotofrecasts'>
-      <iconfont class="weather-img" name='{{weather_info.icon}}' size='32' ></iconfont>
+      <iconfont class="weather-img" name='{{weather_info.icon}}' size='40' ></iconfont>
       <text class="weather-text">{{weather_info.text}}</text>
       <text class="weather-temp">{{weather_info.temp}}</text>
     </view>
