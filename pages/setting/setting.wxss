@@ -1,6 +1,6 @@
 /* pages/setting/setting.wxss */
 page{
-  background-color:#e7e4e483;
+  background-color:#f8f8f8;
 }
 .userinfo {
   display: flex;

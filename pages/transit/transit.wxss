@@ -1,6 +1,7 @@
 /* pages/transit/transit.wxss */
 page { 
-  overflow-x: hidden
+  overflow-x: hidden;
+  background-color: #f8f8f8;
 }
 .place,.shadow {
   width: 100%
@@ -146,4 +147,7 @@ page {
 }
 .item--hover{
 background-color: rgba(154, 154, 155, 0.8)
+}
+._btn{
+  box-sizing: border-box;
 }

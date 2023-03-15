@@ -1,0 +1,144 @@
+<!--pages/transit_detail/transit_detail.wxml-->
+<view class="listBox">
+  <view class="container">
+    <view class="item">
+      <template is="start" data="{{...s_e}}"/>
+    </view>
+    <block wx:for="{{route.steps}}" wx:key="index" wx:for-item="step" >
+      <block wx:if="{{step.length > 1}}">
+        <swiper class="{{step[0].distance}}" style="height:{{swiperHeight[step[0].distance]}};" 	bindchange="change" data-uid="{{step[0].distance}}">
+          <block wx:for="{{step}}" wx:key="index"> 
+            <swiper-item >
+              <view class="item {{'item_' + tools.classify(item.vehicle_info.type) }} {{'item_' + step[0].distance + '_' + index}}">
+                <template is="{{tools.classify(item.vehicle_info.type)}}" data="{{...item}}"/>
+              </view>
+            </swiper-item>       
+          </block>
+        </swiper>
+        
+      </block>
+      <block wx:else >
+        <block wx:for="{{step}}" wx:key="index" >
+          <text wx:if="{{index ==0 && step.length >1}}">{{step.length}}</text>
+            <view class="item {{'item_' + tools.classify(item.vehicle_info.type)}}">
+              <template is="{{tools.classify(item.vehicle_info.type)}}" data="{{...item}}"/>
+            </view>
+        </block>
+    </block>
+    </block>
+    
+    <!-- <view class="item">
+      <template is="walking" data="{{...route.steps[0][0]}}" />
+    </view>
+    <view class="item">
+      <template is="busline" data="{{...route.steps[0][1]}}" />
+    </view> -->
+    <view class="item">
+      <template is="end" data="{{...s_e}}" />
+    </view>
+  </view>
+</view>
+<template name="start">
+  <view class="timeline">
+    <view class="lineA side"></view>
+    <view class="circle start_circle"></view>
+    <view class="lineB"></view>
+  </view>
+  <view class="desc">
+    <view class="text title">
+      <text class=" _text">从</text>
+      <text class=" _text place-name">{{origin}}</text>
+      <text class=" _text">出发</text>
+    </view>
+  </view>
+</template>
+<template name="walking">
+  <view class="timeline">
+    <view class="lineA"></view>
+    <view class="circle walking"></view>
+    <view class="lineB"></view>
+  </view>
+  <view class="desc walking">
+    <view class="text">
+      <text class="_text">{{instructions + ', ' + '约 ' + tools.calculate_time(duration)}}</text>
+    </view>
+  </view>
+</template>
+<template name="busline">
+  <view class="timeline">
+    <view class="lineA"></view>
+    <view class="circle line_circle"></view>
+    <view class="lineB"></view>
+  </view>
+  <view class="desc busline">
+    <view class="busline--head _head">
+      <text class="_text line_title">{{name}}</text>
+    </view>
+    <view class="busline--body _body">
+      <view class="busline--body--stops _body--stops">
+        <view class="stop departure_stop">
+          <text class="_text stopName">{{vehicle_info.detail.on_station}}</text>
+        </view>
+        <view class="more">
+          <text class="_text text">{{'途径 ' + (vehicle_info.detail.stop_num -1) +' 个站点'}}</text>
+          <text class=" _text dot" decode='true'> &nbsp;·&nbsp; </text>
+          <text class="_text text">{{ tools.calculate_distance(distance) +' 公里'}}</text>
+          <text class="_text dot" decode='true'> &nbsp;·&nbsp; </text>
+          <text class="_text text">{{tools.calculate_time(duration)}}</text>
+        </view>
+        <view class="stops">
+          <block wx:for="{{vehicle_info.detail.stop_info}}" wx:key="stop_names" wx:for-index="index">
+            <text class="_text stops">{{item.stop_name}}</text>
+            <block wx:if="{{vehicle_info.detail.stop_info.length-1 != index}}">
+              <text class="_text">→</text>
+            </block>
+          </block>
+        </view>
+        <view class="stop _view data-v-698a2b28 stop arrival_stop">
+          <text class="_text stopName">{{vehicle_info.detail.off_station}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+<template name="railway">
+  <view class="timeline">
+    <view class="lineA"></view>
+    <view class="circle line_circle"></view>
+    <view class="lineB"></view>
+  </view>
+  <view class="desc railway">
+    <view class="railway--head _head">
+      <text class="_text line_title">{{vehicle_info.detail.name}}</text>
+    </view>
+    <view class="railway--body _body">
+      <view class="railway--body--stops _body--stops">
+        <view class="stop departure_stop ">
+          <text class="_text stopName">{{vehicle_info.detail.departure_station}}</text>
+        </view>
+        <view class="more">
+          <text class="_text text">{{distance == 0?  '无数据':tools.calculate_distance(distance) +' 公里'}}</text>
+          <text class="_text dot" decode='true'> &nbsp;·&nbsp; </text>
+          <text class="_text text">{{tools.calculate_time(duration)}}</text>
+        </view>
+        <view class="stop _view data-v-698a2b28 stop arrival_stop">
+          <text class="_text stopName">{{vehicle_info.detail.arrive_station}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+<template name="end">
+  <view class="timeline">
+    <view class="lineA"></view>
+    <view class="circle end_circle"></view>
+    <view class="lineB side"></view>
+  </view>
+  <view class="desc end_desc">
+    <view class=" _text title">
+      <text class=" _text">到达</text>
+      <text class=" _text place-name">{{destination}}</text>
+    </view>
+  </view>
+</template>
+<wxs src="../../utils/tools.wxs" module="tools"></wxs>

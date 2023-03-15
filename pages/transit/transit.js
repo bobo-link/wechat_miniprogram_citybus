@@ -1,20 +1,34 @@
 // pages/transit/transit.js
 var animation
 import Dialog from '../../libs/dialog';
+import Action_sheet from '../../libs/action-sheet';
 var bmap = require('../../libs/bmap-wx.js');
 const tools = require('~/utils/util.js')
 const BMap = new bmap.BMapWX();
+var target
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+    show:false,
+    actions:[
+      {name:'从这出发',className:'_btn'},
+      {name:'到这里去',className:'_btn'},
+      {name:'删除',className:'_btn'}
+    ],
     startpoint:{
       name:'输入起点'
     },
     endpoint:{
       name:'输入终点'
+    },
+    home:{
+      name:'设置一个地址'
+    },
+    company:{
+      name:'设置一个地址'
     },
     animation: '',
     flag: true
@@ -23,8 +37,17 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad(options) {},
-
+  onLoad(options) {
+    let home = wx.getStorageSync('home')
+    let company = wx.getStorageSync('company')
+    home && this.setData({
+      home:home
+    })
+    company && this.setData({
+      company:company
+    })
+  },
+    
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -67,31 +90,79 @@ Page({
       }
     })
   },
-  get_StartPoint() {
+  get_place(e){
+    const data = e.currentTarget.dataset
+    switch (data.which) {
+      case 'StartPoint':
+        this.chooselocation((res)=>{
+          console.log(res)
+          this.setData({
+            startpoint: res['formatdata']
+          })
+        }); break;
+      case 'EndPoint':
+        this.chooselocation((res)=>{
+          console.log(res)
+          this.setData({
+            endpoint: res['formatdata']
+          })
+        }); break; 
+      case 'home':
+        if (!this.data.home.location){
+          this.chooselocation((res)=>{
+            if (res.name == ''){
+              wx.showToast({
+                title: '请选择具体位置',             
+                icon: 'none',
+              })
+            }else{
+              this.setData({
+                home: res['formatdata']
+              })
+              wx.setStorageSync('home',res['formatdata'])
+            }
+          })
+        }else{
+          this.setData({
+            show:true
+          })
+          target = 'home'
+        }; break; 
+      default:
+        if (!this.data.company.location){
+          this.chooselocation((res)=>{
+            if (res.name == ''){
+              wx.showToast({
+                title: '请选择具体位置',             
+                icon: 'none',
+              })
+            }else{
+              this.setData({
+                company: res['formatdata']
+              })
+              wx.setStorageSync('company',res['formatdata'])
+            }
+          })
+        }else{
+          this.setData({
+            show:true
+          })
+          target = 'company'
+        }; break; 
+    }
+  },
+  chooselocation(fun1 = undefined,fun2 = undefined){
     wx.p.chooseLocation()
       .then((res) => {
-        console.log(res)
-        this.setData({
-          startpoint: {
-            location: res.latitude + ',' + res.longitude,
-            name: res.name || '我的位置',
-            address: res.address
-          }
-        })
-      },(res)=>{
-        console.log(res)
-      })
-  },
-  get_EndPoint() {
-    wx.p.chooseLocation().then((res) => {
-      this.setData({
-        endpoint: {
+        res['formatdata'] ={
           location: res.latitude + ',' + res.longitude,
           name: res.name || '我的位置',
           address: res.address
         }
+        fun1 && fun1(res)
+      },(res)=>{
+        fun2 && fun2(res)
       })
-    })
   },
   search() {
     const that = this
@@ -110,13 +181,67 @@ Page({
         }
       });
     } else {
-      BMap.transit_promisify({
-        origin: this.data.startpoint.location,
-        destination: this.data.endpoint.location,
-      }).then((res) => {
-        console.log(res)
+      // BMap.transit_promisify({
+      //   origin: this.data.startpoint.location,
+      //   destination: this.data.endpoint.location,
+      // }).then((res) => {
+      //   console.log(res)
+      //   wx.setStorageSync('route', res.result)
+      // })
+      wx.navigateTo({
+        url: '/pages/transit_list/transit_list?origin=' + JSON.stringify(this.data.startpoint) + '&destination=' + JSON.stringify(this.data.endpoint),
       })
     }
+  },
+  onClose(){
+    this.setData({
+      show:false
+    })
+  },
+  onSelect(e){
+    const b ={"home" : (res)=>{
+      switch (res) {
+        case 1:
+          this.setData({
+            startpoint:{...this.data.home}
+          })
+          break;
+        case 2:
+          this.setData({
+            endpoint:{...this.data.home}
+          })
+          break;
+        default:
+          this.setData({
+            home:Object.assign({},{name:'设置一个地址'})
+          })
+          wx.removeStorageSync('home')
+          break;
+      }
+    },"company":(res)=>{
+      console.log(res)
+      switch (res) {
+        case 1:
+          this.setData({
+            startpoint:{...this.data.company}
+          })
+          break;
+        case 2:
+          this.setData({
+            endpoint:{...this.data.company}
+          })
+          break;
+        default:
+          this.setData({
+            company:Object.assign({},{name:'设置一个地址'})
+          })
+          wx.removeStorageSync('company')
+          break;
+      }
+    }}
+    const a = {"从这出发" :()=>{b[target](1)},"到这里去":()=>{b[target](2)},"删除":()=>{b[target](3)}}
+    console.log(e.detail.name)
+    a[e.detail.name]()
   },
   /**
    * 生命周期函数--监听页面显示

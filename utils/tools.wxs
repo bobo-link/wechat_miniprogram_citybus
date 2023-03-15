@@ -29,12 +29,52 @@ function limitname(str){
   }
   return str
 }
+function calculate_time(time){
+  if (time == undefined) {return 0}
+  
+  if (time > 3600){
+    var hour = Math.floor(time / 3600)
+   
+    var minute = Math.floor((time - hour*3600) / 60) 
+    return  hour + ' 小时 ' + minute + ' 分钟'
+  }else if(time > 60){
+    return  Math.floor(time / 60) + ' 分钟'
+  }else{
+    return '1 分钟'
+  }
+}
 
-
+function calculate_distance(distance){
+  if (distance == undefined) {return 0}
+  return (distance / 1000).toFixed(1)
+}
+function classify(num){
+  switch (num) {
+    case 1:
+      return 'railway';
+      break
+    case 3:
+      return 'busline'
+      break;
+    case 5:
+      return 'walking'
+    default:
+      return 'walking'
+      break;
+  }
+}
+function echo(param){
+  console.log(param)
+  return param
+}
 module.exports = {
   toLower: toLower,
   formatPhone:formatPhone,
   currentdate:currentdate,
   limitchar:limitchar,
   limitname:limitname,
+  calculate_time:calculate_time,
+  calculate_distance:calculate_distance,
+  classify:classify,
+  echo:echo
 }

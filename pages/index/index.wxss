@@ -1,5 +1,7 @@
 /**index.wxss**/
-
+page{
+ 
+}
 .userinfo {
   display: flex;
   flex-direction: column;
@@ -30,7 +32,7 @@
 }
 .list{
   overflow-y: hidden;
-  background-color:rgba(244,245,249);
+  background-color: #f8f8f8;
 }
 .i-swipeout-demo-item{
   margin: 5px 10px 8px 10px; 

@@ -18,7 +18,9 @@
     "pages/buslinelist/buslinelist",
     "pages/setting/setting",
     "pages/login/login",
-    "pages/transit/transit"
+    "pages/transit/transit",
+    "pages/transit_detail/transit_detail",
+    "pages/transit_list/transit_list"
   ],
   "permission": {
     "scope.userLocation": {
@@ -38,7 +40,8 @@
   "usingComponents": {
     "navigationBar": "../../Components/navigationBar/navigationBar",
     "i-swipeout": "../../Components/dist/swipeout/index",
-    "van-empty": "@vant/weapp/empty/index"
+    "van-empty": "@vant/weapp/empty/index",
+    "van-action-sheet": "@vant/weapp/action-sheet/index"
   },
   "tabBar": {
     "color": "#000",
@@ -57,6 +60,12 @@
         "text": "Index",
         "iconPath": "img/tabbar_icon/index.png",
         "selectedIconPath": "img/tabbar_icon/index_active.png"
+      },
+      {
+        "pagePath": "pages/transit/transit",
+        "text": "Transit",
+        "iconPath": "img/tabbar_icon/transit.png",
+        "selectedIconPath": "img/tabbar_icon/transit_active.png"
       },
       {
         "pagePath": "pages/weather/weather",
@@ -78,6 +87,5 @@
     "connectSocket": 10000,
     "uploadFile": 10000
   },
-  "style": "v2",
   "sitemapLocation": "sitemap.json"
 }

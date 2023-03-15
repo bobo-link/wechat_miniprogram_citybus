@@ -22,7 +22,7 @@
   box-sizing: border-box;
   background-color: transparent;
 }
-picker{
+.picker{
   width:60px;  
 }
 .region{

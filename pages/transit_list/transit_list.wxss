@@ -1,0 +1,4 @@
+/* pages/transit_list/transit_list.wxss */
+page{
+  background-color: #f8f8f8;
+}

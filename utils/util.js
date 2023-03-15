@@ -50,9 +50,9 @@ const adcode_back = function(param){
   return param
 }
 const unique_list = function (arr) {
-  if (!Array.isArray(arr) || arr.length === 0) {
+  if (!Array.isArray(arr) || arr.length == 0) {
       console.log('错误！')
-      return arr
+      return []
   }
   var array = [arr[0]];
   var flag = true;

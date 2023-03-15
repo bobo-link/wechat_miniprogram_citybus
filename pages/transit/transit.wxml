@@ -1,5 +1,15 @@
 <!--pages/transit/transit.wxml-->
 <cus-dialog id="cus-dialog"/>
+<van-action-sheet id="van-action-sheet"
+  show="{{show}}"
+  actions="{{actions}}"
+  close-on-click-action = "true"
+  close-on-click-overlay = "true"
+  cancel-text="取消"
+  bind:close="onClose"
+  bind:cancel="onClose"
+  bind:select="onSelect"
+/>
 <view class="place">
   <view class="cloumnPlus">
     <view class="prefix">从</view>
@@ -7,11 +17,11 @@
   </view>
   <view class="cloumnInput">
     <view class="columnInput--row" >
-      <view class="input"  bindtap="get_StartPoint" hover-class="input--hover" hover-stay-time="100">
+      <view class="input" data-which="StartPoint" bindtap="get_place" hover-class="input--hover" hover-stay-time="100">
         {{startpoint.name}}
       </view>
     </view>
-    <view class="columnInput--row" bindtap="get_EndPoint" hover-class="input--hover" hover-stay-time="100">
+    <view class="columnInput--row" data-which="EndPoint" bindtap="get_place" hover-class="input--hover" hover-stay-time="100">
       <view class="input">
         {{endpoint.name}}
       </view>
@@ -27,18 +37,18 @@
   </view>
 </view>
 <view class="collectedPlaces">
-  <view class="item  allowTap" hover-class="item--hover" hover-stay-time="100">
+  <view class="item  allowTap" data-which="home" bindtap="get_place" hover-class="item--hover" hover-stay-time="100" >
     <image src="/img/route/home.png" class='icon' role="aspectFit"></image> 
-    <view class="text">
+    <view class="text" >
       <view class="_text">家</view>
-      <text class="_text address">设置一个地址</text>
+      <text class="_text address">{{home ? home.name:'设置一个地址'}}</text>
     </view>
   </view>
-  <view class="item  allowTap" hover-class="item--hover" hover-stay-time="100">
+  <view class="item  allowTap" data-which="company" bindtap="get_place" hover-class="item--hover" hover-stay-time="100">
     <image src="/img/route/company.png" class='icon' role="aspectFit"></image> 
     <view class="text">
       <view class="_text">公司</view>
-      <text class="_text address">设置一个地址</text>
+      <text class="_text address">{{company ? company.name:'设置一个地址'}}</text>
     </view>
   </view>
 </view>

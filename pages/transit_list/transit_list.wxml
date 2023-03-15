@@ -1,0 +1,5 @@
+<!--pages/transit_list/transit_list.wxml-->
+
+<view wx:for="routes" wx:key="index">
+  <button data-index="{{index}}" bindtap="tap">{{index}}</button>
+</view>

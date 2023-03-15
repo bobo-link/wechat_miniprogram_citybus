@@ -12,6 +12,7 @@ export const store = observable({
     avatarUrl:'',
     openid:''
   },
+  route:{},
   
 
   // actions
@@ -38,5 +39,8 @@ export const store = observable({
     param.nickname && (this.usrinfo = Object.assign({}, this.usrinfo, { nickname: param.nickname }))
     param.avatarUrl && (this.usrinfo = Object.assign({}, this.usrinfo, { avatarUrl: param.avatarUrl }))
     param.openid && (this.usrinfo = Object.assign({}, this.usrinfo, { openid: param.openid }))
+  }),
+  update_route:action(function(param){
+    param && (this.route = param)
   })
 });

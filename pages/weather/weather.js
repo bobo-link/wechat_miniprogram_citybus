@@ -53,8 +53,12 @@ Page({
       })
     },
     gototransit:function(){
+      let reg=/\((\S*)\)/
+      // let resultArr=str.match(reg)
+      // const route = wx.getStorageSync('route')
+      // console.log(route.routes[0].steps[1][0].instructions.match(reg)[1])
       wx.navigateTo({
-        url: '/pages/transit/transit',
+        url: '/pages/transit_detail/transit_detail',
       })
     },
     gotoregeocoding:function(){

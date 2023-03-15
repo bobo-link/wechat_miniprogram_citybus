@@ -55,6 +55,7 @@ Page({
     this.storeBindings.destroyStoreBindings();
   },
   onPullDownRefresh() {
+    this.reset_sign('sign_A')
     wx.showLoading({
       title: 'Loading...',
     })
@@ -104,11 +105,10 @@ Page({
                 icon: 'none'
               })
               fun();
-              this.reset_sign('sign_A')
               return
             }
             this.setData({
-              region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district] || ['广东省', '广州市', '海珠区']
+              region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district] 
             })
             this.update_ad_lo({
               adcode: res.result.addressComponent.adcode,
@@ -119,7 +119,7 @@ Page({
             let promiselist = [];
             promiselist[0] = BMap.search_promisify({
               location: location,
-              query: '公交车站'
+              query: '公交车站',
             }).then((res) => {              
               if (!res.errMsg) {
                 let unique = tools.unique_list(res.results)
@@ -127,11 +127,12 @@ Page({
                 this.setData({
                   'sign_A.flag': false
                 })
-                if (unique.length === 0){
+                if (unique.length == 0){
                   this.setData({
-                    'sign_A.flag': false,
-                    'sign_A.destination':'附近没有站点',
-                    'sign_A.image':'default'
+                    sign_A: Object.assign(sign_A,{
+                      flag: true,
+                      description:'附近没有站点',
+                      image:'default'})
                   })
                 }
               }
@@ -219,6 +220,7 @@ Page({
   },
   syncRegionChange(e) {
     console.log('change回调')
+    this.reset_sign('sign_A')
     this.storeBindings.updateStoreBindings();
     BMap.weather_promisify({
         adcode: e.detail.adcode,
@@ -263,13 +265,12 @@ Page({
         })
         if (unique.length === 0){
           this.setData({
-            'sign_A.flag': false,
-            'sign_A.destination':'附近没有站点',
-            'sign_A.image':'default'
+            sign_A: Object.assign(sign_A,{
+              flag: true,
+              description:'附近没有站点',
+              image:'default'})
           })
         }
-      }else{
-        this.reset_sign('sign_A')
       }
     })
   },
