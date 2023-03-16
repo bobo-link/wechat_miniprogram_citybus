@@ -1,5 +1,10 @@
 <!--pages/transit_list/transit_list.wxml-->
 
-<view wx:for="routes" wx:key="index">
+<view wx:for="{{routes}}" wx:key="index">
   <button data-index="{{index}}" bindtap="tap">{{index}}</button>
 </view>
+<block wx:if="{{!routes}}">
+  <view class="_empty">
+    <van-empty  image="{{empty.image}}" description="{{empty.desc}}"  />
+  </view>
+</block>

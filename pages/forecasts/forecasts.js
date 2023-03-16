@@ -42,12 +42,12 @@ Page({
       let topHeight = res.height
       //scroll-view的高度 = 屏幕高度- tab高(50) - 10 - 10 - titleHeight
       //获取屏幕可用高度
-      let screenHeight = wx.getSystemInfoSync().windowHeight
+      let screenHeight = wx.getSystemInfoSync().screenHeight
       //计算 scroll-view 的高度
-      let scrollHeight = screenHeight - topHeight - 70
+      let scrollHeight = screenHeight - topHeight - wx.getStorageSync('navigationBarHeight') -wx.getStorageSync('statusBarHeight')
       that.setData({
         scrollHeight: scrollHeight,
-        //screenHeight: screenHeight, 
+        screenHeight: screenHeight, 
         iconimageheight: topHeight,
       })
     }).exec()

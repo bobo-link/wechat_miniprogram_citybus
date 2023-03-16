@@ -1,4 +1,9 @@
 /* pages/transit_list/transit_list.wxss */
 page{
   background-color: #f8f8f8;
+  height: 100%;
+}
+._empty{
+ height: 100%;
+ padding-top: 200rpx;
 }

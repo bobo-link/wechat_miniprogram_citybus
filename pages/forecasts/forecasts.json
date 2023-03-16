@@ -7,5 +7,6 @@
   "backgroundColor": "#f6f6f6",
   "navigationBarBackgroundColor": "#4584d1",
   "navigationBarTitleText": "天气预报",
-  "navigationBarTextStyle": "white"
+  "navigationBarTextStyle": "white",
+  "style": "v2"
 }

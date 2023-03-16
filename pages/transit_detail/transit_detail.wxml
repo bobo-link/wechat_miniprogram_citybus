@@ -5,7 +5,7 @@
       <template is="start" data="{{...s_e}}"/>
     </view>
     <block wx:for="{{route.steps}}" wx:key="index" wx:for-item="step" >
-      <block wx:if="{{step.length > 1}}">
+      <block wx:if="{{step.length > 1 && route.preview_info.flag}}">
         <swiper class="{{step[0].distance}}" style="height:{{swiperHeight[step[0].distance]}};" 	bindchange="change" data-uid="{{step[0].distance}}">
           <block wx:for="{{step}}" wx:key="index"> 
             <swiper-item >
@@ -19,7 +19,6 @@
       </block>
       <block wx:else >
         <block wx:for="{{step}}" wx:key="index" >
-          <text wx:if="{{index ==0 && step.length >1}}">{{step.length}}</text>
             <view class="item {{'item_' + tools.classify(item.vehicle_info.type)}}">
               <template is="{{tools.classify(item.vehicle_info.type)}}" data="{{...item}}"/>
             </view>

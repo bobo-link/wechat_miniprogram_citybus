@@ -13,14 +13,17 @@ Page({
    * 页面的初始数据
    */
   data: {
+    empty:{
+      image:'network',
+      desc:'Connection Lost',
+    }
 
   },
 
-  tap(e){
-    console.log(e.currentTarget.dataset.index)
+  tap(e) {
     this.update_route(this.data.routes[e.currentTarget.dataset.index])
     wx.navigateTo({
-      url: '/pages/transit_detail/transit_detail?origin=' + this.data.origin.name + '&destination=' + this.data.destination.name ,
+      url: '/pages/transit_detail/transit_detail?origin=' + this.data.origin.name + '&destination=' + this.data.destination.name,
     })
   },
   /**
@@ -32,51 +35,83 @@ Page({
       actions: ["update_route"]
     });
     this.setData({
-      origin:JSON.parse(options.origin),
-      destination:JSON.parse(options.destination)
+      origin: JSON.parse(options.origin),
+      destination: JSON.parse(options.destination)
     })
-    // BMap.transit_promisify({
-    //     origin: JSON.parse(options.origin).location,
-    //     destination: JSON.parse(options.destination).location,
-    //   }).then((res) => {
-    //     console.log(res)
-        
-    //   })
-    let transit = wx.getStorageSync('route')
-    console.log(transit)
-    for (let route in transit.routes ){
-      let count = 0;
-      let preview_info ={linename:[],swiper:[]}
-      let steps = transit.routes[route].steps;
-      preview_info.distance = transit.routes[route].distance;
-      preview_info.duration = transit.routes[route].duration;
-      preview_info.price = transit.routes[route].price;
-      for (let step in steps) {
-        let i = 0;
-        for (let index in steps[step]){
-          if(steps[step].length > 1 && index == 0){
-            preview_info.swiper[count++] = steps[step][0].distance
-          }
-          let item = steps[step][index]
-          if(item.vehicle_info.type == 5) {
-            preview_info.walking = (preview_info.walking || 0) + item['distance']
-          }
-          if (item.vehicle_info.type == 3){
-            let reg=/\((\S*)\)/
-            let tmp = item.instructions.split('或')[0]
-            item.name = item.vehicle_info.detail.name + (tmp && tmp.match(reg)[0])
-          }
-          if (item.vehicle_info.type == 3 || item.vehicle_info.type == 1){
-            preview_info.linename[i++] = item.vehicle_info.detail.name
+    wx.showLoading({
+      title: '加载中',
+    })
+    BMap.transit_promisify({
+      origin: JSON.parse(options.origin).location,
+      destination: JSON.parse(options.destination).location,
+    }).then((res) => {
+      console.log(res)
+      if(res.statusCode == 1001){
+        this.setData({
+          empty:Object.assign(this.data.empty,{
+            image:'search',
+            desc:res.errMsg
+          })
+        })
+        wx.hideLoading()
+        return
+      }
+      let transit = res.result
+      
+      if (transit.routes.length < 1) {
+        return
+      }
+      for (let route in transit.routes) {
+        let count = 0;
+        let preview_info = {
+          linename: [],
+          swiper: [],
+          flag: true
+        }
+        if (transit.origin.city_id != transit.destination.city_id) {
+          preview_info.flag = false
+        }
+        let steps = transit.routes[route].steps;
+        preview_info.distance = transit.routes[route].distance;
+        preview_info.duration = transit.routes[route].duration;
+        preview_info.price = transit.routes[route].price;
+        for (let step in steps) {
+          let i = 0;
+          for (let index in steps[step]) {
+            if (steps[step].length > 1 && index == 0 && preview_info.flag) {
+              preview_info.swiper[count++] = steps[step][0].distance
+            }
+            let item = steps[step][index]
+            if (item.vehicle_info.type == 5) {
+              preview_info.walking = (preview_info.walking || 0) + item['distance']
+            }
+            if (item.vehicle_info.type == 3) {
+              let direction = '';
+              let reg = /\((\S*)\)/
+              let tmp = item.instructions.split('经过')[0].split('或');
+              for (let i in tmp) {
+                if (tmp[i].split('乘')[1] && tmp[i].split('乘')[1].match(reg)) {
+                  direction = tmp[i].split('乘')[1].match(reg)[0]
+                  break;
+                }
+              }
+              // console.log(direction)
+              item.name = item.vehicle_info.detail.name + direction
+            }
+            if (item.vehicle_info.type == 3 || item.vehicle_info.type == 1) {
+              preview_info.linename[i++] = item.vehicle_info.detail.name
+            }
           }
         }
+        transit.routes[route].preview_info = preview_info
       }
-      transit.routes[route].preview_info =preview_info
-    }
-    
-    this.setData({
-      routes: transit.routes
+      wx.hideLoading()
+      this.setData({
+        routes: transit.routes
+      })
+
     })
+
   },
 
   /**

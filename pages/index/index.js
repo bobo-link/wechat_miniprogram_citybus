@@ -207,11 +207,11 @@ Page({
       //获取屏幕可用高度
       let screenHeight = wx.getSystemInfoSync().windowHeight
       //计算 scroll-view 的高度
-      let scrollHeight = screenHeight - topHeight - 70
+      let scrollHeight = screenHeight - topHeight - wx.getStorageSync('navigationBarHeight') -wx.getStorageSync('statusBarHeight')
       that.setData({
         scrollHeight: scrollHeight,
-        //screenHeight: screenHeight, 
-        iconimageheight: topHeight,
+        screenHeight: screenHeight, 
+        topHeight: topHeight,
       })
     }).exec()
   },

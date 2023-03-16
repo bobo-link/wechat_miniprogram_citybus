@@ -11,17 +11,21 @@ Page({
    * 页面的初始数据
    */
   data: {
-    route:{},
-    swiperHeight:{}
+    route: {},
+    swiperHeight: {}
   },
-  change(e){
+  change(e) {
     //获取内部元素高度动态改变swiper高度    
     let tmp = {}
     let _class = '.item_' + e.target.dataset.uid + '_' + e.detail.current
     wx.createSelectorQuery().select(_class).boundingClientRect(rect => {
-      tmp[e.target.dataset.uid] = (++rect.height)+ 'px' 
+      tmp[e.target.dataset.uid] = (++rect.height) + 'px'
       console.log(tmp)
-      this.setData({ swiperHeight: Object.assign(this.data.swiperHeight,{...tmp})});    
+      this.setData({
+        swiperHeight: Object.assign(this.data.swiperHeight, {
+          ...tmp
+        })
+      });
     }).exec();
   },
   /**
@@ -33,9 +37,9 @@ Page({
       fields: ["route"]
     });
     this.setData({
-      s_e:{
-        origin:options.origin,
-        destination:options.destination
+      s_e: {
+        origin: options.origin,
+        destination: options.destination
       }
     })
     // let route = wx.getStorageSync('route')
@@ -62,8 +66,8 @@ Page({
     //     }
     //   }
     // }
-    
-    console.log(this.data.route)
+
+
 
   },
 
@@ -71,27 +75,32 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
-    let tmp = {}
-    for (let swiper in this.data.route.preview_info.swiper ){
-      let _class = '.item_' +  this.data.route.preview_info.swiper[swiper] +'_0'
-      console.log(_class)      
-      wx.createSelectorQuery().select(_class).boundingClientRect(rect => {
-        tmp[this.data.route.preview_info.swiper[swiper]] = (++rect.height)+ 'px' 
-        console.log(tmp)
-        this.setData({ swiperHeight: Object.assign(this.data.swiperHeight,{...tmp})});    
-      }).exec();
+    this.storeBindings.updateStoreBindings();
+    if (this.data.route.preview_info && this.data.route.preview_info.flag) {
+      let tmp = {}
+      for (let swiper in this.data.route.preview_info.swiper) {
+        let _class = '.item_' + this.data.route.preview_info.swiper[swiper] + '_0'
+        console.log(_class)
+        wx.createSelectorQuery().select(_class).boundingClientRect(rect => {
+          tmp[this.data.route.preview_info.swiper[swiper]] = (++rect.height) + 'px'
+          console.log(tmp)
+          this.setData({
+            swiperHeight: Object.assign(this.data.swiperHeight, {
+              ...tmp
+            })
+          });
+        }).exec();
+      }
     }
-   
-    
-   
+
+
+
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    console.log(this.data.swiperHeight['7979'])
-    console.log(this.data.swiperHeight)
   },
 
   /**
