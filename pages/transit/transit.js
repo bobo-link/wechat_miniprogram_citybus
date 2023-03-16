@@ -40,11 +40,15 @@ Page({
   onLoad(options) {
     let home = wx.getStorageSync('home')
     let company = wx.getStorageSync('company')
+    let history = wx.getStorageSync('history')
     home && this.setData({
       home:home
     })
     company && this.setData({
       company:company
+    })
+    history && this.setData({
+      history:history
     })
   },
     
@@ -60,6 +64,42 @@ Page({
       delay: 100,
     })
   },
+  getscrollheight(){
+    const _this = this
+    const systeminfo = wx.getSystemInfoSync()
+    let query = wx.createSelectorQuery()
+    query.select('.history--head').boundingClientRect(function (res) {
+     console.log(res)
+     _this.setData({
+       scrollheight: systeminfo.windowHeight - res.bottom
+     })
+    }).exec()
+  },
+  //历史记录清理
+  history_clear(){
+    wx.showModal({
+      content: '确定要删除历史记录吗?',
+      complete: (res) => {
+        if (res.cancel) {
+          
+        }    
+        if (res.confirm) {
+          this.setData({
+            history:[]
+          })
+          wx.removeStorageSync('history')
+        }
+      }
+    })
+  },
+  history_search(e){
+    console.log(e)
+    let info = e.currentTarget.dataset.info
+    wx.navigateTo({
+      url: '/pages/transit_list/transit_list?origin=' + JSON.stringify(info.origin) + '&destination=' + JSON.stringify(info.destination),
+    })
+  },
+  //交换按钮的事件绑定
   switch_wrap() {
     if (this.animation == undefined) {
       this.animation = wx.createAnimation({
@@ -165,7 +205,6 @@ Page({
       })
   },
   search() {
-    const that = this
     let message = undefined
     if (!this.data.endpoint.location) {
       message = "请输入终点";      
@@ -181,13 +220,29 @@ Page({
         }
       });
     } else {
-      // BMap.transit_promisify({
-      //   origin: this.data.startpoint.location,
-      //   destination: this.data.endpoint.location,
-      // }).then((res) => {
-      //   console.log(res)
-      //   wx.setStorageSync('route', res.result)
-      // })
+      if (this.data.history ==undefined){
+        console.log('0')
+        this.setData({
+          history:[{
+            origin:this.data.startpoint,
+            destination:this.data.endpoint
+          }]
+        })
+      }else{        
+        let tmp = [...this.data.history]
+        if (tmp.length == 10){
+          console.log('1')
+          tmp.shift()
+        }
+        tmp.push({
+          origin:this.data.startpoint,
+          destination:this.data.endpoint
+        })
+        this.setData({
+          history:tmp
+        })
+      }
+      wx.setStorageSync('history',this.data.history)
       wx.navigateTo({
         url: '/pages/transit_list/transit_list?origin=' + JSON.stringify(this.data.startpoint) + '&destination=' + JSON.stringify(this.data.endpoint),
       })
@@ -247,7 +302,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    this.getscrollheight()
 
   },
 
@@ -262,7 +317,7 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-
+    // this.storeBindings.destroyStoreBindings();
   },
 
   /**

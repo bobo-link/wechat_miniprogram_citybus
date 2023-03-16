@@ -46,21 +46,21 @@ Page({
       destination: JSON.parse(options.destination).location,
     }).then((res) => {
       console.log(res)
-      if(res.statusCode == 1001){
+      if(res.statusCode == -1){
+        wx.hideLoading()
+        return
+      }
+      if(res.statusCode == 1001 || res.result.routes.length < 1 ){
         this.setData({
           empty:Object.assign(this.data.empty,{
             image:'search',
-            desc:res.errMsg
+            desc:res.errMsg || '没有线路方案'
           })
         })
         wx.hideLoading()
         return
       }
       let transit = res.result
-      
-      if (transit.routes.length < 1) {
-        return
-      }
       for (let route in transit.routes) {
         let count = 0;
         let preview_info = {

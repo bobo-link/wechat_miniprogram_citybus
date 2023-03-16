@@ -618,12 +618,13 @@ class BMapWX {
           Data = res
         } else {
           Data = {
-            errMsg: res["message"],
-            statusCode: res["status"]
+            errMsg: res["message"] || 'network error',
+            statusCode: res["status"] || -1
           };
         }
       }, (res) => {
         Data = res
+        Data["statusCode"] = -1
       })
     return Data
   }

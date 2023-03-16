@@ -20,7 +20,10 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    weather_info: {},
+    weather_info: {
+      type:Object,
+      value:{}
+    },
     region: { // 属性名
       type: Array,
       value: []

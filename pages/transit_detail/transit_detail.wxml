@@ -2,36 +2,28 @@
 <view class="listBox">
   <view class="container">
     <view class="item">
-      <template is="start" data="{{...s_e}}"/>
+      <template is="start" data="{{...s_e}}" />
     </view>
-    <block wx:for="{{route.steps}}" wx:key="index" wx:for-item="step" >
+    <block wx:for="{{route.steps}}" wx:key="index" wx:for-item="step">
       <block wx:if="{{step.length > 1 && route.preview_info.flag}}">
-        <swiper class="{{step[0].distance}}" style="height:{{swiperHeight[step[0].distance]}};" 	bindchange="change" data-uid="{{step[0].distance}}">
-          <block wx:for="{{step}}" wx:key="index"> 
-            <swiper-item >
+        <swiper class="{{step[0].distance}}" style="height:{{swiperHeight[step[0].distance]}};" bindchange="change" data-uid="{{step[0].distance}}">
+          <block wx:for="{{step}}" wx:key="index">
+            <swiper-item>
               <view class="item {{'item_' + tools.classify(item.vehicle_info.type) }} {{'item_' + step[0].distance + '_' + index}}">
-                <template is="{{tools.classify(item.vehicle_info.type)}}" data="{{...item}}"/>
+                <template is="{{tools.classify(item.vehicle_info.type)}}" data="{{...item}}" />
               </view>
-            </swiper-item>       
+            </swiper-item>
           </block>
         </swiper>
-        
       </block>
-      <block wx:else >
-        <block wx:for="{{step}}" wx:key="index" >
-            <view class="item {{'item_' + tools.classify(item.vehicle_info.type)}}">
-              <template is="{{tools.classify(item.vehicle_info.type)}}" data="{{...item}}"/>
-            </view>
+      <block wx:else>
+        <block wx:for="{{step}}" wx:key="index">
+          <view wx:if="{{item.instructions}}" class="item {{'item_' + tools.classify(item.vehicle_info.type)}}">
+            <template is="{{tools.classify(item.vehicle_info.type)}}" data="{{...item}}" />
+          </view>
         </block>
+      </block>
     </block>
-    </block>
-    
-    <!-- <view class="item">
-      <template is="walking" data="{{...route.steps[0][0]}}" />
-    </view>
-    <view class="item">
-      <template is="busline" data="{{...route.steps[0][1]}}" />
-    </view> -->
     <view class="item">
       <template is="end" data="{{...s_e}}" />
     </view>
@@ -116,7 +108,7 @@
           <text class="_text stopName">{{vehicle_info.detail.departure_station}}</text>
         </view>
         <view class="more">
-          <text class="_text text">{{distance == 0?  '无数据':tools.calculate_distance(distance) +' 公里'}}</text>
+          <text class="_text text">{{distance == 0? '无数据':tools.calculate_distance(distance) +' 公里'}}</text>
           <text class="_text dot" decode='true'> &nbsp;·&nbsp; </text>
           <text class="_text text">{{tools.calculate_time(duration)}}</text>
         </view>

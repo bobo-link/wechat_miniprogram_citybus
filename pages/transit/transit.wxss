@@ -2,6 +2,7 @@
 page { 
   overflow-x: hidden;
   background-color: #f8f8f8;
+  overflow-y: hidden;
 }
 .place,.shadow {
   width: 100%
@@ -93,10 +94,8 @@ page {
   height: 32rpx;
 }
 .collectedPlaces{
-  margin-bottom: 20rpx;
   background: #fff;
-  overflow: hidden;
-  
+  overflow: hidden;  
 }
 .collectedPlaces::after{
   content: '';
@@ -150,4 +149,33 @@ background-color: rgba(154, 154, 155, 0.8)
 }
 ._btn{
   box-sizing: border-box;
+}
+.history{
+  color: rgba(154, 154, 155, 0.8);
+  font-size: 14px;
+  padding: 20rpx 40rpx 0 40rpx;
+  background-color: white;
+  border-radius: 5px 5px 0 0;
+}
+.history--head{
+  display: flex;
+}
+.history--clear{
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  margin-left: auto;
+}
+.history_list_item{
+  display: flex;
+  flex-wrap: nowrap;
+  line-height: 30px;
+  padding: 5px 0;
+  align-items: center;
+  font-size: 15px;
+  color: black;
+  border-bottom: 1px solid rgba(154, 154, 155, 0.2); 
+}
+.history_list_item--hover{
+  background-color: #f8f8f8;
 }

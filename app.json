@@ -38,10 +38,11 @@
     "navigationBarTextStyle": "black"
   },
   "usingComponents": {
-    "navigationBar": "../../Components/navigationBar/navigationBar",
-    "i-swipeout": "../../Components/dist/swipeout/index",
+    "navigationBar": "Components/navigationBar/navigationBar",
+    "i-swipeout": "Components/dist/swipeout/index",
     "van-empty": "@vant/weapp/empty/index",
-    "van-action-sheet": "@vant/weapp/action-sheet/index"
+    "van-action-sheet": "@vant/weapp/action-sheet/index",
+    "iconfont": "/Components/iconfont/iconfont"
   },
   "tabBar": {
     "color": "#000",
