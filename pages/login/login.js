@@ -77,7 +77,7 @@ Page({
               res_json = eval('(' + res + ')')
               console.log(res_json)
               if (res_json.status == 0){
-              that.login_switch()
+              that.login_switch(true)
               that.update_usr({
                 avatarUrl: that.data.avatarUrl,
                 openid: openid,
@@ -88,6 +88,11 @@ Page({
             fail(res) {
               console.log('fail', res)
               //do something
+            },
+            complete(){
+              wx.switchTab({
+                url: '/pages/setting/setting',
+              })
             }
           })
         }, (res) => {
@@ -95,11 +100,6 @@ Page({
           wx.showToast({
             title: '无法连接服务器',
             icon: 'none'
-          })
-        })
-        re.finally((res) => {
-          wx.switchTab({
-            url: '/pages/setting/setting',
           })
         })
       })
@@ -113,8 +113,10 @@ Page({
     this.storeBindings = createStoreBindings(this, {
       store,
       fields: ["if_login", "usrinfo"],
-      actions: ["login_switch", "update_usr"]
+      actions: ["login_switch", "update_usr","updata_login_msg_fuse"]
     });
+    this.storeBindings.updateStoreBindings()
+    this.updata_login_msg_fuse(true)
   },
 
   /**

@@ -5,6 +5,8 @@ import {
 import {
   store
 } from "~/store/store";
+const { $Message } = require('../../Components/dist/base/index');
+var fuse = true
 Page({
 
   /**
@@ -23,9 +25,13 @@ Page({
   onLoad(options) {
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ["if_login","usrinfo"],
-      actions: ["login_switch","update_usr"]
+      fields: ["if_login","usrinfo","login_msg_fuse"],
+      actions: ["login_switch","update_usr","updata_login_msg_fuse"]
     });
+    this.storeBindings.updateStoreBindings()
+    if(!this.data.if_login){
+      this.handleDefault()
+    }
   },
 
   /**
@@ -40,6 +46,9 @@ Page({
    */
   onShow() {
     this.storeBindings.updateStoreBindings();
+    if(this.data.if_login && this.data.login_msg_fuse){
+      this.handleSuccess()
+    }
   },
 
   /**
@@ -82,7 +91,16 @@ Page({
     }
   },
   getUserProfile(e) {
+    console.log(fuse)
+    if(!fuse){
+      return
+    }
+    fuse = false
     const that = this
+    
+    setTimeout(()=>{
+      fuse = true
+    },1000)
     wx.p.login().
     then((res)=>{
       wx.p.request({
@@ -124,7 +142,8 @@ Page({
               try {               
                 //判断文件是否存在，不存在抛出异常
                 wx.getFileSystemManager().accessSync(usrinfo['avatarUrl'])
-                that.login_switch()
+                that.login_switch(true)
+                this.handleSuccess ()
               } catch (error) {
                 //文件不存在，从服务器拉取文件
                 wx.downloadFile({
@@ -133,7 +152,8 @@ Page({
                   success(res){
                     //拉取成功，切换登入状态
                     console.log(res)
-                    that.login_switch()
+                    that.login_switch(true)
+                    this.handleSuccess()
                   },
                   fail(res){
                     console.log(res)
@@ -168,10 +188,11 @@ Page({
       
     }).then((res)=>{
       if (res.confirm) {
-        this.login_switch()
+        this.login_switch(false)
         this.storeBindings.updateStoreBindings()
         wx.removeStorageSync("usrinfo")
-        console.log(wx.getStorageInfoSync())
+        this.updata_login_msg_fuse(false)
+        this.handleError ()
       } else if (res.cancel) {
         console.log('用户点击取消')
       }
@@ -182,5 +203,22 @@ Page({
     this.setData({
       if_login: true
     })
-  }
+  },
+  handleDefault (){
+    $Message({
+      content: '点击头像框登录',
+  });
+  },
+  handleSuccess () {
+    $Message({
+        content: '登录成功',
+        type: 'success'
+    });
+},
+handleError () {
+  $Message({
+      content: '注销成功',
+      type: 'error'
+  });
+},
 })

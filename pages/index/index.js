@@ -41,7 +41,7 @@ Page({
     that.calcscrollHeight();
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ["position","searchinfo"],
+      fields: ["position","searchinfo","if_login"],
       actions: ["update_position", "update_searchinfo","switch_init_sign","update_bus_station"]
     });
     if (wx.getUserProfile) {
@@ -189,7 +189,11 @@ Page({
   catchtouchmove: function (res) {
 
   },
-
+  login(){
+    wx.switchTab({
+      url: '/pages/setting/setting',
+    })
+  },
   // 事件处理函数
   bindViewTap() {
     BMap.transit_promisify({

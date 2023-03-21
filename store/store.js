@@ -19,6 +19,7 @@ export const store = observable({
   route:{},
   init_sign:false,
   bus_station:{},
+  login_msg_fuse:true,
   
 
   // actions
@@ -41,8 +42,8 @@ export const store = observable({
   update_searchinfo: action(function(param){
     this.searchinfo = param
   }),
-  login_switch: action(function(){
-    this.if_login =  !this.if_login
+  login_switch: action(function(bool){
+    this.if_login =  bool
   }),
   update_usr:action(function(param){    
     param.nickname && (this.usrinfo = Object.assign({}, this.usrinfo, { nickname: param.nickname }))
@@ -62,5 +63,9 @@ export const store = observable({
   }),
   update_bus_station:action(function(bus_station){
     this.bus_station = bus_station
+  }),
+  updata_login_msg_fuse:action(function(bool){
+    console.log(bool)
+    this.login_msg_fuse = bool
   })
 });

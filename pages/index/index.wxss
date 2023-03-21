@@ -56,6 +56,10 @@ page{
 .detail{
   margin-left: auto
 }
+.bottom-button{
+  width: 160px;
+  height: 40px;
+}
 ::-webkit-scrollbar{
   width: 0;
   height: 0;

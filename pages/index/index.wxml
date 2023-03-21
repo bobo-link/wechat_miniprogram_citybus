@@ -44,8 +44,17 @@
       </block>
     </swiper-item>
     <swiper-item>
-      <block wx:if="{{true}}">
-        <van-empty description="你还没有收藏" />
+      <block wx:if="{{if_login}}">
+        <block wx:if="{{true}}">
+          <van-empty description="你还没有收藏" />
+        </block>
+      </block>
+      <block wx:else>
+        <block wx:if="{{true}}">
+          <van-empty description="你还没有登录，请先登录" >
+            <van-button plain type="primary" class="bottom-button" bindtap="login">登录</van-button>
+          </van-empty>
+        </block>
       </block>
     </swiper-item>
   </swiper>

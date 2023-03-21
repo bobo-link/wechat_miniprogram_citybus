@@ -3,8 +3,8 @@ import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "~/store/store";
 import {promisifyAll} from 'miniprogram-api-promise'
 const wxp = wx.p = {}
-const uri = ['http://47.115.213.83:4040/','http://192.168.123.199:59/']
-const prefix = wx.prefix = uri[1];
+const uri = ['http://47.115.213.83:4040/','http://192.168.123.199:59/','http://172.20.10.4:59/']
+const prefix = wx.prefix = uri[2];
 promisifyAll(wx,wxp)
 App({
   onLaunch() {
@@ -42,7 +42,6 @@ App({
       nickname: '文科生'
     }) */
     let usrinfo = wx.getStorageSync('usrinfo')
-    
       if (usrinfo){
         console.log(usrinfo)
         this.update_usr(usrinfo)
@@ -50,7 +49,7 @@ App({
         try {               
           wx.getFileSystemManager().accessSync(usrinfo['avatarUrl'])
           console.log("avatar exist")
-          this.login_switch()
+          this.login_switch(true)
           this.storeBindings.destroyStoreBindings()
         } catch (error) {
           wx.downloadFile({
@@ -58,7 +57,7 @@ App({
             filePath: usrinfo.avatarUrl,
             success(res){
               console.log(res)  
-              this.login_switch()            
+              this.login_switch(true)            
             },
             fail(res){
               console.log(res)

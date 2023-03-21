@@ -12,4 +12,5 @@
     <button calss="btn1" type="primary" plain="true" size="mini" bindtap="gotocontact"><text>contact</text></button>
     <button calss="btn1" type="primary" plain="true" size="mini" bindtap="gotolocal"><text>local_life</text></button>
     <button calss="btn1" type="primary" plain="true" size="mini"  bindtap="gotoforecasts"><text>gotoforecasts</text></button>
+    <van-button round type="danger" class="bottom-button">按钮</van-button>
 </view>    
