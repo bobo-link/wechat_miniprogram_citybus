@@ -1,4 +1,10 @@
 // pages/buslinelist/buslinelist.js
+import {
+  createStoreBindings
+} from "mobx-miniprogram-bindings";
+import {
+  store
+} from "~/store/store";
 Page({
 
   /**
@@ -12,7 +18,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    console.log(options)
+    this.storeBindings = createStoreBindings(this, {
+      store,
+      fields: ["bus_station"],
+    });
+    console.log(this.data)
   },
 
   /**

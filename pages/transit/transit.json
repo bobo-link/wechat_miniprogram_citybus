@@ -2,5 +2,6 @@
   "usingComponents": {
     "cus-dialog": "../../Components/dialog/dialog"
   },
+  "navigationBarBackgroundColor": "#f3aa0d",
   "navigationBarTitleText": "公交路线"
 }

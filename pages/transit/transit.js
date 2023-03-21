@@ -1,5 +1,6 @@
 // pages/transit/transit.js
-var animation
+import {createStoreBindings} from "mobx-miniprogram-bindings";
+import {store} from "~/store/store";
 import Dialog from '../../libs/dialog';
 import Action_sheet from '../../libs/action-sheet';
 var bmap = require('../../libs/bmap-wx.js');
@@ -50,6 +51,13 @@ Page({
     history && this.setData({
       history:history
     })
+    this.storeBindings = createStoreBindings(this, {
+      store,
+      fields: ["position","init_sign"],
+      actions:["switch_init_sign"]
+    });
+    this.getscrollheight()
+    
   },
     
   /**
@@ -67,11 +75,12 @@ Page({
   getscrollheight(){
     const _this = this
     const systeminfo = wx.getSystemInfoSync()
+    console.log(systeminfo)
     let query = wx.createSelectorQuery()
     query.select('.history--head').boundingClientRect(function (res) {
      console.log(res)
      _this.setData({
-       scrollheight: systeminfo.windowHeight - res.bottom
+       scrollheight: systeminfo.windowHeight - res.bottom 
      })
     }).exec()
   },
@@ -87,7 +96,7 @@ Page({
           this.setData({
             history:[]
           })
-          wx.removeStorageSync('history')
+         wx.removeStorageSync('history')
         }
       }
     })
@@ -191,6 +200,7 @@ Page({
         }; break; 
     }
   },
+  //选取地址
   chooselocation(fun1 = undefined,fun2 = undefined){
     wx.p.chooseLocation()
       .then((res) => {
@@ -268,7 +278,7 @@ Page({
           break;
         default:
           this.setData({
-            home:Object.assign({},{name:'设置一个地址'})
+            home:{name:'设置一个地址'}
           })
           wx.removeStorageSync('home')
           break;
@@ -288,7 +298,7 @@ Page({
           break;
         default:
           this.setData({
-            company:Object.assign({},{name:'设置一个地址'})
+            company:{name:'设置一个地址'}
           })
           wx.removeStorageSync('company')
           break;
@@ -302,8 +312,16 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    this.getscrollheight()
-
+    this.storeBindings.updateStoreBindings()
+    if (this.data.init_sign && this.data.position && this.data.position.desc){
+      this.setData({
+        startpoint:{
+          name:'我的位置' + '(' + this.data.position.desc + ')',
+          location:this.data.position.location
+        }
+      })
+      this.switch_init_sign(false)
+    }
   },
 
   /**
@@ -317,7 +335,7 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-    // this.storeBindings.destroyStoreBindings();
+    this.storeBindings.destroyStoreBindings();
   },
 
   /**

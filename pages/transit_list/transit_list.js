@@ -19,7 +19,12 @@ Page({
     }
 
   },
-
+  route_map(e){
+    this.update_route(this.data.routes[e.currentTarget.dataset.index])
+    wx.navigateTo({
+      url: '/pages/route_map/route_map'
+    })
+  },
   tap(e) {
     this.update_route(this.data.routes[e.currentTarget.dataset.index])
     wx.navigateTo({
@@ -41,6 +46,14 @@ Page({
     wx.showLoading({
       title: '加载中',
     })
+    // const routes = wx.getStorageSync('routes')
+    // if (routes){
+    //   this.setData({
+    //     routes:routes
+    //   })
+    //   wx.hideLoading()
+    //   return
+    // }
     BMap.transit_promisify({
       origin: JSON.parse(options.origin).location,
       destination: JSON.parse(options.destination).location,
@@ -52,7 +65,7 @@ Page({
       }
       if(res.statusCode == 1001 || res.result.routes.length < 1 ){
         this.setData({
-          empty:Object.assign(this.data.empty,{
+          empty:Object.assign({},this.data.empty,{
             image:'search',
             desc:res.errMsg || '没有线路方案'
           })
@@ -72,11 +85,11 @@ Page({
           preview_info.flag = false
         }
         let steps = transit.routes[route].steps;
+        let i = 0;
         preview_info.distance = transit.routes[route].distance;
         preview_info.duration = transit.routes[route].duration;
         preview_info.price = transit.routes[route].price;
         for (let step in steps) {
-          let i = 0;
           for (let index in steps[step]) {
             if (steps[step].length > 1 && index == 0 && preview_info.flag) {
               preview_info.swiper[count++] = steps[step][0].distance
@@ -96,10 +109,13 @@ Page({
                 }
               }
               // console.log(direction)
-              item.name = item.vehicle_info.detail.name + direction
+              item.name = ((item.vehicle_info.detail && item.vehicle_info.detail.name) || null) + direction
             }
             if (item.vehicle_info.type == 3 || item.vehicle_info.type == 1) {
-              preview_info.linename[i++] = item.vehicle_info.detail.name
+              preview_info.linename[i++] = {
+                name:(item.vehicle_info.detail && item.vehicle_info.detail.name) || null,
+                type:item.vehicle_info.type
+              }
             }
           }
         }
@@ -109,7 +125,7 @@ Page({
       this.setData({
         routes: transit.routes
       })
-
+      wx.setStorageSync('routes', transit.routes)
     })
 
   },

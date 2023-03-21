@@ -1,0 +1,4 @@
+<!--pages/route_map/route_map.wxml-->
+<view class="map_container">
+  <map class="map" id="map" style="width:100vw; height:100vh" longitude="{{polyline[0].points[0].longitude}}" latitude="{{polyline[0].points[0].latitude}}" scale="14" show-location="true" markers="{{markers}}" polyline="{{polyline}}" bindmarkertap="makertap"></map>
+</view>

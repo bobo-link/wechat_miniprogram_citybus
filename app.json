@@ -20,7 +20,8 @@
     "pages/login/login",
     "pages/transit/transit",
     "pages/transit_detail/transit_detail",
-    "pages/transit_list/transit_list"
+    "pages/transit_list/transit_list",
+    "pages/route_map/route_map"
   ],
   "permission": {
     "scope.userLocation": {

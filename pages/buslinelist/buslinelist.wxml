@@ -1,2 +1,7 @@
 <!--pages/buslinelist/buslinelist.wxml-->
-<text>pages/buslinelist/buslinelist.wxml</text>
+<wxs src="../../utils/tools.wxs" module="tools"></wxs>
+<block wx:for="{{tools.seperate_addredss(bus_station.address)}}" wx:key="index">
+  <view class="busline--item">
+    <text>{{item}}</text>
+  </view>
+</block>

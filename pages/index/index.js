@@ -13,6 +13,7 @@ Page({
   data: {
     item: 0,
     tab: 0,
+    item_idx:'',
     actions: [{
         name: '喜欢',
         color: '#fff',
@@ -32,7 +33,7 @@ Page({
       flag: true,
       image:'network',
       description:'Connection Lost'
-    }
+    },
   },
 
   onLoad() {
@@ -40,8 +41,8 @@ Page({
     that.calcscrollHeight();
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ['adcode', 'init_adcode', 'location', 'searchinfo','weather_adcode'],
-      actions: ["update_ad_lo", "update_searchinfo"]
+      fields: ["position","searchinfo"],
+      actions: ["update_position", "update_searchinfo","switch_init_sign","update_bus_station"]
     });
     if (wx.getUserProfile) {
       this.setData({
@@ -66,6 +67,7 @@ Page({
 
   },
   i_tap(e) {
+    this.update_bus_station(this.data.searchinfo[e.currentTarget.dataset.index])
     wx.navigateTo({
       url: '../../pages/buslinelist/buslinelist' + '?uid=' + e.currentTarget.dataset.uid,
     })
@@ -110,11 +112,14 @@ Page({
             this.setData({
               region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district] 
             })
-            this.update_ad_lo({
+            this.update_position({
               adcode: res.result.addressComponent.adcode,
               init_adcode: res.result.addressComponent.adcode,
               location: location,
+              desc: res.result.addressComponent.district +  res.result.addressComponent.town + res.result.addressComponent.street + res.result.addressComponent.street_number
             })
+            this.switch_init_sign()
+            this.storeBindings.updateStoreBindings()
             //百度api获取附近站点信息
             let promiselist = [];
             promiselist[0] = BMap.search_promisify({
@@ -153,7 +158,7 @@ Page({
                     adcode: tools.adcode_back(adcode),
                     data_type: 'now'
                   }).then((res)=>{
-                    this.update_ad_lo({weather_adcode:tools.adcode_back(adcode)})
+                    this.update_position({weather_adcode:tools.adcode_back(adcode)})
                     this.setData({
                       'weather_info.temp': res.result.now.temp + '℃',
                       'weather_info.text': res.result.now.text,
@@ -161,7 +166,7 @@ Page({
                     })
                   })
                 }else{
-                  this.update_ad_lo({weather_adcode:adcode})
+                  this.update_position({weather_adcode:adcode})
                   this.setData({
                     'weather_info.temp': res.result.now.temp + '℃',
                     'weather_info.text': res.result.now.text,
@@ -221,6 +226,7 @@ Page({
   syncRegionChange(e) {
     console.log('change回调')
     this.reset_sign('sign_A')
+    this.switch_init_sign()
     this.storeBindings.updateStoreBindings();
     BMap.weather_promisify({
         adcode: e.detail.adcode,
@@ -236,7 +242,7 @@ Page({
             adcode: e.detail.adcode_up,
             data_type: 'now'
           }).then((res) => {
-            this.update_ad_lo({weather_adcode:e.detail.adcode_up})
+            this.update_position({weather_adcode:e.detail.adcode_up})
             this.setData({
               'weather_info.temp': res.result.now.temp + '℃',
               'weather_info.text': res.result.now.text,
@@ -245,7 +251,7 @@ Page({
           })
         } else {
           console.log(res)
-          this.update_ad_lo({weather_adcode:e.detail.adcode})
+          this.update_position({weather_adcode:e.detail.adcode})
           this.setData({
             'weather_info.temp': res.result.now.temp + '℃',
             'weather_info.text': res.result.now.text,
@@ -254,9 +260,10 @@ Page({
         }
       })
     BMap.search_promisify({
-      location: this.data.location,
+      location: this.data.position.location,
       query: '公交车站'
     }).then((res) => {
+      console.log(res)
       if (!res.errMsg) {
         let unique = tools.unique_list(res.results)
         this.update_searchinfo(unique)

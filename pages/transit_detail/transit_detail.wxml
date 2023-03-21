@@ -73,7 +73,7 @@
         <view class="more">
           <text class="_text text">{{'途径 ' + (vehicle_info.detail.stop_num -1) +' 个站点'}}</text>
           <text class=" _text dot" decode='true'> &nbsp;·&nbsp; </text>
-          <text class="_text text">{{ tools.calculate_distance(distance) +' 公里'}}</text>
+          <text class="_text text">{{ tools.calculate_distance(distance)}}</text>
           <text class="_text dot" decode='true'> &nbsp;·&nbsp; </text>
           <text class="_text text">{{tools.calculate_time(duration)}}</text>
         </view>
@@ -108,7 +108,7 @@
           <text class="_text stopName">{{vehicle_info.detail.departure_station}}</text>
         </view>
         <view class="more">
-          <text class="_text text">{{distance == 0? '无数据':tools.calculate_distance(distance) +' 公里'}}</text>
+          <text class="_text text">票价:{{vehicle_info.detail.price < 1? ' 无票价数据':' ' + vehicle_info.detail.price + '元'}}</text>
           <text class="_text dot" decode='true'> &nbsp;·&nbsp; </text>
           <text class="_text text">{{tools.calculate_time(duration)}}</text>
         </view>

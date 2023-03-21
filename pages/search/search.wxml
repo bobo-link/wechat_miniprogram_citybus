@@ -1,5 +1,5 @@
 <view class="map_container">
-  <map class="map" id="map" longitude="{{longitude}}" latitude="{{latitude}}" scale="14" show-location="true" markers="{{markers}}" bindmarkertap="makertap"></map>
+  <map class="map" id="map" longitude="{{longitude}}" latitude="{{latitude}}" scale="14" show-location="true" markers="{{markers}}" polyline="{{polyline}}" bindmarkertap="markertap"></map>
 </view>
 <view class="place_info">
   <text>{{placeData.title}}</text>

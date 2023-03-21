@@ -22,19 +22,21 @@
     <swiper-item id='swiper-item'>
       <!-- 滑动列表 -->
       <block wx:if="{{!sign_A.flag}}">
-        <scroll-view class="list" scroll-y style="height:{{scrollHeight}}px">
-          <i-swipeout i-class="i-swipeout-demo-item" actions="{{actions}}" bind:change="i_change" data-index="{{idx}}" data-uid="{{item.uid}}" wx:for="{{searchinfo}}" wx:key="uid" wx:for-index="idx">
-            <view slot="content" catchtouchmove='catchtouchmove'>
-              <view class="i-swipeout-image" style="background:#ff9900;">
-                <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
+        <scroll-view class="list" scroll-y scroll-into-view="{{item_idx}}" style="height:{{scrollHeight}}px">
+          <block wx:for="{{searchinfo}}" wx:key="uid" wx:for-index="idx">
+            <i-swipeout id="{{'item_' + idx}}" i-class="i-swipeout-demo-item" actions="{{actions}}" bind:change="i_change" data-index="{{idx}}" data-uid="{{item.uid}}">
+              <view slot="content" catchtouchmove='catchtouchmove'>
+                <view class="i-swipeout-image" style="background:#ff9900;">
+                  <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
+                </view>
+                <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
+                  <iconfont name="gongjiaozhanpai" size='40'></iconfont>
+                  <view class="i-swipeout-des-h2">{{item.name}}</view>
+                  <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
+                </view>
               </view>
-              <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
-                <iconfont name="gongjiaozhanpai" size='40'></iconfont>
-                <view class="i-swipeout-des-h2">{{item.name}}</view>
-                <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
-              </view>
-            </view>
-          </i-swipeout>
+            </i-swipeout>
+          </block>
         </scroll-view>
       </block>
       <block wx:if="{{sign_A.flag}}">

@@ -35,7 +35,9 @@ page{
 .visual{
   display: flex;
   height: 220rpx;
-  padding-top: 30rpx;
+  padding-top: 10rpx;
+  padding-bottom: 10rpx;
+  box-sizing: border-box;
 }
 .weather-info{
   width: 400rpx;

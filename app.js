@@ -3,7 +3,8 @@ import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "~/store/store";
 import {promisifyAll} from 'miniprogram-api-promise'
 const wxp = wx.p = {}
-const prefix = wx.prefix = 'http://172.20.10.4:59/';
+const uri = ['http://47.115.213.83:4040/','http://192.168.123.199:59/']
+const prefix = wx.prefix = uri[1];
 promisifyAll(wx,wxp)
 App({
   onLaunch() {

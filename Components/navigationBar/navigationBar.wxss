@@ -41,6 +41,7 @@
   font-size: 5px;
 }
 .weather-info{
+  padding-left: 5px;
   padding-top: 5px;
   display: flex;
   align-items: center;

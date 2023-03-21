@@ -13,8 +13,8 @@ Component({
   behaviors: [storeBindingsBehavior],
   storeBindings: {
     store,
-    fields: ["adcode", "location", "init_adcode"],
-    actions: ["update_ad_lo", "check_status"]
+    fields: ["position"],
+    actions: ["update_position", "check_status"]
   },
   /**
    * 组件的属性列表
@@ -35,7 +35,7 @@ Component({
    * 组件的初始数据
    */
   data: {
-    ifhidden: false,
+    ifhidden: false,//地区选择器符号控制器
     customItem: '全部',
     // 状态栏高度
     statusBarHeight: wx.getStorageSync('statusBarHeight') + 'px',
@@ -64,7 +64,7 @@ Component({
     },
     gotofrecasts(e) {
       wx.navigateTo({
-        url: '/pages/forecasts/forecasts?adcode=' + getApp().globalData.adcode,
+        url: '/pages/forecasts/forecasts'
 
       })
     },
@@ -94,7 +94,7 @@ Component({
         })
         .then((res) => {
           location = res.latitude + ',' + res.longitude;
-          this.update_ad_lo({
+          this.update_position({
             adcode: e.detail.code[2],
             location: location
           })
@@ -113,9 +113,10 @@ Component({
         .then((res) => {
           console.log(res)
           location = res.result.location.lat + ',' + res.result.location.lng;
-          this.update_ad_lo({
+          this.update_position({
             adcode: e.detail.code[2],
-            location: location
+            location: location,
+            desc:e.detail.value[1] + e.detail.value[2]
           })
         }))
       promise_item.finally((res) => {
@@ -130,7 +131,7 @@ Component({
       this.setData({
         ifhidden: !this.data.ifhidden
       })
-      console.log(this.data.ifhidden)
+      // console.log(this.data.ifhidden)
     },
     bindRegionTap(e) {
       this.setData({

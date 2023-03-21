@@ -59,8 +59,7 @@ Page({
     const that = this
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields:["adcode","weather_adcode"],    
-      actions: ["update_ad_lo"]
+      fields:["position"]
     });   
     this.storeBindings.updateStoreBindings()
     that.calcscrollHeight()
@@ -74,12 +73,14 @@ Page({
         forecasts: that.formatforecasts(res.result.forecasts)
       })
     }
-    var weather_fail = function (res) {}
-    console.log(that.data.adcode)
+    var weather_fail = function (res) {
+      console.log(res)
+    }
+   
     Bmap.weather({
       success: weather_success,
       fail: weather_fail,
-      adcode: that.data.weather_adcode,
+      adcode: that.data.position.weather_adcode,
     })
     
     

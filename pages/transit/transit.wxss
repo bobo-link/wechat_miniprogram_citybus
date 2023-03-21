@@ -15,8 +15,8 @@ page {
 .place {  
   height: 220rpx;
   padding: 20rpx 0;
-  color: #fff;
-  background: #4287ff;
+  /* color: #fff;
+  background: #4287ff; */
   width: 100%;
   display: flex;
   flex-flow: row nowrap;
@@ -37,7 +37,7 @@ page {
   height: 90rpx;
   line-height: 90rpx;
   font-size: 28rpx;
-  color: #c8dcff;
+  /* color: #c8dcff; */
 }
 
 .cloumnInput{
@@ -49,8 +49,9 @@ page {
   width: 100%;
   height: 80rpx;
   line-height: 80rpx;
-  color: #c8dcff;
-  background: #689fff;
+  /* color: #c8dcff;
+  background: #689fff; */
+  background:rgba(231, 229, 228 ,0.5);
   border-radius: 6rpx;
   overflow: hidden;
   display: inline-flex;
@@ -60,6 +61,7 @@ page {
 }
 .input--hover{
   background-color: #4778ce;
+  background: rgba(199, 197, 196 ,1);
 }
 .input{
   padding-left: 30rpx;
@@ -94,7 +96,7 @@ page {
   height: 32rpx;
 }
 .collectedPlaces{
-  background: #fff;
+  background: rgba(243, 238, 235 , 0.4);
   overflow: hidden;  
 }
 .collectedPlaces::after{
@@ -144,9 +146,6 @@ page {
   padding-left: 10rpx;
   color: #999;
 }
-.item--hover{
-background-color: rgba(154, 154, 155, 0.8)
-}
 ._btn{
   box-sizing: border-box;
 }
@@ -154,7 +153,7 @@ background-color: rgba(154, 154, 155, 0.8)
   color: rgba(154, 154, 155, 0.8);
   font-size: 14px;
   padding: 20rpx 40rpx 0 40rpx;
-  background-color: white;
+  background: rgba(247, 243, 240, 0.1);
   border-radius: 5px 5px 0 0;
 }
 .history--head{
@@ -169,13 +168,13 @@ background-color: rgba(154, 154, 155, 0.8)
 .history_list_item{
   display: flex;
   flex-wrap: nowrap;
-  line-height: 30px;
-  padding: 5px 0;
+  line-height: 23px;
+  padding: 8px 0;
   align-items: center;
   font-size: 15px;
   color: black;
   border-bottom: 1px solid rgba(154, 154, 155, 0.2); 
 }
-.history_list_item--hover{
-  background-color: #f8f8f8;
+.view--hover{
+  background-color: rgba(232, 228, 226, 0.7);
 }

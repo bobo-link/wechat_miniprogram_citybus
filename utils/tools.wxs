@@ -46,7 +46,11 @@ function calculate_time(time){
 
 function calculate_distance(distance){
   if (distance == undefined) {return 0}
-  return (distance / 1000).toFixed(1)
+  if (distance < 1000) {return distance + ' 米'}
+  return (distance / 1000).toFixed(1) + ' 公里'
+}
+function trim(str){
+  return str.replace(getRegExp('\s*','g'),"")
 }
 function classify(num){
   switch (num) {
@@ -63,6 +67,10 @@ function classify(num){
       break;
   }
 }
+function seperate_addredss(address){
+  if (address == undefined) {return []}
+  return address.split(';')
+}
 function echo(param){
   console.log(param)
   return param
@@ -76,5 +84,7 @@ module.exports = {
   calculate_time:calculate_time,
   calculate_distance:calculate_distance,
   classify:classify,
-  echo:echo
+  echo:echo,
+  trim:trim,
+  seperate_addredss:seperate_addredss
 }

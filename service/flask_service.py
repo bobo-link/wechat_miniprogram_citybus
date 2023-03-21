@@ -1,5 +1,4 @@
-from flask import Flask, Response
-from flask import request
+from flask import Flask, Response,request,make_response,jsonify
 from configparser import ConfigParser
 import os
 import json
@@ -189,6 +188,32 @@ def download_avatar():
         response = {"code":10,"msg":"error"}
        
     return response
+
+@app.route("/echo",methods=['GET', 'POST','OPTIONS'])
+def echo():
+    headers = {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        # 'Access-Control-Allow-Methods': 'DELETE'
+    }
+    data = ''
+    if request.method == "GET":
+        data = format_dict(request.args.to_dict())
+    if request.method == "POST":
+        if request.content_type.startswith('application/json'):            
+            # comment = request.get_json()["content"]
+            print('application/json')
+            data = request.json
+        elif request.content_type.startswith('multipart/form-data'):
+            print('multipart/form-data') 
+            data = request.form
+        else:
+            print('else') 
+            data = request.values
+    if request.method == "OPTIONS":  
+       print(request.__dict__)    
+    print(data)
+    return data
 
 """ @app.route("/ApiInfo")
 def ApiInfo():

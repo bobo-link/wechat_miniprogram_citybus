@@ -7,3 +7,58 @@ page{
  height: 100%;
  padding-top: 200rpx;
 }
+.route--list{
+  display: flex;
+  flex-direction: column;
+  padding: 10px 20rpx 0 20rpx;
+}
+.route--list--item{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%; 
+  background-color: white;
+  border-radius: 5px;
+  margin: 5px 0;
+}
+.route--content{
+  display: flex;
+  padding-top: 20px;
+  flex-direction: column;
+}
+.route--head{
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  padding-left: 15px;
+}
+.walking{
+  font-size: 12px;
+}
+.route--line{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 10px 0 20px 10px;
+}
+.route--linename{
+  display: flex;  
+  padding: 2px 5px;
+  font-size: 13px;
+  margin: 5px 4px;
+  color :rgba(46, 156, 241, 1);
+  border: rgba(46, 156, 241, 1) solid 2px;
+  border-radius: 30px;
+  box-sizing: border-box;
+}
+.route--linename text{
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+}
+
+.route--mapicon{
+ margin: 0 30rpx;
+ margin-left: auto;
+}

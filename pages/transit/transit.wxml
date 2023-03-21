@@ -20,22 +20,24 @@
   </view>
   <view class="columnSwitch">
     <view class="switch-wrap">
-      <image src="/img/route/switch.png" bindtap="switch_wrap" role="aspectFit" class="switch" animation="{{animation}}"></image>
+      <image src="/img/route/switch_black.png" role="aspectFit" class="switch" animation="{{animation}}" bindtap="switch_wrap"></image>
+      <!-- <iconfont class="switch" name="jiantou_shangxiaqiehuan" size="45" color="{{'rgba(0, 0, 0,0.9)'}}" ></iconfont> -->
     </view>
     <view class="search-wrap">
-      <image src="/img/route/search.png" bindtap="search" mode="aspectFit" class="search"></image>
+      <!-- <image src="/img/route/search.png"  mode="aspectFit" class="search"></image> -->
+      <iconfont class="search" name="chazhao" size="35" color="{{'rgba(0, 0, 0,0.9)'}}" bindtap="search" ></iconfont>
     </view>
   </view>
 </view>
 <view class="collectedPlaces">
-  <view class="item  allowTap" data-which="home" bindtap="get_place" hover-class="item--hover" hover-stay-time="100">
+  <view class="item  allowTap" data-which="home" bindtap="get_place" hover-class="item--hover view--hover" hover-stay-time="100">
     <image src="/img/route/home.png" class='icon' role="aspectFit"></image>
     <view class="text">
       <view class="_text">家</view>
       <text class="_text address">{{home ? home.name:'设置一个地址'}}</text>
     </view>
   </view>
-  <view class="item  allowTap" data-which="company" bindtap="get_place" hover-class="item--hover" hover-stay-time="100">
+  <view class="item  allowTap" data-which="company" bindtap="get_place" hover-class="item--hover view--hover" hover-stay-time="100">
     <image src="/img/route/company.png" class='icon' role="aspectFit"></image>
     <view class="text">
       <view class="_text">公司</view>
@@ -44,7 +46,7 @@
   </view>
 </view>
 <view class="history" >
-  <block wx:if="{{flag}}">
+  <block wx:if="{{history && history.length > 0}}">
     <view class="history--head">
       <text>历史记录</text>
       <view class="history--clear" bindtap="history_clear">
@@ -53,9 +55,9 @@
       </view>
     </view>
     <view class="history--body">
-      <scroll-view scroll-y style="height:{{scrollheight}}px;padding-top:20rpx ;">
+      <scroll-view scroll-y style="height:{{scrollheight}}px;padding-top:20rpx;box-sizing: border-box;">
         <block wx:for="{{history}}" wx:key="index">
-        <view data-info="{{item}}" bindtap="history_search" class="history_list_item" hover-class="history_list_item--hover" hover-stay-time="100">
+        <view data-info="{{item}}" bindtap="history_search" class="history_list_item" hover-class="history_list_item--hover view--hover" hover-stay-time="100">
           <iconfont name="luxian" size="50" color="{{'rgba(154, 154, 155,0.9)'}}" style="padding-right: 8px;"></iconfont>
           <text>{{item.origin.name}}</text>
           <view class="sensing" style="padding: 0 10px;">➙</view>
@@ -65,7 +67,7 @@
       </scroll-view>
     </view>
   </block>
-  <block wx:if="{{!flag}}">
+  <block wx:else>
     <view class="history--head" style="justify-content: center;">
       <text>历史记录</text>
     </view>

@@ -349,6 +349,7 @@ class BMapWX {
         }
       }, (res) => {
         Data = res
+        Data['statusCode'] = -1
       })
     return Data
   };
