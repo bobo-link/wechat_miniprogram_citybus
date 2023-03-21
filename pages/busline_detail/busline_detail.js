@@ -1,10 +1,4 @@
-// pages/buslinelist/buslinelist.js
-import {
-  createStoreBindings
-} from "mobx-miniprogram-bindings";
-import {
-  store
-} from "~/store/store";
+// pages/busline_detail/busline_detail.js
 Page({
 
   /**
@@ -13,24 +7,30 @@ Page({
   data: {
 
   },
-
-  busline_detail(e){
-    wx.navigateTo({
-      url: '/pages/busline_detail/busline_detail?Referer=busline&name='+this.data.bus_station.address.split(";")[e.currentTarget.dataset.index],
-  })
-},
+  reverse_direction(){
+    let direction = this.data.busline.direction
+    let BusStations = this.data.busline.BusStations
+    direction.reverse();
+    BusStations.reverse();
+    this.setData({
+      busline:Object.assign({},this.data.busline,{
+        direction:direction,
+        BusStations:BusStations,
+      })
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.storeBindings = createStoreBindings(this, {
-      store,
-      fields: ["bus_station"],
-    });
-
-    this.storeBindings.updateStoreBindings()
-    wx.setNavigationBarTitle({
-      title: this.data.bus_station.name,
+    let busline = wx.getStorageSync('busline')
+    let reg = /\((\S*)\)/
+    let direction = busline.name.match(reg)[1]
+    busline.direction = [direction.split('-')[0],direction.split('-')[1]]
+    busline.name = busline.name.split('(')[0]
+   
+    this.setData({
+      busline:busline
     })
   },
 

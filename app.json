@@ -21,7 +21,8 @@
     "pages/transit/transit",
     "pages/transit_detail/transit_detail",
     "pages/transit_list/transit_list",
-    "pages/route_map/route_map"
+    "pages/route_map/route_map",
+    "pages/busline_detail/busline_detail"
   ],
   "permission": {
     "scope.userLocation": {
@@ -43,7 +44,8 @@
     "i-swipeout": "Components/dist/swipeout/index",
     "van-empty": "@vant/weapp/empty/index",
     "van-action-sheet": "@vant/weapp/action-sheet/index",
-    "iconfont": "/Components/iconfont/iconfont"
+    "iconfont": "/Components/iconfont/iconfont",
+    "van-button": "@vant/weapp/button/index"
   },
   "tabBar": {
     "color": "#000",

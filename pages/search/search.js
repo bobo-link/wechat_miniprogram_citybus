@@ -32,11 +32,7 @@ Page({
        })
     },1000)
    
-    var id = e.markerId;
-    var wxMarkerData = this.data.markers
-    console.log(e);
-    console.log(wxMarkerData[e.detail.markerId])
-    that.showSearchInfo(wxMarkerData, id);
+   
     
   },
   onLoad: function () {
@@ -60,51 +56,7 @@ Page({
   },
   onShow(){
     const that = this
-    this.storeBindings.updateStoreBindings();
-    const routes =  wx.getStorageSync('routes')
-    let polyline = []
-    let z = 0
-    const config =  [{},
-      {
-        color: "#188BF8",
-        width: 4,
-      },
-      {},
-      {
-        color: "#71C425",
-        width: 4,
-      },
-      {
-        color: "#71C425",
-        width: 4,
-      },
-      {
-        color: "#F83D18",
-        width: 4,
-        dottedLine:true
-    }]
-    for (let j in routes[0].steps){
-      for (let x in routes[0].steps[j]){
-        let  points = (routes[0].steps[j][x].path).split(';')
-        for (let i in points){
-          points[i] = {
-            latitude: points[i].split(',')[1],
-            longitude:points[i].split(',')[0],
-          }
-        }
-        points.unshift({
-          latitude:routes[0].steps[j][x].start_location.lat,
-          longitude:routes[0].steps[j][x].start_location.lng
-        })
-        points.push({
-          latitude:routes[0].steps[j][x].end_location.lat,
-          longitude:routes[0].steps[j][x].end_location.lng
-        })
-        polyline[z++] =Object.assign({points:points},config[routes[0].steps[j][x].vehicle_info.type]) 
-      }
-    }
-    
-    
+    this.storeBindings.updateStoreBindings();   
     if (this.data.searchinfo) {     
       let wxMarkerData = []
       let poiArr = this.data.searchinfo
@@ -123,7 +75,6 @@ Page({
       }
       that.setData({
         markers: wxMarkerData,
-        polyline:polyline,
         markers_douletap:Array(wxMarkerData.length).fill(false)
       });
       that.setData({
@@ -133,21 +84,6 @@ Page({
         longitude: this.data.position.location.split(',')[1]
       });
     }
-  },
-  changeMarkerColor: function (data, id) {
-    var that = this;
-    var markersTemp = [];
-    for (var i = 0; i < data.length; i++) {
-      if (i === id) {
-        data[i].iconPath = "../../img/marker.png";
-      } else {
-        data[i].iconPath = "../../img/marker_active.png";
-      }
-      markersTemp[i] = data[i];
-    }
-    that.setData({
-      markers: markersTemp
-    });
   },
   onUnload() {
     this.storeBindings.destroyStoreBindings();

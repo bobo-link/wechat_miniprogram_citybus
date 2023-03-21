@@ -2,21 +2,25 @@
 <wxs src="../../utils/tools.wxs" module="tools"></wxs>
 <block wx:if="{{routes && routes.length > 0}}">
   <view class="route--list">
-    <block wx:for="{{routes}}" wx:key="index" wx:for-item="preview_info">
+    <block wx:for="{{routes}}" wx:key="index" wx:for-item="route">
       <view data-index="{{index}}" bindtap="tap" class="route--list--item">
       <view class="route--content">
         <view class="route--head">
-          <text class=" _text time">{{tools.trim(tools.calculate_time(preview_info.preview_info.duration))}}</text>
+          <text class=" _text time">{{tools.trim(tools.calculate_time(route.preview_info.duration))}}</text>
           <iconfont name="buxing" size="35" color="{{'rgba(154, 154, 155,0.9)'}}" style="padding: 0 0 0 10px;"></iconfont>
-          <text class="walking">{{tools.calculate_distance(preview_info.preview_info.walking)}}</text>
+          <text class="walking">{{tools.calculate_distance(route.preview_info.walking)}}</text>
+        </view>
+        <view class="route--price">
+          <iconfont name="price" size="40" color="{{'rgba(196, 51, 16 ,0.9)'}}" style="padding: 0 10px 0 0px;"></iconfont>
+          <text class="price--num">{{route.preview_info.price > 0 ?route.preview_info.price + ' 元':'暂无数据'}}</text>
         </view>
         <view class="route--line">
-          <block wx:for="{{preview_info.preview_info.linename}}" wx:key="name">
+          <block wx:for="{{route.preview_info.linename}}" wx:key="name">
             <view class="route--linename">
               <iconfont name="{{item.type == 1 ? 'huoche':'gongjiao' }}" size="40" color="{{'rgba(46, 156, 241,0.9)'}}" style="padding: 0 2px 0 0;"></iconfont>
               <text>{{item.name}}</text>
             </view>
-            <text wx:if="{{index < (preview_info.preview_info.linename.length - 1)}}" style="color: rgba(154, 154, 155,0.5);font-size: 10px;">▶</text>
+            <text wx:if="{{index < (route.preview_info.linename.length - 1)}}" style="color: rgba(154, 154, 155,0.5);font-size: 10px;">▶</text>
             <!-- <text class=" _text dot" decode='true'> &nbsp;·&nbsp; </text> -->
           </block>
         </view>

@@ -35,6 +35,15 @@ page{
 .walking{
   font-size: 12px;
 }
+.route--price{
+  display: flex;
+  padding-left: 15px;
+  align-items: center;
+}
+
+.price--num{
+  font-size: 12px;
+}
 .route--line{
   display: flex;
   flex-wrap: wrap;

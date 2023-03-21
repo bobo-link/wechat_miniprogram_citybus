@@ -86,9 +86,11 @@ Page({
         }
         let steps = transit.routes[route].steps;
         let i = 0;
-        preview_info.distance = transit.routes[route].distance;
-        preview_info.duration = transit.routes[route].duration;
-        preview_info.price = transit.routes[route].price;
+        preview_info = Object.assign({},preview_info,{
+          distance:transit.routes[route].distance,
+          duration:transit.routes[route].duration,
+          price:transit.routes[route].price
+        })
         for (let step in steps) {
           for (let index in steps[step]) {
             if (steps[step].length > 1 && index == 0 && preview_info.flag) {

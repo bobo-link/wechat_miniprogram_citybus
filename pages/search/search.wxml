@@ -1,8 +1,3 @@
 <view class="map_container">
-  <map class="map" id="map" longitude="{{longitude}}" latitude="{{latitude}}" scale="14" show-location="true" markers="{{markers}}" polyline="{{polyline}}" bindmarkertap="markertap"></map>
-</view>
-<view class="place_info">
-  <text>{{placeData.title}}</text>
-  <text>{{placeData.address}}</text>
-  <text>{{placeData.telephone}}</text>
+  <map class="map" id="map" style="width:100vw; height:100vh" longitude="{{longitude}}" latitude="{{latitude}}" scale="14" show-location="true" markers="{{markers}}"  bindmarkertap="markertap"></map>
 </view>

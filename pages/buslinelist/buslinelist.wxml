@@ -1,7 +1,15 @@
 <!--pages/buslinelist/buslinelist.wxml-->
 <wxs src="../../utils/tools.wxs" module="tools"></wxs>
-<block wx:for="{{tools.seperate_addredss(bus_station.address)}}" wx:key="index">
-  <view class="busline--item">
-    <text>{{item}}</text>
-  </view>
-</block>
+<view class="busline--list">
+  <block wx:for="{{tools.seperate_addredss(bus_station.address)}}" wx:key="index">
+    <view class="busline--item" data-index="{{index}}" bindtap="busline_detail">
+      <view class="busline--item--content">
+      <iconfont name="gongjiao" size="70"></iconfont>
+      <text style="margin-top:5px;">{{item}}</text>
+      </view>
+      <view class="busline--item--sensing">
+      <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
+     </view>
+    </view>
+  </block>
+</view>
