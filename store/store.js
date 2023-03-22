@@ -20,7 +20,7 @@ export const store = observable({
   init_sign:false,
   bus_station:{},
   login_msg_fuse:true,
-  
+  collect:[],
 
   // actions
   update_position: action(function (param) {   
@@ -67,5 +67,16 @@ export const store = observable({
   updata_login_msg_fuse:action(function(bool){
     console.log(bool)
     this.login_msg_fuse = bool
+  }),
+  update_collect:action(function(){
+    const a1 = wx.getStorageSync('station')
+    const a2 = wx.getStorageSync('buslines')
+    const a3 = wx.getStorageSync('route')
+    let collect_all = []
+    collect_all.push(...a1,...a2,...a3)
+    collect_all.sort((a,b)=>{
+        return (a.uptime > b.uptime ? 1:-1) || 0
+    })
+    this.collect = collect_all
   })
 });

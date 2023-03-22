@@ -2,13 +2,8 @@
 <navigationBar bindsync="syncRegionChange" weather_info="{{weather_info}}" region="{{region}}"></navigationBar>
 <view class="container">
 
-  <view class="userinfo">
-    <block wx:if="{{true}}">
-      <view class="userinfo-avatar" bindtap="bindViewTap">
-        <open-data type="userAvatarUrl"></open-data>
-      </view>
-      <open-data type="userNickName"></open-data>
-    </block>
+  <view class="search">
+
   </view>
   <view class="tab">
     <view class="tab-item {{tab==0?'active':''}}" bindtap="changeItem" data-item="0">附近</view>
@@ -45,13 +40,22 @@
     </swiper-item>
     <swiper-item>
       <block wx:if="{{if_login}}">
-        <block wx:if="{{true}}">
+        <block wx:if="{{collect && collect.length > 0}}">
+          <scroll-view class="collect" scroll-y scroll-into-view="{{item_idx}}" style="height:{{scrollHeight}}px">
+            <block wx:for="{{collect}}" wx:key="index" wx:for-index="idx">
+              <block wx:if="{{item.type !='route'}}">
+                <template is="station" data="{{...item}}"/>
+              </block>
+            </block>
+          </scroll-view>
+        </block>
+        <block wx:else>
           <van-empty description="你还没有收藏" />
         </block>
       </block>
       <block wx:else>
         <block wx:if="{{true}}">
-          <van-empty description="你还没有登录，请先登录" >
+          <van-empty description="你还没有登录">
             <van-button plain type="primary" class="bottom-button" bindtap="login">登录</van-button>
           </van-empty>
         </block>
@@ -59,3 +63,34 @@
     </swiper-item>
   </swiper>
 </view>
+<template name="station">
+    <view class="i-swipeout-des" bindtap="i_tap">
+      <iconfont name="gongjiaozhanpai" size='40'></iconfont>
+      <view class="i-swipeout-des-h2">{{name}}</view>
+      <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
+    </view>
+</template>
+<template name="busline">
+  <view slot="content" catchtouchmove='catchtouchmove'>
+    <view class="i-swipeout-image" style="background:#ff9900;">
+      <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
+    </view>
+    <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
+      <iconfont name="gongjiaozhanpai" size='40'></iconfont>
+      <view class="i-swipeout-des-h2">{{item.name}}</view>
+      <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
+    </view>
+  </view>
+</template>
+<template name="route">
+  <view slot="content" catchtouchmove='catchtouchmove'>
+    <view class="i-swipeout-image" style="background:#ff9900;">
+      <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
+    </view>
+    <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
+      <iconfont name="luxian" size='40'></iconfont>
+      <view class="i-swipeout-des-h2">{{item.name}}</view>
+      <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
+    </view>
+  </view>
+</template>

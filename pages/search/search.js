@@ -18,9 +18,9 @@ Page({
     var that = this;
     if (this.data.markers_douletap[e.detail.markerId]){
       console.log('触发双击')
-      this.update_bus_station(this.data.markers[e.detail.markerId])
+      this.update_bus_station(this.data.searchinfo[e.detail.markerId])
       wx.navigateTo({
-        url: '../../pages/buslinelist/buslinelist',
+        url: '../../pages/buslinelist/buslinelist?referer=search'
       })
     }
     this.setData({
@@ -66,10 +66,6 @@ Page({
           latitude: poiArr[i]["location"]["lat"],
           longitude: poiArr[i]["location"]["lng"],
           title: poiArr[i]["name"],
-          // iconPath: '../../img/marker_active.png',
-          // iconTapPath: '../../img/marker_active.png',
-          address: poiArr[i]["address"],
-          telephone: poiArr[i]["telephone"],
           alpha: 1,    
         }
       }

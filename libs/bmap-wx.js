@@ -2,14 +2,15 @@
  * @file 微信小程序JSAPI
  * 
  */
-//const prefix = 'http://47.115.213.83:8080/';
-const prefix = wx.prefix;
+//const wx.prefix = 'http://47.115.213.83:8080/';
+
 const realapi ={
       weather:'',
       geocoding:'',
       regeocoding:'',
       transit:'',
-      search:''
+      search:'',
+      detail:''
 }
 /**
  * 百度地图微信小程序API类
@@ -328,7 +329,7 @@ class BMapWX {
       }
     }
     await wx.p.request({
-        url: prefix + (realapi.regeocoding || 'regeocoding' ),
+        url: wx.prefix + (realapi.regeocoding || 'regeocoding' ),
         data: regeocodingparam,
         header: {
           "content-type": "application/json"
@@ -458,7 +459,7 @@ class BMapWX {
       }
     }
     await wx.p.request({
-        url: prefix + (realapi.geocoding || 'geocoding' ) ,
+        url: wx.prefix + (realapi.geocoding || 'geocoding' ) ,
         data: geocodingparam,
         header: {
           "content-type": "application/json"
@@ -509,7 +510,7 @@ class BMapWX {
       return
     }
     wx.request({
-      url: prefix + (realapi.weather || 'weather' ),
+      url: wx.prefix + (realapi.weather || 'weather' ),
       data: weatherparam,
       header: {
         "content-type": "application/json"
@@ -557,7 +558,7 @@ class BMapWX {
       }
     }
     await wx.p.request({
-        url: prefix + (realapi.weather || 'weather' ),
+        url: wx.prefix + (realapi.weather || 'weather' ),
         data: weatherparam,
         header: {
           "content-type": "application/json"
@@ -605,7 +606,7 @@ class BMapWX {
       }
     }
     await wx.p.request({
-        url: prefix + (realapi.transit || 'transit' ),
+        url: wx.prefix + (realapi.transit || 'transit' ),
         data: transitparam,
         header: {
           "content-type": "application/json"
@@ -657,11 +658,11 @@ class BMapWX {
     };
     if (!param['query'] || !param['location']) {
       return {
-        errMsg: 'Param query or location is not exist'
+        errMsg: 'Param query and location is not exist'
       }
     }
     await wx.p.request({
-        url: prefix + (realapi.search || 'search' ),
+        url: wx.prefix + (realapi.search || 'search' ),
         data: searchparam,
         header: {
           "content-type": "application/json"
@@ -684,5 +685,98 @@ class BMapWX {
       })
     return Data
   };
+  /**
+   * 地点详情检索
+   * promisify
+   * @param {Object} param 检索配置
+   * 参数对象结构可以参考
+   * https://lbsyun.baidu.com/index.php?title=webapi/guide/webservice-placeapi
+   * 
+   */
+  async detail_promisify(param) {
+    var that = this;
+    let Data = null;
+    param = param || {};
+    let searchparam = {
+      uid:param['uid'] || '',
+      scope:param['scope'] || 2,
+      coordtype: param["coordtype"] || 'gcj02ll',
+      ret_coordtype: 'gcj02ll',
+      ak: that.ak,
+      sn: param["sn"] || '',
+      output: param["output"] || 'json',
+    };
+    if(param['uids']){
+      searchparam.uids = param['uids'].join(',')
+    }
+    if (!param['uid'] && !param['uid']) {
+      return {
+        errMsg: 'Param uid or uids is not exist'
+      }
+    }
+    await wx.p.request({
+        url: wx.prefix + (realapi.detail || 'detail' ),
+        data: searchparam,
+        header: {
+          "content-type": "application/json"
+        },
+        method: 'GET'
+      })
+      .then(({
+        data: res
+      }) => {
+        if (res["status"] === 0) {
+          Data = res;
+        } else {
+          Data = {
+            errMsg: res["message"] || 'error',
+            statusCode: res["status"] || -1
+          };
+        }
+      }, (res) => {
+        Data = res
+      })
+    return Data
+  };
+
+  /**
+   * 收藏同步
+   * 该接口应有4种模式在data中由 method 关键字指定
+   * method 有效值：
+   *  add 添加一个收藏条目  
+   *  del 删除一个收藏条目
+   *  get 获取收藏数据
+   *  ver 校验本地收藏数据是否有效
+   */
+  async collectSync(param){
+    let Data = null;
+    let data_param = {
+      ...param,
+      openid: wx.getStorageSync('usrinfo').openid,
+    }
+    if (param.method == 'add' || param.method == 'del'){
+      var uptime = new Date()
+      data_param.uptime = uptime
+    }
+    await wx.p.request({
+      url: wx.prefix + 'collectsync',
+      data:data_param,
+      header: {
+        "content-type": "application/json"
+      },
+      method: 'GET'
+    }).then(({
+      data: res
+    }) => {
+      if (res.statusCode == 0 && res.db_data && res.db_data.nModified && res.db_data.nModified >0){
+        wx.setStorageSync('collect_time', uptime)
+      }
+      Data = res
+    }, (res) => {
+      Data = res
+    })
+    return Data
+  };
+  
 }
 module.exports.BMapWX = BMapWX;

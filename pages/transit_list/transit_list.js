@@ -5,7 +5,9 @@ import {
 import {
   store
 } from "~/store/store";
+import Notify from '@vant/weapp/notify/notify';
 var bmap = require('../../libs/bmap-wx.js');
+const tools = require('~/utils/util.js')
 const BMap = new bmap.BMapWX();
 Page({
 
@@ -127,7 +129,7 @@ Page({
       this.setData({
         routes: transit.routes
       })
-      wx.setStorageSync('routes', transit.routes)
+      // wx.setStorageSync('routes', transit.routes)
     })
 
   },
@@ -164,7 +166,43 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-
+    let route = wx.getStorageSync('route') || []
+    let item = {
+      origin: this.data.origin,
+      destination: this.data.destination,
+      type: 'route',
+      uptime: new Date()
+    }
+    if (route.length < 10 && !tools.ifexist(item, route)) {
+      BMap.collectSync({
+        method: 'add',
+        route: item,
+      }).then(res => {
+        console.log(res)
+        if (res.statusCode == 0) {
+          route.push(item)
+          wx.setStorageSync('route', route)
+          Notify({
+            type: 'success',
+            message: '成功收藏'
+          });
+        } else {
+          Notify({
+            type: 'danger',
+            message: '收藏失败'
+          });
+        }
+      })
+      
+    } else if (route.length >= 10) {
+      Notify({
+        type: 'danger',
+        message: '收藏已达上限'
+      });
+    } else {
+      Notify({ type: 'warning', message: '已存在' });
+    }
+    wx.stopPullDownRefresh()
   },
 
   /**

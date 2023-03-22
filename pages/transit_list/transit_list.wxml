@@ -1,4 +1,5 @@
 <!--pages/transit_list/transit_list.wxml-->
+<van-notify id="van-notify" />
 <wxs src="../../utils/tools.wxs" module="tools"></wxs>
 <block wx:if="{{routes && routes.length > 0}}">
   <view class="route--list">

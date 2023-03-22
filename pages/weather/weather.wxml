@@ -5,9 +5,9 @@
   
 </view>
 <view class="btn_arr">
-    <button calss="btn1" type="primary" plain="true" size="mini" bindtap="test_1"><text>获取行政区划编码</text></button>
-    <button calss="btn1" type="primary" plain="true" size="mini" bindtap="gotologs"><text>logs</text></button>
-    <button calss="btn1" type="primary" plain="true" size="mini" bindtap="gototransit"><text>transit</text></button>
+    <button calss="btn1" type="primary" plain="true" size="mini" bindtap="station"><text>收藏站点</text></button>
+    <button calss="btn1" type="primary" plain="true" size="mini" bindtap="busline"><text>收藏公交</text></button>
+    <button calss="btn1" type="primary" plain="true" size="mini" bindtap="route"><text>收藏路线</text></button>
     <button calss="btn1" type="primary" plain="true" size="mini" bindtap="gotoregeocoding"><text>regeocoding</text></button>
     <button calss="btn1" type="primary" plain="true" size="mini" bindtap="gotocontact"><text>contact</text></button>
     <button calss="btn1" type="primary" plain="true" size="mini" bindtap="gotolocal"><text>local_life</text></button>

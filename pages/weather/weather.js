@@ -1,5 +1,5 @@
 var bmap = require('../../libs/bmap-wx.js');
-var BM = require('../../libs/bmap-wx.js');
+const BMap = new bmap.BMapWX();
 Page({
   data: {
     weatherData: '',
@@ -8,75 +8,10 @@ Page({
 
   onLoad: function () {
     var that = this;
-    var BMap = new bmap.BMapWX();
-    var fail = function (data) {
-      console.log(data)
-      wx.getLocation({
-        type: "wgs84",
-        success: (res) => {
-          console.log(res)
-        }
-      })
-    };
-    var success = function (data) {
-      console.log(data)
-      var res = data.result;
-      var weatherData = '城市：' + res.location.name + '\n' + '体感温度：' + res.now.feels_like + '\n' + '日期：' + 'null' + '\n' + '温度：' + res.now.temp + '\n' + '天气：' + res.now.text + '\n' + '风力：' + res.now.wind_class + '\n';
-      that.setData({
-        weatherData: weatherData,
-        adcode: res.location.id
 
-      });
-    }
-
-    BMap.weather({
-      fail: fail,
-      success: success,
-      adcode: getApp().globalData.adcode
-    });
 
   },
-  getBusStation() {
-    var map = new BM.BMapGL.Map("container"); // 创建Map实例
-    
 
-    var busline = new BMapGL.BusLineSearch(map, {
-      renderOptions: {
-        map: map,
-        panel: "r-result"
-      },
-      onGetBusListComplete: function (result) {
-        if (result) {
-          var fstLine = result.getBusListItem(0); //获取第一个公交列表显示到map上
-          busline.getBusLine(fstLine);
-        }
-      },
-      onGetBusLineComplete: function (result) {
-        if (result) {
-          let array = []
-          for (let i = 0; i < result.getNumBusStations(); i++) {
-            let BusStation = result.getBusStation(i);
-            array.push({
-              name: BusStation.name,
-              position: {
-                lat: BusStation.position.lat,
-                lng: BusStation.position.lng
-              },
-              uid: BusStation._uid
-            })
-          }
-          console.log(array)
-          appPost({
-            'BusStation': array
-          })
-        }
-      }
-    });
-
-    var busName = 107;
-    busline.getBusList(busName);
-
-  },
   onPullDownRefresh: function () {
     wx.getLocation({
       type: "gcj02",
@@ -85,9 +20,39 @@ Page({
       }
     })
   },
-  test_1: function (e) {
-
-
+  station() {
+    wx.p.request({
+      url: wx.prefix + 'collectsync',
+      data: {
+        openid: wx.getStorageSync('usrinfo').openid,
+        method: 'del',
+        station: {uid:'6d706b478491bda208f5ebfe'},
+      },
+      header: {
+        "content-type": "application/json"
+      },
+      method: 'GET'
+    }).then((res)=>{
+      console.log(res)
+    })
+  },
+  busline(){
+    BMap.collectSync({
+      method: 'ver',
+    }).then(res => {
+      console.log(res)
+      let local_time = wx.getStorageSync('collect_time')
+      let server_time = (new Date(res.db_data.uptime))
+      console.log(local_time)
+      console.log(server_time)
+    })
+  },
+  route(){
+    BMap.collectSync({
+      method: 'get',
+    }).then(res=>{
+      console.log(res)
+    })
   },
   gotologs: function () {
     wx.navigateTo({
@@ -110,7 +75,7 @@ Page({
     // }, (res) => {
     //   console.log('fail', res)
     // })
-    
+
   },
   gotoregeocoding: function () {
 

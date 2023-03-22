@@ -7,8 +7,9 @@ import {
   store
 } from "~/store/store";
 var bmap = require('../../libs/bmap-wx.js');
-const tools = require('~/utils/util.js')
 const BMap = new bmap.BMapWX();
+const tools = require('~/utils/util.js')
+
 Page({
   data: {
     item: 0,
@@ -35,20 +36,21 @@ Page({
       description:'Connection Lost'
     },
   },
-
+ 
   onLoad() {
     const that = this
     that.calcscrollHeight();
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ["position","searchinfo","if_login"],
-      actions: ["update_position", "update_searchinfo","switch_init_sign","update_bus_station"]
+      fields: ["position","searchinfo","if_login","collect"],
+      actions: ["update_position", "update_searchinfo","switch_init_sign","update_bus_station","update_collect"]
     });
     if (wx.getUserProfile) {
       this.setData({
         canIUseGetUserProfile: true
       })
     }
+    this.update_collect()
     this.init_data();
 
   },
@@ -66,10 +68,23 @@ Page({
     })
 
   },
+  collect_init(){
+    const a1 = wx.getStorageSync('station')
+    const a2 = wx.getStorageSync('buslines')
+    const a3 = wx.getStorageSync('route')
+    let collect_all = []
+    collect_all.push(...a1,...a2,...a3)
+    collect_all.sort((a,b)=>{
+        return (a.uptime > b.uptime ? 1:-1) || 0
+    })
+    this.setData({
+      collect:collect_all
+    })
+  },
   i_tap(e) {
     this.update_bus_station(this.data.searchinfo[e.currentTarget.dataset.index])
     wx.navigateTo({
-      url: '../../pages/buslinelist/buslinelist' + '?uid=' + e.currentTarget.dataset.uid,
+      url: '../../pages/buslinelist/buslinelist?referer=index&uid=' + this.data.searchinfo[e.currentTarget.dataset.index].uid
     })
   },
   i_change(e) {

@@ -4,6 +4,8 @@ import {store} from "~/store/store";
 import {promisifyAll} from 'miniprogram-api-promise'
 const wxp = wx.p = {}
 const uri = ['http://47.115.213.83:4040/','http://192.168.123.199:59/','http://172.20.10.4:59/']
+var bmap = require('~/libs/bmap-wx.js');
+const BMap = new bmap.BMapWX();
 const prefix = wx.prefix = uri[2];
 promisifyAll(wx,wxp)
 App({
@@ -33,7 +35,7 @@ App({
     }
     this.storeBindings = createStoreBindings(this, {
       store,
-      actions: ["login_switch", "update_usr"]
+      actions: ["login_switch", "update_usr","update_collect"]
     });
     /* wx.setStorageSync('usrinfo',{
       openid: 'ozMCH5XJmo1VZ6mnT1eC3utoVOx8',
@@ -41,8 +43,20 @@ App({
       avatarUrl: 'wxfile://tmp_e311f78dd2a993c4fa92a38f63cfdd6a.jpg',
       nickname: '文科生'
     }) */
+    
     let usrinfo = wx.getStorageSync('usrinfo')
       if (usrinfo){
+        if(!wx.getStorageSync('collect_time') || !this.collect_ver()){
+          BMap.collectSync({
+            method: 'get',
+          }).then(res=>{
+             wx.setStorageSync('buslines',res.db_data.busline)
+             wx.setStorageSync('route',res.db_data.route)
+             wx.setStorageSync('station',res.db_data.station)
+             wx.setStorageSync('collect_time',res.db_data.uptime)
+             this.update_collect()
+          })
+        }
         console.log(usrinfo)
         this.update_usr(usrinfo)
         this.storeBindings.updateStoreBindings()              
@@ -76,5 +90,14 @@ App({
   },
   globalData: {
     userInfo: null
+  },
+  collect_ver(){
+    BMap.collectSync({
+      method: 'ver',
+    }).then(res => {
+      let local_time = wx.getStorageSync('collect_time')
+      let server_time = (new Date(res.db_data.uptime))
+      return (local_time == server_time)
+    })
   }
 })

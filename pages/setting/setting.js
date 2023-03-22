@@ -5,8 +5,10 @@ import {
 import {
   store
 } from "~/store/store";
-const { $Message } = require('../../Components/dist/base/index');
+import Notify from '@vant/weapp/notify/notify';
 var fuse = true
+var bmap = require('../../libs/bmap-wx.js');
+const BMap = new bmap.BMapWX();
 Page({
 
   /**
@@ -26,11 +28,11 @@ Page({
     this.storeBindings = createStoreBindings(this, {
       store,
       fields: ["if_login","usrinfo","login_msg_fuse"],
-      actions: ["login_switch","update_usr","updata_login_msg_fuse"]
+      actions: ["login_switch","update_usr","updata_login_msg_fuse","update_collect"]
     });
     this.storeBindings.updateStoreBindings()
     if(!this.data.if_login){
-      this.handleDefault()
+      Notify({ type: 'primary', message: '点击头像框登录' });
     }
   },
 
@@ -47,8 +49,21 @@ Page({
   onShow() {
     this.storeBindings.updateStoreBindings();
     if(this.data.if_login && this.data.login_msg_fuse){
-      this.handleSuccess()
+      Notify({ type: 'success', message: '登录成功' });
+      this.updata_login_msg_fuse(false)
+      if(!wx.getStorageSync('collect_time')){
+        BMap.collectSync({
+          method: 'get',
+        }).then(res=>{
+           wx.setStorageSync('buslines',res.db_data.busline)
+           wx.setStorageSync('route',res.db_data.route)
+           wx.setStorageSync('station',res.db_data.station)
+           wx.setStorageSync('collect_time',res.db_data.uptime)
+           this.update_collect()
+        })
+      }
     }
+    
   },
 
   /**
@@ -143,7 +158,7 @@ Page({
                 //判断文件是否存在，不存在抛出异常
                 wx.getFileSystemManager().accessSync(usrinfo['avatarUrl'])
                 that.login_switch(true)
-                this.handleSuccess ()
+                Notify({ type: 'success', message: '登录成功' });
               } catch (error) {
                 //文件不存在，从服务器拉取文件
                 wx.downloadFile({
@@ -153,7 +168,18 @@ Page({
                     //拉取成功，切换登入状态
                     console.log(res)
                     that.login_switch(true)
-                    this.handleSuccess()
+                    Notify({ type: 'success', message: '登录成功' });
+                    if(!wx.getStorageSync('collect_time')){
+                      BMap.collectSync({
+                        method: 'get',
+                      }).then(res=>{
+                         wx.setStorageSync('buslines',res.db_data.busline)
+                         wx.setStorageSync('route',res.db_data.route)
+                         wx.setStorageSync('station',res.db_data.station)
+                         wx.setStorageSync('collect_time',res.db_data.uptime)
+                         this.update_collect()
+                      })
+                    }
                   },
                   fail(res){
                     console.log(res)
@@ -192,7 +218,7 @@ Page({
         this.storeBindings.updateStoreBindings()
         wx.removeStorageSync("usrinfo")
         this.updata_login_msg_fuse(false)
-        this.handleError ()
+        Notify({ type: 'warning', message: '注销成功' });
       } else if (res.cancel) {
         console.log('用户点击取消')
       }
@@ -204,21 +230,5 @@ Page({
       if_login: true
     })
   },
-  handleDefault (){
-    $Message({
-      content: '点击头像框登录',
-  });
-  },
-  handleSuccess () {
-    $Message({
-        content: '登录成功',
-        type: 'success'
-    });
-},
-handleError () {
-  $Message({
-      content: '注销成功',
-      type: 'error'
-  });
-},
+  
 })

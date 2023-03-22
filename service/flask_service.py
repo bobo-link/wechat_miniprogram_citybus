@@ -57,7 +57,7 @@ def transit():
 def detail():
     data = request.args.to_dict()
     data['ak'] = ak
-    response = requests.get('https://api.map.b\WXBizDataCrypt.pyaidu.com/place/v2/detail',params=data,headers=headers).json()
+    response = requests.get('https://api.map.baidu.com/place/v2/detail',params=data,headers=headers).json()
     return response
 
 @app.route('/search')
@@ -87,9 +87,9 @@ def login():
             res['unionid'] = response['unionid']
         res['openid'] = response['openid']
     #连接moggodb usrinfo表
-    col = mongodb_col({"host":['localhost:27017'],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"usrinfo"})
+    col = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"usrinfo"})
     if list(col.find({"openid":res['openid']})) == []:        
-        col.insert_one({ 'openid': res['openid'], 'unionid': res['unionid'], 'uptime': parser.parser(data['uptime']), 'nickname': data['nickname'], 'avatarUrl':data['filename'].split('/').pop() })
+        col.insert_one({ 'openid': res['openid'], 'unionid': res['unionid'], 'uptime': parser.isoparse(eval(data['uptime'])), 'nickname': data['nickname'], 'avatarUrl':data['filename'].split('/').pop() })
     else:
        try:
         if ('filename' in data):
@@ -128,24 +128,54 @@ def login_check():
             r_data['unionid'] = response['unionid']
         r_data['openid'] = response['openid']
     #连接moggodb usrinfo表
-    col = mongodb_col({"host":['localhost:27017'],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"usrinfo"})
-    res = {}
+    res = {}    
     try: 
-        if list(col.find({"openid":r_data['openid']})) == []:        
+        col = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"usrinfo"})
+        usr = col.find_one({'openid': r_data['openid']},{"_id": 0})
+        if list(usr) == []:        
             res['status'] = 101
             res['msg'] = 'user is not exist'
         else:
-            res['usrinfo'] = col.find_one({'openid': r_data['openid']},{"_id": 0})
+            res['usrinfo'] = usr
             res['status'] = 0
             res['msg'] = 'user exist'
     except Exception as e:
-        print(e.details)
+        print(e)
         if (isinstance(e,pymongo.errors.OperationFailure)): 
             res['status'] = 10           
             res['code'] = e.details['code']
             res['msg'] = e.details['errmsg']
     return res
 
+@app.route('/collectsync')
+def collectsync():
+    data = format_dict(request.args.to_dict())
+    print(data)
+    item = {}
+    res = {}
+    if 'station' in data.keys():
+        item['station'] = data['station']
+    if 'busline' in data.keys():
+        item['busline'] = data['busline']
+    if 'route' in data.keys():
+        item['route'] = data['route']
+    try: 
+        col = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"collect"})
+        if data['method'] =='add':
+            res['db_data'] = col.update_one({'openid': data['openid']},{"$push":item,"$set":{'uptime': parser.isoparse(eval(data['uptime']))}}).raw_result
+        if data['method'] =='del':
+            res['db_data'] = col.update_one({'openid': data['openid']},{"$pull":item,}).raw_result
+        if data['method'] =='get':
+            res['db_data'] = col.find_one({'openid': data['openid']},{"_id": 0,"openid":0})
+        if data['method'] =='ver':
+            res['db_data'] = col.find_one({'openid': data['openid']},{"_id": 0,"uptime":1})
+        res['statusCode'] = 0
+    except Exception as e:
+        print(e)
+        if (isinstance(e,pymongo.errors.OperationFailure)): 
+            res['statusCode'] = 10
+            res['db_data'] = e.details
+    return res
 """ @app.route('/logout')
 def logout():      
     data = format_dict(request.args.to_dict())   
@@ -176,7 +206,7 @@ def download_avatar():
     if 'openid' in data.keys():
         openid = data['openid']
     try:
-        col = mongodb_col({"host":['localhost:27017'],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"usrinfo"})
+        col = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"usrinfo"})
         filename = col.find_one({'openid':openid },{"_id": 0 ,'avatarUrl':1})['avatarUrl']
         with open(os.path.curdir + os.path.sep +'service'+ os.path.sep + 'avatar' + os.path.sep + filename , 'rb') as f:
             stream = f.read()
@@ -257,9 +287,9 @@ if __name__ == '__main__':
     secret = cf.get('default', 'secret') 
     mongodb_usr =cf.get('default', 'mongodb_usr') 
     mongodb_pwd =cf.get('default', 'mongodb_pwd') 
-
+    mongodb_uri = cf.get('default', 'mongodb_uri')
     app.run(host="0.0.0.0",port=59) 
     
-    # col = mongodb_col({"host":['localhost:27017'],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"usrinfo"})
+    # col = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"usrinfo"})
     # print((col.find_one({'openid': 'ozMCH5XJmo1VZ6mnT1eC3utoVOx8'},{"_id": 0})))
     

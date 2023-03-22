@@ -62,13 +62,17 @@ Page({
             id: marker_id++,
             latitude: route.steps[j][x].start_location.lat,
             longitude: route.steps[j][x].start_location.lng,
-            title: route.steps[j][x].vehicle_info.detail.start_info.start_name
+            title: route.steps[j][x].vehicle_info.detail.start_info.start_name,
+            uid: route.steps[j][x].vehicle_info.detail.start_info.start_uid || '',
+            type:route.steps[j][x].vehicle_info.type
           })
           markers.push({
             id: marker_id++,
             latitude: route.steps[j][x].end_location.lat,
             longitude: route.steps[j][x].end_location.lng,
-            title: route.steps[j][x].vehicle_info.detail.end_info.end_name
+            title: route.steps[j][x].vehicle_info.detail.end_info.end_name,
+            uid: route.steps[j][x].vehicle_info.detail.end_info.end_uid || '',
+            type:route.steps[j][x].vehicle_info.type
           })
         }
         points.unshift({

@@ -2,28 +2,22 @@
 page{
  
 }
-.userinfo {
+.search {
   display: flex;
   flex-direction: column;
   align-items: center;
   color: #aaa;
 }
 
-.userinfo-avatar {
-  overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
-  border-radius: 50%;
-}
 .container{
   height:350rpx;
   padding:20rpx 20rpx 0rpx 20rpx;
-  
+  position:relative;
 }
-.usermotto {
-  margin-top: 10px;
-}
+
 .tab{
+  position:absolute;
+  bottom: 5px;
   width: 100%;
   display: flex;
 }
@@ -55,6 +49,9 @@ page{
 }
 .detail{
   margin-left: auto
+}
+.collect{
+  padding: 0 10px;
 }
 .bottom-button{
   width: 160px;

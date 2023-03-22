@@ -45,11 +45,12 @@ Page({
     console.log('data is', this.data)
     wx.p.login()
       .then((res) => {
+        let uptime = new Date();
         let data = {
           js_code: res.code,
           nickname: that.data.nickname,
           filename: that.data.avatarUrl,
-          uptime: new Date()
+          uptime: uptime
         }
         let re = wx.p.request({
           url: wx.prefix + 'login',
@@ -61,7 +62,7 @@ Page({
         }).then(({
           data: res
         }) => {
-          let openid = res.openid
+          let usr_res = res
           console.log(res)
           //上传头像文件到服务器
           wx.uploadFile({
@@ -78,11 +79,14 @@ Page({
               console.log(res_json)
               if (res_json.status == 0){
               that.login_switch(true)
-              that.update_usr({
+              let usrinfo = {
                 avatarUrl: that.data.avatarUrl,
-                openid: openid,
+                ...usr_res,
                 nickname: that.data.nickname,
-              })
+                uptime: uptime
+              }
+              wx.setStorageSync('usrinfo', usrinfo)
+              that.update_usr(usrinfo)
               }  
             },
             fail(res) {

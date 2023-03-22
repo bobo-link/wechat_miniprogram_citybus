@@ -1,4 +1,15 @@
 // pages/busline_detail/busline_detail.js
+import {
+  createStoreBindings
+} from "mobx-miniprogram-bindings";
+import {
+  store
+} from "~/store/store";
+import Notify from '@vant/weapp/notify/notify';
+const tools = require('~/utils/util.js')
+var bmap = require('../../libs/bmap-wx.js');
+const BMap = new bmap.BMapWX();
+var location
 Page({
 
   /**
@@ -7,15 +18,16 @@ Page({
   data: {
 
   },
-  reverse_direction(){
+  reverse_direction() {
     let direction = this.data.busline.direction
     let BusStations = this.data.busline.BusStations
     direction.reverse();
     BusStations.reverse();
+    console.log(location)
     this.setData({
-      busline:Object.assign({},this.data.busline,{
-        direction:direction,
-        BusStations:BusStations,
+      busline: Object.assign({}, this.data.busline, {
+        direction: direction,
+        BusStations: BusStations,
       })
     })
   },
@@ -26,12 +38,21 @@ Page({
     let busline = wx.getStorageSync('busline')
     let reg = /\((\S*)\)/
     let direction = busline.name.match(reg)[1]
-    busline.direction = [direction.split('-')[0],direction.split('-')[1]]
+    busline.direction = [direction.split('-')[0], direction.split('-')[1]]
     busline.name = busline.name.split('(')[0]
-   
+    location = {
+      lat: busline.BusStations[0].position.lat,
+      lng: busline.BusStations[0].position.lng,
+    }
     this.setData({
-      busline:busline
+      busline: busline
     })
+    this.storeBindings = createStoreBindings(this, {
+      store,
+      fields: ["bus_station"],
+      actions: ["update_collect"]
+    });
+
   },
 
   /**
@@ -59,14 +80,53 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-
+    this.storeBindings.destroyStoreBindings();
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-
+    let busline = wx.getStorageSync('buslines') || []
+    let item = {
+      name: this.data.busline.name,
+      location: location,
+      type: 'busline',
+      uptime: new Date()
+    }
+    if (busline.length < 10 && !tools.ifexist(item, busline)) {
+      BMap.collectSync({
+        method: 'add',
+        busline: item,
+      }).then(res => {
+        console.log(res)
+        if (res.statusCode == 0) {
+          busline.push(item)
+          wx.setStorageSync('buslines', busline)
+          this.update_collect()
+          Notify({
+            type: 'success',
+            message: '成功收藏'
+          });
+        } else {
+          Notify({
+            type: 'danger',
+            message: '收藏失败'
+          });
+        }
+      })
+    } else if (busline.length >= 10) {
+      Notify({
+        type: 'danger',
+        message: '收藏已达上限'
+      });
+    } else {
+      Notify({
+        type: 'warning',
+        message: '已存在'
+      });
+    }
+    wx.stopPullDownRefresh()
   },
 
   /**
