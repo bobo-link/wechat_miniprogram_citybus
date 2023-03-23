@@ -67,6 +67,13 @@ def search():
     response = requests.get('https://api.map.baidu.com/place/v2/search',params=data,headers=headers).json()
     return response
 
+@app.route('/suggestion')
+def suggestion():
+    data = format_dict(request.args.to_dict())
+    data['ak'] = ak
+    response = requests.get('https://api.map.baidu.com/place/v2/suggestion',params=data,headers=headers).json()
+    return response
+
 @app.route('/login')
 def login():      
     data = format_dict(request.args.to_dict())
@@ -164,7 +171,7 @@ def collectsync():
         if data['method'] =='add':
             res['db_data'] = col.update_one({'openid': data['openid']},{"$push":item,"$set":{'uptime': parser.isoparse(eval(data['uptime']))}}).raw_result
         if data['method'] =='del':
-            res['db_data'] = col.update_one({'openid': data['openid']},{"$pull":item,}).raw_result
+            res['db_data'] = col.update_one({'openid': data['openid']},{"$pull":item,"$set":{'uptime': parser.isoparse(eval(data['uptime']))}}).raw_result
         if data['method'] =='get':
             res['db_data'] = col.find_one({'openid': data['openid']},{"_id": 0,"openid":0})
         if data['method'] =='ver':

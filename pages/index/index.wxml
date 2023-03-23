@@ -3,7 +3,7 @@
 <view class="container">
 
   <view class="search">
-
+    <van-search value="{{ value }}" placeholder="请输入搜索关键词" bind:change="swaech_change"/>
   </view>
   <view class="tab">
     <view class="tab-item {{tab==0?'active':''}}" bindtap="changeItem" data-item="0">附近</view>
@@ -19,18 +19,11 @@
       <block wx:if="{{!sign_A.flag}}">
         <scroll-view class="list" scroll-y scroll-into-view="{{item_idx}}" style="height:{{scrollHeight}}px">
           <block wx:for="{{searchinfo}}" wx:key="uid" wx:for-index="idx">
-            <i-swipeout id="{{'item_' + idx}}" i-class="i-swipeout-demo-item" actions="{{actions}}" bind:change="i_change" data-index="{{idx}}" data-uid="{{item.uid}}">
-              <view slot="content" catchtouchmove='catchtouchmove'>
-                <view class="i-swipeout-image" style="background:#ff9900;">
-                  <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
-                </view>
-                <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
-                  <iconfont name="gongjiaozhanpai" size='40'></iconfont>
-                  <view class="i-swipeout-des-h2">{{item.name}}</view>
+            <view class="station--item" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
+                  <iconfont name="gongjiaozhanpai" size='40' style="padding: 0 10px;"></iconfont>
+                  <view class="station--name">{{item.name}}</view>
                   <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
                 </view>
-              </view>
-            </i-swipeout>
           </block>
         </scroll-view>
       </block>
@@ -43,9 +36,11 @@
         <block wx:if="{{collect && collect.length > 0}}">
           <scroll-view class="collect" scroll-y scroll-into-view="{{item_idx}}" style="height:{{scrollHeight}}px">
             <block wx:for="{{collect}}" wx:key="index" wx:for-index="idx">
-              <block wx:if="{{item.type !='route'}}">
-                <template is="station" data="{{...item}}"/>
-              </block>
+                <i-swipeout id="{{'item_' + idx}}" i-class="i-swipeout-demo-item" actions="{{actions}}" bind:change="collect_del" data-index="{{idx}}" bind:tap="collect_todetail">
+                  <view slot="content" catchtouchmove='catchtouchmove'>
+                    <template is="{{item.type}}" data="{{...item}}" />
+                  </view>
+                </i-swipeout>
             </block>
           </scroll-view>
         </block>
@@ -64,33 +59,24 @@
   </swiper>
 </view>
 <template name="station">
-    <view class="i-swipeout-des" bindtap="i_tap">
-      <iconfont name="gongjiaozhanpai" size='40'></iconfont>
-      <view class="i-swipeout-des-h2">{{name}}</view>
-      <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
-    </view>
+  <view class="i-swipeout-des" bindtap="">
+    <iconfont name="gongjiaozhanpai" size="50" color="{{'rgba(154, 154, 155,0.9)'}}" style="padding-right: 8px;"></iconfont>
+    <text>{{name}}</text>
+  </view>
 </template>
 <template name="busline">
-  <view slot="content" catchtouchmove='catchtouchmove'>
-    <view class="i-swipeout-image" style="background:#ff9900;">
-      <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
-    </view>
-    <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
-      <iconfont name="gongjiaozhanpai" size='40'></iconfont>
-      <view class="i-swipeout-des-h2">{{item.name}}</view>
-      <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
-    </view>
+  <view class="i-swipeout-des">
+    <iconfont name="gongjiao" size="50" color="{{'rgba(154, 154, 155,0.9)'}}" style="padding-right: 8px;"></iconfont>
+    <text>{{name}}</text>
   </view>
 </template>
 <template name="route">
-  <view slot="content" catchtouchmove='catchtouchmove'>
-    <view class="i-swipeout-image" style="background:#ff9900;">
-      <i-icon size="20" color="#FFFFFF" type="coupons_fill" />
-    </view>
-    <view class="i-swipeout-des" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
-      <iconfont name="luxian" size='40'></iconfont>
-      <view class="i-swipeout-des-h2">{{item.name}}</view>
-      <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
+  <view class="i-swipeout-des">
+    <iconfont name="luxian" size="50" color="{{'rgba(154, 154, 155,0.9)'}}" style="padding-right: 8px;"></iconfont>
+    <view >
+      <text>{{origin.name}}</text>
+      <view class="sensing" style="padding: 0 10px;">⭣</view>
+      <text>{{destination.name}}</text>
     </view>
   </view>
 </template>

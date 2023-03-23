@@ -1,3 +1,5 @@
+var bmap = require('~/libs/bmap-wx.js');
+const BMap = new bmap.BMapWX();
 const formatTime = date => {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -102,24 +104,24 @@ const ifexist = function (obj, arr) {
       })
       break;
     case 'route':
-      function euqal(p1,p2){
-        let f1,f2,f3 = false
-        if (p1.location.lat == p2.location.lat){
+      function euqal(p1, p2) {
+        let f1, f2, f3 = false
+        if (p1.location.lat == p2.location.lat) {
           f1 = true
         }
-        if (p1.location.lng == p2.location.lng){
+        if (p1.location.lng == p2.location.lng) {
           f2 = true
         }
-        if (p1.name == p2.name){
+        if (p1.name == p2.name) {
           f3 = true
         }
-        if (f1 && f2 && f3 ){
+        if (f1 && f2 && f3) {
           return true
-        } 
+        }
         return false
       }
       arr.forEach(item => {
-        if (euqal(obj.origin,item.origin) && euqal(obj.destination,item.destination)) { // 对象里的唯一标识id
+        if (euqal(obj.origin, item.origin) && euqal(obj.destination, item.destination)) { // 对象里的唯一标识id
           flag = true;
         }
       })
@@ -130,11 +132,33 @@ const ifexist = function (obj, arr) {
   return flag
 }
 
+const collectsync = async function () {
+  function collect_ver(){
+    BMap.collectSync({
+      method: 'ver',
+    }).then(res => {
+      let local_time = wx.getStorageSync('collect_time')
+      let server_time = (new Date(res.db_data.uptime))
+      return (local_time < server_time)
+    })
+  }
+  if (!wx.getStorageSync('collect_time') || collect_ver()) {
+   await BMap.collectSync({
+      method: 'get',
+    }).then(res => {
+      wx.setStorageSync('busline', res.db_data.busline)
+      wx.setStorageSync('route', res.db_data.route)
+      wx.setStorageSync('station', res.db_data.station)
+      wx.setStorageSync('collect_time', res.db_data.uptime)
+    })
+  }
+}
 module.exports = {
   formatTime,
   getweather_icon,
   adcode_back,
   unique_list,
   isEmptyObject,
-  ifexist
+  ifexist,
+  collectsync
 }

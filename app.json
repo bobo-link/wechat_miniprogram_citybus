@@ -46,7 +46,8 @@
     "van-action-sheet": "@vant/weapp/action-sheet/index",
     "iconfont": "/Components/iconfont/iconfont",
     "van-button": "@vant/weapp/button/index",
-    "van-notify": "@vant/weapp/notify/index"
+    "van-notify": "@vant/weapp/notify/index",
+    "van-search": "@vant/weapp/search/index"
   },
   "tabBar": {
     "color": "#000",

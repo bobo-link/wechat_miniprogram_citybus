@@ -31,7 +31,7 @@ Page({
     console.log(options)
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ["bus_station"],
+      fields: ["bus_station","if_login"],
       actions: ["update_bus_station","update_collect"]
     });
     this.storeBindings.updateStoreBindings()
@@ -51,6 +51,9 @@ Page({
           return
         }
         this.update_bus_station(res.result)
+        wx.setNavigationBarTitle({
+          title: res.result.name
+        })
         this.setData({
           address: res.result.address
         })
@@ -96,6 +99,14 @@ Page({
       type: 'station',
       uid: this.data.bus_station.uid,
       uptime: new Date()
+    }
+    if(!this.data.if_login){
+      Notify({
+        type: 'warning',
+        message: '请先登录'
+      });
+      wx.stopPullDownRefresh()
+      return 
     }
     if (station.length < 10 && !tools.ifexist(item, station)) {
       BMap.collectSync({

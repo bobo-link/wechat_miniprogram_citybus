@@ -3,6 +3,7 @@ export const store = observable({
   // 数据字段
   position:{
     init_adcode:'',
+    cityCode:'',
     adcode:'',
     location:'',
     weather_adcode:'',
@@ -30,6 +31,7 @@ export const store = observable({
      param.location && (tmp['location'] = param.location)
      param.weather_adcode && (tmp['weather_adcode'] = param.weather_adcode)
      param.desc && (tmp['desc'] = param.desc)
+     param.cityCode && (tmp['cityCode'] = param.cityCode)
      this.position = Object.assign({},this.position,tmp)
   }),
   check_status: action(function(param){
@@ -65,12 +67,11 @@ export const store = observable({
     this.bus_station = bus_station
   }),
   updata_login_msg_fuse:action(function(bool){
-    console.log(bool)
     this.login_msg_fuse = bool
   }),
   update_collect:action(function(){
     const a1 = wx.getStorageSync('station')
-    const a2 = wx.getStorageSync('buslines')
+    const a2 = wx.getStorageSync('busline')
     const a3 = wx.getStorageSync('route')
     let collect_all = []
     collect_all.push(...a1,...a2,...a3)

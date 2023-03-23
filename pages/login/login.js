@@ -5,6 +5,7 @@ import {
 import {
   store
 } from "~/store/store";
+const tools = require('~/utils/util.js')
 const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 Page({
 
@@ -20,19 +21,19 @@ Page({
     const that = this
     const avatarUrl = wx.env.USER_DATA_PATH + '/' + e.detail.avatarUrl.split('/').pop()
     wx.getFileSystemManager().copyFile({
-      srcPath:e.detail.avatarUrl,
-      destPath:avatarUrl,
-      success(res){
-        console.log("success",res)
+      srcPath: e.detail.avatarUrl,
+      destPath: avatarUrl,
+      success(res) {
+        console.log("success", res)
         that.setData({
           avatarUrl,
         })
       },
-      fail(res){
-        console.log("fail",res)
+      fail(res) {
+        console.log("fail", res)
       }
     })
-    
+
   },
   bindblur(e) {
     this.setData({
@@ -66,7 +67,7 @@ Page({
           console.log(res)
           //上传头像文件到服务器
           wx.uploadFile({
-            url: wx.prefix + 'avatar', 
+            url: wx.prefix + 'avatar',
             filePath: this.data.avatarUrl,
             name: 'file',
             formData: {
@@ -77,23 +78,26 @@ Page({
             }) {
               res_json = eval('(' + res + ')')
               console.log(res_json)
-              if (res_json.status == 0){
-              that.login_switch(true)
-              let usrinfo = {
-                avatarUrl: that.data.avatarUrl,
-                ...usr_res,
-                nickname: that.data.nickname,
-                uptime: uptime
+              if (res_json.status == 0) {
+                that.login_switch(true)
+                let usrinfo = {
+                  avatarUrl: that.data.avatarUrl,
+                  ...usr_res,
+                  nickname: that.data.nickname,
+                  uptime: uptime
+                }
+                wx.setStorageSync('usrinfo', usrinfo)
+                that.update_usr(usrinfo)
+                tools.collectsync().then(res => {
+                  that.update_collect()
+                })
               }
-              wx.setStorageSync('usrinfo', usrinfo)
-              that.update_usr(usrinfo)
-              }  
             },
             fail(res) {
               console.log('fail', res)
               //do something
             },
-            complete(){
+            complete() {
               wx.switchTab({
                 url: '/pages/setting/setting',
               })
@@ -117,7 +121,7 @@ Page({
     this.storeBindings = createStoreBindings(this, {
       store,
       fields: ["if_login", "usrinfo"],
-      actions: ["login_switch", "update_usr","updata_login_msg_fuse"]
+      actions: ["login_switch", "update_usr", "updata_login_msg_fuse","update_collect"]
     });
     this.storeBindings.updateStoreBindings()
     this.updata_login_msg_fuse(true)
@@ -134,7 +138,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    
+
   },
 
   /**

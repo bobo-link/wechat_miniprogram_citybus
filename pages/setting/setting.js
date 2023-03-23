@@ -8,6 +8,7 @@ import {
 import Notify from '@vant/weapp/notify/notify';
 var fuse = true
 var bmap = require('../../libs/bmap-wx.js');
+const tools = require('../../utils/util.js')
 const BMap = new bmap.BMapWX();
 Page({
 
@@ -27,12 +28,15 @@ Page({
   onLoad(options) {
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ["if_login","usrinfo","login_msg_fuse"],
-      actions: ["login_switch","update_usr","updata_login_msg_fuse","update_collect"]
+      fields: ["if_login", "usrinfo", "login_msg_fuse"],
+      actions: ["login_switch", "update_usr", "updata_login_msg_fuse", "update_collect"]
     });
     this.storeBindings.updateStoreBindings()
-    if(!this.data.if_login){
-      Notify({ type: 'primary', message: '点击头像框登录' });
+    if (!this.data.if_login) {
+      Notify({
+        type: 'primary',
+        message: '点击头像框登录'
+      });
     }
   },
 
@@ -48,22 +52,14 @@ Page({
    */
   onShow() {
     this.storeBindings.updateStoreBindings();
-    if(this.data.if_login && this.data.login_msg_fuse){
-      Notify({ type: 'success', message: '登录成功' });
+    if (this.data.if_login && this.data.login_msg_fuse) {
+      Notify({
+        type: 'success',
+        message: '登录成功'
+      });
       this.updata_login_msg_fuse(false)
-      if(!wx.getStorageSync('collect_time')){
-        BMap.collectSync({
-          method: 'get',
-        }).then(res=>{
-           wx.setStorageSync('buslines',res.db_data.busline)
-           wx.setStorageSync('route',res.db_data.route)
-           wx.setStorageSync('station',res.db_data.station)
-           wx.setStorageSync('collect_time',res.db_data.uptime)
-           this.update_collect()
-        })
-      }
     }
-    
+
   },
 
   /**
@@ -78,7 +74,7 @@ Page({
    */
   onUnload() {
     this.storeBindings.destroyStoreBindings();
-    
+
   },
 
   /**
@@ -92,7 +88,7 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom() {
-    
+
   },
 
   /**
@@ -106,129 +102,131 @@ Page({
     }
   },
   getUserProfile(e) {
-    console.log(fuse)
-    if(!fuse){
+    if (!fuse) {
       return
     }
     fuse = false
     const that = this
-    
-    setTimeout(()=>{
+
+    setTimeout(() => {
       fuse = true
-    },1000)
+    }, 1000)
     wx.p.login().
-    then((res)=>{
+    then((res) => {
       wx.p.request({
         url: wx.prefix + 'login_check',
-        data:{js_code: res.code},
+        data: {
+          js_code: res.code
+        },
         header: {
           "content-type": "application/json"
         },
         method: 'GET',
-      }).then(({data:res})=>{
+      }).then(({
+        data: res
+      }) => {
         console.log(res)
         let data = res
-        if (res.status == undefined){
+        if (res.status == undefined) {
           console.log(!res.status)
           wx.showToast({
             title: '无法连接服务器',
-            icon:'none'
+            icon: 'none'
           })
           return
         }
-        if(res.status == 0){
+        if (res.status == 0) {
           wx.p.showModal({
             title: '提示',
-            content: '是否修改个人信息',   
-            confirmText:'是',
-            cancelText: '否'        
-          }).then((res)=>{
+            content: '是否修改个人信息',
+            confirmText: '是',
+            cancelText: '否'
+          }).then((res) => {
             if (res.confirm) {
               wx.navigateTo({
                 url: '/pages/login/login',
               })
             } else if (res.cancel) {
               // 从服务器拉取个人信息并持久化存储，切换登入状态
-              let usrinfo = {...data.usrinfo}
-              usrinfo['avatarUrl'] = wx.env.USER_DATA_PATH + '/' +usrinfo.avatarUrl;
-              wx.setStorageSync('usrinfo',usrinfo)
+              let usrinfo = {
+                ...data.usrinfo
+              }
+              usrinfo['avatarUrl'] = wx.env.USER_DATA_PATH + '/' + usrinfo.avatarUrl;
+              wx.setStorageSync('usrinfo', usrinfo)
               this.update_usr(wx.getStorageSync('usrinfo'))
               this.storeBindings.updateStoreBindings()
-              try {               
+              try {
                 //判断文件是否存在，不存在抛出异常
-                wx.getFileSystemManager().accessSync(usrinfo['avatarUrl'])
-                that.login_switch(true)
-                Notify({ type: 'success', message: '登录成功' });
+                wx.getFileSystemManager().accessSync(usrinfo['avatarUrl'])              
               } catch (error) {
                 //文件不存在，从服务器拉取文件
                 wx.downloadFile({
-                  url: wx.prefix + 'download_avatar'+'?openid='+ this.data.usrinfo.openid,
+                  url: wx.prefix + 'download_avatar' + '?openid=' + this.data.usrinfo.openid,
                   filePath: this.data.usrinfo.avatarUrl,
-                  success(res){
-                    //拉取成功，切换登入状态
+                  success(res) {
                     console.log(res)
-                    that.login_switch(true)
-                    Notify({ type: 'success', message: '登录成功' });
-                    if(!wx.getStorageSync('collect_time')){
-                      BMap.collectSync({
-                        method: 'get',
-                      }).then(res=>{
-                         wx.setStorageSync('buslines',res.db_data.busline)
-                         wx.setStorageSync('route',res.db_data.route)
-                         wx.setStorageSync('station',res.db_data.station)
-                         wx.setStorageSync('collect_time',res.db_data.uptime)
-                         this.update_collect()
-                      })
-                    }
                   },
-                  fail(res){
+                  fail(res) {
                     console.log(res)
                   }
+                })
+              }finally{
+                that.login_switch(true)
+                Notify({
+                  type: 'success',
+                  message: '登录成功'
+                });
+                this.updata_login_msg_fuse(false)
+                tools.collectsync().then(res => {
+                  this.update_collect()
                 })
               }
             }
           })
-        }else if(res.status === 101){
+        } else if (res.status === 101) {
           wx.showToast({
             title: '无法连接服务器',
-            icon:'none'
-          })  
-        }else{
+            icon: 'none'
+          })
+        } else {
           wx.navigateTo({
             url: '/pages/login/login',
           })
         }
-      },(res)=>{
+      }, (res) => {
         wx.showToast({
           title: '无法连接服务器',
-          icon:'none'
+          icon: 'none'
         })
       })
     })
-    
+
   },
-  logout(e){
+  logout(e) {
     wx.p.showModal({
       title: '提示',
       content: '确认注销',
-      
-    }).then((res)=>{
+
+    }).then((res) => {
       if (res.confirm) {
         this.login_switch(false)
         this.storeBindings.updateStoreBindings()
         wx.removeStorageSync("usrinfo")
-        this.updata_login_msg_fuse(false)
-        Notify({ type: 'warning', message: '注销成功' });
+        this.updata_login_msg_fuse(true)
+        Notify({
+          type: 'warning',
+          message: '注销成功'
+        });
       } else if (res.cancel) {
         console.log('用户点击取消')
       }
     })
-    
+
   },
   bindViewTap(e) {
     this.setData({
       if_login: true
     })
   },
-  
+
 })

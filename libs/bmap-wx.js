@@ -738,6 +738,58 @@ class BMapWX {
       })
     return Data
   };
+  /**
+   *输入提示
+   * promisify
+   * @param {Object} param 检索配置
+   * 参数对象结构可以参考
+   * https://lbs.baidu.com/index.php?title=webapi/place-suggestion-api
+   */
+  async suggestion_promisify(param) {
+    var that = this;
+    let Data = null;
+    param = param || {};
+    let suggestionparam = {
+      location: param['location'] || '',
+      query: param['query'] || '',
+      region: param['region'] || '',
+      city_limit:param["city_limit"] || true,
+      coordtype: param["coordtype"] || 'gcj02ll',
+      ret_coordtype: 'gcj02ll',
+      ak: that.ak,
+      sn: param["sn"] || '',
+      output: param["output"] || 'json',
+      
+    };
+    if (!param['query'] || !param['region']) {
+      return {
+        errMsg: 'Param query and region is not exist'
+      }
+    }
+    await wx.p.request({
+        url: wx.prefix + (realapi.suggestion || 'suggestion' ),
+        data: suggestionparam,
+        header: {
+          "content-type": "application/json"
+        },
+        method: 'GET'
+      })
+      .then(({
+        data: res
+      }) => {
+        if (res["status"] === 0) {
+          Data = res;
+        } else {
+          Data = {
+            errMsg: res["message"] || 'error',
+            statusCode: res["status"] || -1
+          };
+        }
+      }, (res) => {
+        Data = res
+      })
+    return Data
+  };
 
   /**
    * 收藏同步

@@ -39,7 +39,7 @@ Page({
   onLoad(options) {
     this.storeBindings = createStoreBindings(this, {
       store,
-      actions: ["update_route"]
+      actions: ["update_route","update_collect"]
     });
     this.setData({
       origin: JSON.parse(options.origin),
@@ -182,6 +182,7 @@ Page({
         if (res.statusCode == 0) {
           route.push(item)
           wx.setStorageSync('route', route)
+          this.update_collect()
           Notify({
             type: 'success',
             message: '成功收藏'

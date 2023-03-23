@@ -28,6 +28,15 @@ page{
   overflow-y: hidden;
   background-color: #f8f8f8;
 }
+.station--item{
+  display: flex;
+  height: 50px;
+  align-items: center;
+  margin: 10px 10px;
+  padding: 15px;
+  border-radius: 5px;
+  background: white;
+}
 .i-swipeout-demo-item{
   margin: 5px 10px 8px 10px; 
   border-style: none;

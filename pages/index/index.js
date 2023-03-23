@@ -14,13 +14,12 @@ Page({
   data: {
     item: 0,
     tab: 0,
-    item_idx:'',
+    item_idx: '',
     actions: [{
-        name: '喜欢',
+        name: '删除',
         color: '#fff',
         fontsize: '20',
         width: 100,
-        icon: 'like',
         background: '#ed3f14'
       },
 
@@ -30,20 +29,20 @@ Page({
       text: '×',
       temp: '×'
     },
-    sign_A:{
+    sign_A: {
       flag: true,
-      image:'network',
-      description:'Connection Lost'
+      image: 'network',
+      description: 'Connection Lost'
     },
   },
- 
+
   onLoad() {
     const that = this
     that.calcscrollHeight();
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ["position","searchinfo","if_login","collect"],
-      actions: ["update_position", "update_searchinfo","switch_init_sign","update_bus_station","update_collect"]
+      fields: ["position", "searchinfo", "if_login", "collect"],
+      actions: ["update_position", "update_searchinfo", "switch_init_sign", "update_bus_station", "update_collect"]
     });
     if (wx.getUserProfile) {
       this.setData({
@@ -68,17 +67,17 @@ Page({
     })
 
   },
-  collect_init(){
+  collect_init() {
     const a1 = wx.getStorageSync('station')
     const a2 = wx.getStorageSync('buslines')
     const a3 = wx.getStorageSync('route')
     let collect_all = []
-    collect_all.push(...a1,...a2,...a3)
-    collect_all.sort((a,b)=>{
-        return (a.uptime > b.uptime ? 1:-1) || 0
+    collect_all.push(...a1, ...a2, ...a3)
+    collect_all.sort((a, b) => {
+      return (a.uptime > b.uptime ? 1 : -1) || 0
     })
     this.setData({
-      collect:collect_all
+      collect: collect_all
     })
   },
   i_tap(e) {
@@ -87,8 +86,65 @@ Page({
       url: '../../pages/buslinelist/buslinelist?referer=index&uid=' + this.data.searchinfo[e.currentTarget.dataset.index].uid
     })
   },
-  i_change(e) {
-    console.log(e)
+  swaech_change(e) {
+    BMap.suggestion_promisify({
+      query: e.detail,
+      region: "335"
+    }).then(res => {
+      var reg = RegExp(/公交车站/);
+      let valid_data = []
+      if (res.result && res.result.length > 0) {
+        res.result.forEach(item => {
+          if (item.name.match(reg)) {
+            valid_data.push(item)
+          }
+        })
+      }
+      console.log(res)
+      console.log(valid_data)
+    })
+  },
+  collect_del(e) {
+    let index = e.currentTarget.dataset.index
+    let param = {
+      method: 'del'
+    }
+    let type = this.data.collect[index].type
+    let item = {
+      uptime: this.data.collect[index].uptime
+    }
+    param[type] = item
+    console.log(param)
+    BMap.collectSync(param).then((res) => {
+      console.log(res)
+      if (res.statusCode != undefined && res.statusCode == 0 && res.db_data.nModified > 0) {
+        let array = this.data.collect
+        array.splice(index, 1)
+        wx.setStorageSync(type, array.filter(x => {
+          return x.type == type
+        }))
+        this.update_collect()
+        this.storeBindings.updateStoreBindings()
+      }
+    })
+  },
+  collect_todetail(e) {
+    let index = e.currentTarget.dataset.index
+    let type = this.data.collect[index].type
+    switch (type) {
+      case 'station':
+        wx.navigateTo({
+          url: '/pages/buslinelist/buslinelist?referer=collect&uid=' + this.data.collect[index].uid,
+        })
+        break;
+      case "route":
+        wx.navigateTo({
+          url: '/pages/transit_list/transit_list?origin=' + JSON.stringify(this.data.collect[index].origin) + '&destination=' + JSON.stringify(this.data.collect[index].destination),
+        });
+        break;
+      default:
+        break;
+    }
   },
   //切换标签页函数
   changeItem: function (e) {
@@ -125,13 +181,14 @@ Page({
               return
             }
             this.setData({
-              region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district] 
+              region: [res.result.addressComponent.province, res.result.addressComponent.city, res.result.addressComponent.district]
             })
             this.update_position({
               adcode: res.result.addressComponent.adcode,
               init_adcode: res.result.addressComponent.adcode,
+              cityCode: res.result.cityCode,
               location: location,
-              desc: res.result.addressComponent.district +  res.result.addressComponent.town + res.result.addressComponent.street + res.result.addressComponent.street_number
+              desc: res.result.addressComponent.district + res.result.addressComponent.town + res.result.addressComponent.street + res.result.addressComponent.street_number
             })
             this.switch_init_sign()
             this.storeBindings.updateStoreBindings()
@@ -140,19 +197,20 @@ Page({
             promiselist[0] = BMap.search_promisify({
               location: location,
               query: '公交车站',
-            }).then((res) => {              
+            }).then((res) => {
               if (!res.errMsg) {
                 let unique = tools.unique_list(res.results)
                 this.update_searchinfo(unique)
                 this.setData({
                   'sign_A.flag': false
                 })
-                if (unique.length == 0){
+                if (unique.length == 0) {
                   this.setData({
-                    sign_A: Object.assign(sign_A,{
+                    sign_A: Object.assign(sign_A, {
                       flag: true,
-                      description:'附近没有站点',
-                      image:'default'})
+                      description: '附近没有站点',
+                      image: 'default'
+                    })
                   })
                 }
               }
@@ -172,22 +230,26 @@ Page({
                   promiselist[1] = BMap.weather_promisify({
                     adcode: tools.adcode_back(adcode),
                     data_type: 'now'
-                  }).then((res)=>{
-                    this.update_position({weather_adcode:tools.adcode_back(adcode)})
+                  }).then((res) => {
+                    this.update_position({
+                      weather_adcode: tools.adcode_back(adcode)
+                    })
                     this.setData({
                       'weather_info.temp': res.result.now.temp + '℃',
                       'weather_info.text': res.result.now.text,
                       'weather_info.icon': tools.getweather_icon(res.result.now.text),
                     })
                   })
-                }else{
-                  this.update_position({weather_adcode:adcode})
+                } else {
+                  this.update_position({
+                    weather_adcode: adcode
+                  })
                   this.setData({
                     'weather_info.temp': res.result.now.temp + '℃',
                     'weather_info.text': res.result.now.text,
                     'weather_info.icon': tools.getweather_icon(res.result.now.text),
                   })
-                }   
+                }
               })
             Promise.all(promiselist).then((res) => {
               this.storeBindings.updateStoreBindings();
@@ -204,7 +266,7 @@ Page({
   catchtouchmove: function (res) {
 
   },
-  login(){
+  login() {
     wx.switchTab({
       url: '/pages/setting/setting',
     })
@@ -231,10 +293,10 @@ Page({
       //获取屏幕可用高度
       let screenHeight = wx.getSystemInfoSync().windowHeight
       //计算 scroll-view 的高度
-      let scrollHeight = screenHeight - topHeight - wx.getStorageSync('navigationBarHeight') -wx.getStorageSync('statusBarHeight')
+      let scrollHeight = screenHeight - topHeight - wx.getStorageSync('navigationBarHeight') - wx.getStorageSync('statusBarHeight')
       that.setData({
         scrollHeight: scrollHeight,
-        screenHeight: screenHeight, 
+        screenHeight: screenHeight,
         topHeight: topHeight,
       })
     }).exec()
@@ -261,7 +323,9 @@ Page({
             adcode: e.detail.adcode_up,
             data_type: 'now'
           }).then((res) => {
-            this.update_position({weather_adcode:e.detail.adcode_up})
+            this.update_position({
+              weather_adcode: e.detail.adcode_up
+            })
             this.setData({
               'weather_info.temp': res.result.now.temp + '℃',
               'weather_info.text': res.result.now.text,
@@ -270,12 +334,14 @@ Page({
           })
         } else {
           console.log(res)
-          this.update_position({weather_adcode:e.detail.adcode})
+          this.update_position({
+            weather_adcode: e.detail.adcode
+          })
           this.setData({
             'weather_info.temp': res.result.now.temp + '℃',
             'weather_info.text': res.result.now.text,
             'weather_info.icon': tools.getweather_icon(res.result.now.text),
-          })          
+          })
         }
       })
     BMap.search_promisify({
@@ -289,35 +355,38 @@ Page({
         this.setData({
           'sign_A.flag': false
         })
-        if (unique.length === 0){
+        if (unique.length === 0) {
           this.setData({
-            sign_A: Object.assign(sign_A,{
+            sign_A: Object.assign(sign_A, {
               flag: true,
-              description:'附近没有站点',
-              image:'default'})
+              description: '附近没有站点',
+              image: 'default'
+            })
           })
         }
       }
     })
   },
-  reset_sign(sign){
+  reset_sign(sign) {
     switch (sign) {
       case 'sign_A':
         this.setData({
-          sign_A:{
+          sign_A: {
             flag: true,
-            image:'network',
-            description:'Connection Lost'
+            image: 'network',
+            description: 'Connection Lost'
           }
-        });break;
-        case 'sign_B':
-          this.setData({
-            sign_B:{
-              flag: true,
-              image:'network',
-              description:'Connection Lost'
-            }
-          });break;
+        });
+        break;
+      case 'sign_B':
+        this.setData({
+          sign_B: {
+            flag: true,
+            image: 'network',
+            description: 'Connection Lost'
+          }
+        });
+        break;
     }
   },
   getUserProfile(e) {

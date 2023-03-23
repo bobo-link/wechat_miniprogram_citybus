@@ -49,7 +49,7 @@ Page({
     })
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ["bus_station"],
+      fields: ["bus_station","if_login"],
       actions: ["update_collect"]
     });
 
@@ -87,12 +87,20 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-    let busline = wx.getStorageSync('buslines') || []
+    let busline = wx.getStorageSync('busline') || []
     let item = {
       name: this.data.busline.name,
       location: location,
       type: 'busline',
       uptime: new Date()
+    }
+    if(!this.data.if_login){
+      Notify({
+        type: 'warning',
+        message: '请先登录'
+      });
+      wx.stopPullDownRefresh()
+      return 
     }
     if (busline.length < 10 && !tools.ifexist(item, busline)) {
       BMap.collectSync({
@@ -102,7 +110,7 @@ Page({
         console.log(res)
         if (res.statusCode == 0) {
           busline.push(item)
-          wx.setStorageSync('buslines', busline)
+          wx.setStorageSync('busline', busline)
           this.update_collect()
           Notify({
             type: 'success',
