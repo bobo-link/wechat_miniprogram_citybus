@@ -10,16 +10,17 @@ page{
 }
 
 .container{
-  height:350rpx;
   padding:20rpx 20rpx 0rpx 20rpx;
   position:relative;
+  background: white;
 }
 
 .tab{
-  position:absolute;
+  margin-top: 40px;
   bottom: 5px;
   width: 100%;
   display: flex;
+  align-items: center;
 }
 .tab :nth-child(2) {
   margin-left:10px ;
@@ -28,11 +29,21 @@ page{
   overflow-y: hidden;
   background-color: #f8f8f8;
 }
+.search--result{
+  display: flex;
+  flex-direction: column;
+}
+.search--item{
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid rgba(175, 175, 175, 0.3);
+}
 .station--item{
   display: flex;
   height: 50px;
   align-items: center;
-  margin: 10px 10px;
+  margin: 5px 10px 10px 10px;
   padding: 15px;
   border-radius: 5px;
   background: white;
@@ -59,9 +70,7 @@ page{
 .detail{
   margin-left: auto
 }
-.collect{
-  padding: 0 10px;
-}
+
 .bottom-button{
   width: 160px;
   height: 40px;

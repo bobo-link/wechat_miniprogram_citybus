@@ -71,6 +71,10 @@ function seperate_addredss(address){
   if (address == undefined) {return []}
   return address.split(';')
 }
+function seperate_station(station){
+  if (station== undefined) {return ''}  
+  return station.split('-')[0]
+}
 function echo(param){
   console.log(param)
   return param
@@ -88,4 +92,5 @@ module.exports = {
   echo:echo,
   trim:trim,
   seperate_addredss:seperate_addredss,
+  seperate_station:seperate_station
 }

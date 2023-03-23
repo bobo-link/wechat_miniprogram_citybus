@@ -177,8 +177,12 @@ Page({
                   message: '登录成功'
                 });
                 this.updata_login_msg_fuse(false)
-                tools.collectsync().then(res => {
-                  this.update_collect()
+                tools.collectver().then(res => {
+                  if (res) {  
+                    tools.collectSync().then(res=>{
+                      this.update_collect()
+                    })  
+                  }
                 })
               }
             }

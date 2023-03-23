@@ -88,8 +88,12 @@ Page({
                 }
                 wx.setStorageSync('usrinfo', usrinfo)
                 that.update_usr(usrinfo)
-                tools.collectsync().then(res => {
-                  that.update_collect()
+                tools.collectver().then(res => {
+                  if (res) {  
+                    tools.collectSync().then(res=>{
+                      this.update_collect()
+                    })  
+                  }
                 })
               }
             },

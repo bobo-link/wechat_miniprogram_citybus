@@ -12,6 +12,8 @@ const tools = require('~/utils/util.js')
 
 Page({
   data: {
+    search:false,
+    searchempty:false,
     item: 0,
     tab: 0,
     item_idx: '',
@@ -65,7 +67,6 @@ Page({
       wx.hideLoading();
       wx.stopPullDownRefresh()
     })
-
   },
   collect_init() {
     const a1 = wx.getStorageSync('station')
@@ -86,10 +87,46 @@ Page({
       url: '../../pages/buslinelist/buslinelist?referer=index&uid=' + this.data.searchinfo[e.currentTarget.dataset.index].uid
     })
   },
-  swaech_change(e) {
+  search_focus(){
+    this.setData({
+      search: true
+    })
+  },
+  search_cancel(){
+    this.setData({
+      search: false,
+      searchResults:[],
+      searchempty:false
+    })
+  },
+  search_clear(){
+    this.setData({
+      searchResults:[],
+      searchempty:false
+    })
+  },
+  search_todetail(e){
+    let index = e.currentTarget.dataset.index
+    let uid = this.data.searchResults[index].uid
+    this.search_cancel()
+    wx.navigateTo({
+      url: '/pages/buslinelist/buslinelist?referer=suggestionsuggestion&uid='+ uid,
+    })
+  },
+  search_change(e) {
+    if (e.detail !=undefined && e.detail.length < 1){
+      return
+    }
+    wx.showLoading({
+      title: '加载中',
+    })
+    this.setData({
+      searchResults:[],
+      searchempty:false
+    })
     BMap.suggestion_promisify({
-      query: e.detail,
-      region: "335"
+      query: e.detail + '公交',
+      region: this.data.position.cityCode
     }).then(res => {
       var reg = RegExp(/公交车站/);
       let valid_data = []
@@ -101,8 +138,32 @@ Page({
         })
       }
       console.log(res)
-      console.log(valid_data)
+      wx.hideLoading()
+      this.setData({
+        searchResults:valid_data,
+        searchempty:true
+      })
     })
+  },
+  collect_refresh(){
+    if(this.data.if_login){
+      tools.collectver().then(res => {
+        if (res) {  
+          tools.collectSync().then(res=>{
+            this.update_collect()
+            wx.showToast({
+              title: '更新完成',
+              icon:'none'
+            })
+          })  
+        }else{
+          wx.showToast({
+            title: '已经是最新',
+            icon:'none'
+          })
+        }
+      })
+    }
   },
   collect_del(e) {
     let index = e.currentTarget.dataset.index
@@ -129,6 +190,7 @@ Page({
     })
   },
   collect_todetail(e) {
+    console.log(e)
     let index = e.currentTarget.dataset.index
     let type = this.data.collect[index].type
     switch (type) {

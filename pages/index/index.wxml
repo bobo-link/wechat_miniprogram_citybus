@@ -1,17 +1,38 @@
 <!--index.wxml-->
+<wxs src="../../utils/tools.wxs" module="tools" />
 <navigationBar bindsync="syncRegionChange" weather_info="{{weather_info}}" region="{{region}}"></navigationBar>
 <view class="container">
 
   <view class="search">
-    <van-search value="{{ value }}" placeholder="请输入搜索关键词" bind:change="swaech_change"/>
+    <van-search style="width: 100%;" value="{{ value }}" show-action="true" placeholder="请输入搜索关键词" bind:change="search_change" bind:focus="search_focus" bind:cancel="search_cancel" bind:clear="search_clear" />
   </view>
-  <view class="tab">
+
+  <view wx:if="{{!search}}" class="tab">
     <view class="tab-item {{tab==0?'active':''}}" bindtap="changeItem" data-item="0">附近</view>
     <view class="tab-item {{tab==1?'active':''}}" bindtap="changeItem" data-item="1">收藏</view>
+    <view wx:if="{{tab ==1}}" class="collect--refresh" style="margin-left: auto;padding-right: 10px;" bindtap="changeItem">
+    <iconfont name="shuaxin" size="25" bindtap="collect_refresh"></iconfont>
+    </view>
   </view>
 </view>
+<view class="search--result" wx:if="{{search}}">
+  <block wx:if="{{searchResults && searchResults.length >0}}">
+    <block wx:for="{{searchResults}}" wx:key="index" >
+    <view class="search--item" data-index="{{index}}" bind:tap="search_todetail">
+      <iconfont name="gongjiaozhanpai" size="50" color="{{'rgba(154, 154, 155,0.9)'}}" style="padding-right: 8px;"></iconfont>
+      <view>{{tools.seperate_station(item.name)}}</view>
+    </view>
+  </block>
+  </block>
+  <block wx:elif="{{searchempty}}">
+    <view style="margin-top: 60px;">
+      <van-empty image="search" description="没有相关站点" />
+    </view>
+  </block>
+</view>
 
-<view class="content">
+
+<view wx:if="{{!search}}" class="content">
   <swiper current="{{item}}" bindchange="changeTab" style="height:{{scrollHeight}}px">
     <!-- 每个滑块(swiper-item)都有一个index，也就是current要获取的值 -->
     <swiper-item id='swiper-item'>
@@ -20,10 +41,10 @@
         <scroll-view class="list" scroll-y scroll-into-view="{{item_idx}}" style="height:{{scrollHeight}}px">
           <block wx:for="{{searchinfo}}" wx:key="uid" wx:for-index="idx">
             <view class="station--item" bindtap="i_tap" data-index="{{idx}}" data-uid="{{item.uid}}">
-                  <iconfont name="gongjiaozhanpai" size='40' style="padding: 0 10px;"></iconfont>
-                  <view class="station--name">{{item.name}}</view>
-                  <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
-                </view>
+              <iconfont name="gongjiaozhanpai" size='40' style="padding: 0 10px;"></iconfont>
+              <view class="station--name">{{item.name}}</view>
+              <iconfont name="jinrujiantou" size='40' class="detail"></iconfont>
+            </view>
           </block>
         </scroll-view>
       </block>
@@ -36,11 +57,11 @@
         <block wx:if="{{collect && collect.length > 0}}">
           <scroll-view class="collect" scroll-y scroll-into-view="{{item_idx}}" style="height:{{scrollHeight}}px">
             <block wx:for="{{collect}}" wx:key="index" wx:for-index="idx">
-                <i-swipeout id="{{'item_' + idx}}" i-class="i-swipeout-demo-item" actions="{{actions}}" bind:change="collect_del" data-index="{{idx}}" bind:tap="collect_todetail">
-                  <view slot="content" catchtouchmove='catchtouchmove'>
-                    <template is="{{item.type}}" data="{{...item}}" />
-                  </view>
-                </i-swipeout>
+              <i-swipeout id="{{'item_' + idx}}" i-class="i-swipeout-demo-item" actions="{{actions}}" bind:change="collect_del" data-index="{{idx}}" >
+                <view slot="content" data-index="{{idx}}" bind:tap="collect_todetail" catchtouchmove='catchtouchmove'>
+                  <template is="{{item.type}}" data="{{...item}}" />
+                </view>
+              </i-swipeout>
             </block>
           </scroll-view>
         </block>
@@ -73,7 +94,7 @@
 <template name="route">
   <view class="i-swipeout-des">
     <iconfont name="luxian" size="50" color="{{'rgba(154, 154, 155,0.9)'}}" style="padding-right: 8px;"></iconfont>
-    <view >
+    <view>
       <text>{{origin.name}}</text>
       <view class="sensing" style="padding: 0 10px;">⭣</view>
       <text>{{destination.name}}</text>

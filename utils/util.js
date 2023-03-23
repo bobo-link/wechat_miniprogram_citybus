@@ -132,26 +132,31 @@ const ifexist = function (obj, arr) {
   return flag
 }
 
-const collectsync = async function () {
-  function collect_ver(){
-    BMap.collectSync({
-      method: 'ver',
-    }).then(res => {
-      let local_time = wx.getStorageSync('collect_time')
-      let server_time = (new Date(res.db_data.uptime))
-      return (local_time < server_time)
+const collectver = async function () {
+  let ver
+  await BMap.collectSync({
+    method: 'ver',
+  }).then(res => {
+    let local_time = new Date(wx.getStorageSync('collect_time'))
+    let server_time = new Date(res.db_data.uptime)
+    ver = local_time < server_time
+    console.log({
+      local_time:local_time,
+      server_time:server_time,
+      ver:ver
     })
-  }
-  if (!wx.getStorageSync('collect_time') || collect_ver()) {
-   await BMap.collectSync({
-      method: 'get',
-    }).then(res => {
-      wx.setStorageSync('busline', res.db_data.busline)
-      wx.setStorageSync('route', res.db_data.route)
-      wx.setStorageSync('station', res.db_data.station)
-      wx.setStorageSync('collect_time', res.db_data.uptime)
-    })
-  }
+  })
+  return ver
+}
+const collectSync = async function () {
+  await BMap.collectSync({
+    method: 'get',
+  }).then(res => {
+    wx.setStorageSync('busline', res.db_data.busline)
+    wx.setStorageSync('route', res.db_data.route)
+    wx.setStorageSync('station', res.db_data.station)
+    wx.setStorageSync('collect_time', res.db_data.uptime)
+  })
 }
 module.exports = {
   formatTime,
@@ -160,5 +165,6 @@ module.exports = {
   unique_list,
   isEmptyObject,
   ifexist,
-  collectsync
+  collectver,
+  collectSync
 }

@@ -20,7 +20,7 @@ export const store = observable({
   route:{},
   init_sign:false,
   bus_station:{},
-  login_msg_fuse:true,
+  login_msg_fuse:false,
   collect:[],
 
   // actions
