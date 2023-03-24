@@ -10,7 +10,7 @@
   <view wx:if="{{!search}}" class="tab">
     <view class="tab-item {{tab==0?'active':''}}" bindtap="changeItem" data-item="0">附近</view>
     <view class="tab-item {{tab==1?'active':''}}" bindtap="changeItem" data-item="1">收藏</view>
-    <view wx:if="{{tab ==1}}" class="collect--refresh" style="margin-left: auto;padding-right: 10px;" bindtap="changeItem">
+    <view wx:if="{{if_login && tab ==1}}" class="collect--refresh" style="margin-left: auto;padding-right: 10px;" bindtap="changeItem">
     <iconfont name="shuaxin" size="25" bindtap="collect_refresh"></iconfont>
     </view>
   </view>

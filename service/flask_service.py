@@ -94,16 +94,19 @@ def login():
             res['unionid'] = response['unionid']
         res['openid'] = response['openid']
     #连接moggodb usrinfo表
-    col = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"usrinfo"})
-    if list(col.find({"openid":res['openid']})) == []:        
-        col.insert_one({ 'openid': res['openid'], 'unionid': res['unionid'], 'uptime': parser.isoparse(eval(data['uptime'])), 'nickname': data['nickname'], 'avatarUrl':data['filename'].split('/').pop() })
-    else:
-       try:
-        if ('filename' in data):
-            os.remove(os.path.curdir + os.path.sep +'service'+ os.path.sep + 'avatar' + os.path.sep + col.find_one({'openid':res['openid'] },{"_id": 0 ,'avatarUrl':1})['avatarUrl'])
-            tmp = { 'uptime': parser.isoparse(eval(data['uptime'])), 'nickname': data['nickname'], 'avatarUrl':data['filename'].split('/').pop()}
-            col.update_one({'openid': res['openid']},{ "$set" : tmp})
-       except Exception as e:
+    try:
+        db = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus"})
+        if list(db.usrinfo.find({"openid":res['openid']})) == []:        
+            db.usrinfo.insert_one({ 'openid': res['openid'], 'unionid': res['unionid'], 'uptime': parser.isoparse(eval(data['uptime'])), 'nickname': data['nickname'], 'avatarUrl':data['filename'].split('/').pop() })
+            db.collect.insert_one({ 'openid': res['openid'],'busline':[],'route':[],'station':[]})
+            db.feedback.insert_one({ 'openid': res['openid'],'content':[],'uptime': parser.isoparse(eval(data['uptime']))})
+        else:        
+            tmp = { 'uptime': parser.isoparse(eval(data['uptime'])), 'nickname': data['nickname']}
+            if ('filename' in data):
+                os.remove(os.path.curdir + os.path.sep +'service'+ os.path.sep + 'avatar' + os.path.sep + db.usrinfo.find_one({'openid':res['openid'] },{"_id": 0 ,'avatarUrl':1})['avatarUrl'])
+                tmp['avatarUrl'] = data['filename'].split('/').pop()
+            db.usrinfo.update_one({'openid': res['openid']},{ "$set" : tmp})
+    except Exception as e:
         print(e)
         if (isinstance(e,pymongo.errors.OperationFailure)):  
             res['status'] = 10          
@@ -154,35 +157,7 @@ def login_check():
             res['msg'] = e.details['errmsg']
     return res
 
-@app.route('/collectsync')
-def collectsync():
-    data = format_dict(request.args.to_dict())
-    print(data)
-    item = {}
-    res = {}
-    if 'station' in data.keys():
-        item['station'] = data['station']
-    if 'busline' in data.keys():
-        item['busline'] = data['busline']
-    if 'route' in data.keys():
-        item['route'] = data['route']
-    try: 
-        col = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"collect"})
-        if data['method'] =='add':
-            res['db_data'] = col.update_one({'openid': data['openid']},{"$push":item,"$set":{'uptime': parser.isoparse(eval(data['uptime']))}}).raw_result
-        if data['method'] =='del':
-            res['db_data'] = col.update_one({'openid': data['openid']},{"$pull":item,"$set":{'uptime': parser.isoparse(eval(data['uptime']))}}).raw_result
-        if data['method'] =='get':
-            res['db_data'] = col.find_one({'openid': data['openid']},{"_id": 0,"openid":0})
-        if data['method'] =='ver':
-            res['db_data'] = col.find_one({'openid': data['openid']},{"_id": 0,"uptime":1})
-        res['statusCode'] = 0
-    except Exception as e:
-        print(e)
-        if (isinstance(e,pymongo.errors.OperationFailure)): 
-            res['statusCode'] = 10
-            res['db_data'] = e.details
-    return res
+
 """ @app.route('/logout')
 def logout():      
     data = format_dict(request.args.to_dict())   
@@ -225,6 +200,83 @@ def download_avatar():
         response = {"code":10,"msg":"error"}
        
     return response
+
+@app.route('/collectsync')
+def collectsync():
+    data = format_dict(request.args.to_dict())
+    item = {}
+    res = {}
+    if 'station' in data.keys():
+        item['station'] = data['station']
+    if 'busline' in data.keys():
+        item['busline'] = data['busline']
+    if 'route' in data.keys():
+        item['route'] = data['route']
+    try: 
+        col = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"collect"})
+        if data['method'] =='add':
+            res['db_data'] = col.update_one({'openid': data['openid']},{"$push":item,"$set":{'uptime': parser.isoparse(eval(data['uptime']))}}).raw_result
+        if data['method'] =='del':
+            res['db_data'] = col.update_one({'openid': data['openid']},{"$pull":item,"$set":{'uptime': parser.isoparse(eval(data['uptime']))}}).raw_result
+        if data['method'] =='get':
+            res['db_data'] = col.find_one({'openid': data['openid']},{"_id": 0,"openid":0})
+        if data['method'] =='ver':
+            res['db_data'] = col.find_one({'openid': data['openid']},{"_id": 0,"uptime":1})
+        res['statusCode'] = 0
+    except Exception as e:
+        print(e)
+        if (isinstance(e,pymongo.errors.OperationFailure)): 
+            res['statusCode'] = 10
+            res['db_data'] = e.details
+    return res
+
+@app.route('/feedback')
+def feedback():
+    data = format_dict(request.args.to_dict())
+    query = {}
+    if 'query' in data:
+        query = data['query'] 
+    res = {}
+    try: 
+        col = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"feedback"})
+        res_cursor = col.find(query,{"_id": 0})
+        feedback = []
+        for item in res_cursor:
+            idx = 0
+            content_item = []
+            for content in item['content']:
+                tmp = content
+                tmp['index'] = idx
+                idx = idx +1
+                content_item.append(tmp)
+            feedback.append(item)   
+        res['feedback'] = feedback
+        res['statusCode'] = 0
+    except Exception as e:
+        print(e)
+        if (isinstance(e,pymongo.errors.OperationFailure)): 
+            res['statusCode'] = 10
+            res['db_data'] = e.details
+    return res
+
+@app.route('/feedback_change')
+def feedback_change():
+    data = format_dict(request.args.to_dict())
+    query = {}
+    update = {}
+    if 'query' in data:
+        query = data['query']
+    update['content.' + data['index'] + '.status'] = 8 
+    res = {}
+    try: 
+        col = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus","col":"feedback"})
+        res['db_data'] = col.update_one(query,{'$set':update}).raw_result
+    except Exception as e:
+        print(e)
+        if (isinstance(e,pymongo.errors.OperationFailure)): 
+            res['statusCode'] = 10
+            res['db_data'] = e.details
+    return res
 
 @app.route("/echo",methods=['GET', 'POST','OPTIONS'])
 def echo():
@@ -281,8 +333,10 @@ def format_dict(dict):
 def mongodb_col(dict):
     myclient = pymongo.MongoClient(host=dict['host'],username =dict['usr'], password = dict['pwd'])
     db = myclient[dict["db"]]
-    col = db[dict["col"]]
-    return col
+    if 'col' in dict.keys():
+        col = db[dict["col"]]
+        return col
+    return db
 
    
 if __name__ == '__main__': 

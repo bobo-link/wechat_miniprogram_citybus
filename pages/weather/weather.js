@@ -48,11 +48,22 @@ Page({
     })
   },
   route(){
-    BMap.collectSync({
-      method: 'get',
-    }).then(res=>{
-      console.log(res)
-    })
+   wx.request({
+     url: 'http://192.168.123.199:59/feedback_change',
+     data:{query:{
+      uid:'454',
+      'content.uptime': 1
+     },
+     index:0
+    },
+     method:'GET',
+     header: {
+      "content-type": "application/json"
+    },
+     complete:function(res){
+       console.log(res)
+     }
+   })
   },
   gotologs: function () {
     wx.navigateTo({

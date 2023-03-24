@@ -75,6 +75,25 @@ function seperate_station(station){
   if (station== undefined) {return ''}  
   return station.split('-')[0]
 }
+function ifworking(start,end){
+  if(start == undefined || end == undefined){
+    return 
+  }
+  var date = getDate()
+  var hour = date.getHours()
+  var minute = date.getMinutes()
+  if (hour < parseInt(start.split(':')[0])){
+    return false
+  }else if (hour == parseInt(start.split(':')[0]) && minute < parseInt(start.split(':')[1])){
+    return false
+  }
+  if (hour > parseInt(end.split(':')[0])){
+    return false
+  }else if (hour == parseInt(end.split(':')[0]) && minute > parseInt(end.split(':')[1])){
+    return false
+  }
+  return true
+}
 function echo(param){
   console.log(param)
   return param
@@ -92,5 +111,6 @@ module.exports = {
   echo:echo,
   trim:trim,
   seperate_addredss:seperate_addredss,
-  seperate_station:seperate_station
+  seperate_station:seperate_station,
+  ifworking:ifworking
 }

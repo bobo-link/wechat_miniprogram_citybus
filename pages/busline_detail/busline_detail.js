@@ -16,6 +16,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    item_idx:10
 
   },
   reverse_direction() {
@@ -28,14 +29,15 @@ Page({
       busline: Object.assign({}, this.data.busline, {
         direction: direction,
         BusStations: BusStations,
-      })
+      }),
+      item_idx:BusStations.length - this.data.item_idx -1
     })
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    let busline = wx.getStorageSync('busline')
+    let busline = wx.getStorageSync('buslines')
     let reg = /\((\S*)\)/
     let direction = busline.name.match(reg)[1]
     busline.direction = [direction.split('-')[0], direction.split('-')[1]]
@@ -47,12 +49,17 @@ Page({
     this.setData({
       busline: busline
     })
+    wx.setNavigationBarTitle({
+      title: busline.name,
+    })
     this.storeBindings = createStoreBindings(this, {
       store,
       fields: ["bus_station","if_login"],
       actions: ["update_collect"]
     });
-
+    this.setData({
+      item_idx:11
+    })
   },
 
   /**

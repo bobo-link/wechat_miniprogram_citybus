@@ -1,6 +1,6 @@
 <!--pages/busline_detail/busline_detail.wxml-->
 <van-notify id="van-notify" />
-<view class="busline--name">{{busline.name}}</view>
+<wxs src="../../utils/tools.wxs" module="tools" />
 <view class="busline--info">
   <view class="busline--dirction">
     <text class="start">{{busline.direction[0]}}</text>
@@ -18,23 +18,30 @@
   </view>
   </view>
 </view>
+<view class="bus--status">
+  <image src="/img/background.png" mode="aspectFill"></image>
+  <text>{{tools.ifworking(busline.startTime,busline.endTime)? '运营中':'非运营时间'}}</text>
+</view>
 <view class="busline--stations">
   <view class="hide-content-box hide-content-box-left"></view>
   <view class="hide-content-box hide-content-box-right"></view>
-  <scroll-view scroll-x="true" scroll-into-view="{{item_idx}}" style="height:330px;display: flex;" enable-flex="true">
+  <scroll-view scroll-x="true" scroll-into-view="{{'item_'+(item_idx-3)}}" style="height:320px;display: flex;" enable-flex="true">
     <block wx:for="{{busline.BusStations}}" wx:key="index">
-
-      <view id="{{'item'+index}}" class="_item">
-        <view class="bus--line">
+      <view id="{{'item_'+index}}" class="_item">
+        <view class="bus--line {{index == 0 ? 'bus--line--before':''}} {{index == busline.BusStations.length -1 ? 'bus--line--after':''}}">
           <block wx:if="{{index == 0}}">
             <view class="symbol">起</view>
           </block>
           <block wx:elif="{{index == busline.BusStations.length - 1}}">
             <view class="symbol">终</view>
           </block>
-          <block wx:else>
-            <view class="symbol">></view>
+          <block wx:elif="{{index == item_idx}}">
+            <view class="symbol point"></view>
           </block>
+          <block wx:else>
+            <view class="symbol sense"></view>
+          </block>
+       
         </view>
         <view class="busuline--staton--content">
           <view class="busline--station _index">{{index + 1}}</view>
@@ -44,4 +51,4 @@
     </block>
   </scroll-view>
 </view>
-<van-button type="primary" bindtap="reverse_direction" block>块级元素</van-button>
+<van-button type="primary" bindtap="reverse_direction" block>换向</van-button>
