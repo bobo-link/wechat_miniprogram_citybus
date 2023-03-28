@@ -14,13 +14,23 @@
     </block>
   </view>
 </view>
+<view class="feedback">
+  <view class="feedback--history" bindtap="feedback_histroy">
+    <iconfont name="wodefankui" size='50' style='margin: 0 10px'></iconfont>
+    <text>我的反馈</text>
+  </view>
+  <view class="feedback--ing" bindtap="feedback">
+    <iconfont name="fankui" size='50' style='margin: 0 10px'></iconfont>
+    <text>反馈意见</text>
+  </view>
+</view>
 <view class="b1">
   <button class="permission" open-type="openSetting" hover-class="btn_hover" style="margin:15px 0 0 0;padding:0;width: 100%;">
     <view class="title">设置</view>
-    <view class="info">如果不能查询请点击这里,允许使用地理位置</view>
+    <view class="info">不能查询请点击,允许使用地理位置</view>
   </button>
   <view class="clear" bindtap="clear">清楚缓存</view>
-</view>
-<button class="share" hover-class="btn_hover" open-type="share" style="margin:20px 0 0 0;padding:0;width: 100%;">
+  <button class="share" hover-class="btn_hover" open-type="share" style="padding:0;width: 100%;">
   <view class='title'>分享</view>
 </button>
+</view>

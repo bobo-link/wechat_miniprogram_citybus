@@ -232,5 +232,14 @@ Page({
       if_login: true
     })
   },
-
+  feedback(e){
+    wx.navigateTo({
+      url: '/pages/feedback/feedback',
+    })
+  },
+  feedback_histroy(e){
+    wx.navigateTo({
+      url: '/pages/feedback_history/feedback_history',
+    })
+  }
 })

@@ -211,7 +211,7 @@ Page({
   //切换标签页函数
   changeItem: function (e) {
     this.setData({
-      item: e.target.dataset.item
+      item: e.currentTarget.dataset.item
     })
   },
   changeTab: function (e) {

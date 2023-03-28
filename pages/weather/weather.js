@@ -49,12 +49,16 @@ Page({
   },
   route(){
    wx.request({
-     url: 'http://192.168.123.199:59/feedback_change',
-     data:{query:{
-      uid:'454',
-      'content.uptime': 1
-     },
-     index:0
+     url: wx.prefix + '/feedback',
+     data:{
+      query:{
+        openid: wx.getStorageSync('usrinfo').openid,
+      },
+      uptime:new Date(),
+      text:'TEST!!!',
+      method:'add',
+      reply:'TEST2!!!',
+      index:1
     },
      method:'GET',
      header: {

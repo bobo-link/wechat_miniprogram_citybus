@@ -323,14 +323,13 @@ def format_dict(dict):
             dict[key] = format_dict(temp)
     return dict
 
-# A method to connect mongodb and return col
-#   dict properties：
-#       host: [list or str] 'mongobd connecction uri'
-#       usr: [str] 'mongodb pwd if exist'
-#       pwd: [str] 'mongodb pwd if exist'
-#       db: [str] 'mongodb db's name'
-#       col: [str] 'mongodb col's name'
+
 def mongodb_col(dict):
+    """
+    连接mongodb返回数据库对象或表对象
+    :param: dict:dict 配置字典 包含 host[主机地址],usr[数据库用户名],pwd[数据库密码],db[数据库],col[数据表]
+    :return:
+    """
     myclient = pymongo.MongoClient(host=dict['host'],username =dict['usr'], password = dict['pwd'])
     db = myclient[dict["db"]]
     if 'col' in dict.keys():

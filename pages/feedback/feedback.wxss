@@ -1,0 +1,21 @@
+/* pages/feedback/feedback.wxss */
+.title{
+  margin: 10px 0;
+  margin-left: 20px;
+  color: #aaa;
+  font-size: 14px;
+}
+.section{
+  display: flex;
+  justify-content: center;
+  background-color: white;
+  border-radius:5px ;
+  position: relative;
+}
+.wordnumber{
+  position:absolute;
+  bottom: 0;
+  right: 5px;
+  color:#aaa;
+  font-size: 10px;
+}

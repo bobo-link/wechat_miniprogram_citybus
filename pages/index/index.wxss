@@ -1,7 +1,6 @@
 /**index.wxss**/
-page{
- 
-}
+page {}
+
 .search {
   display: flex;
   flex-direction: column;
@@ -9,37 +8,64 @@ page{
   color: #aaa;
 }
 
-.container{
-  padding:20rpx 20rpx 0rpx 20rpx;
-  position:relative;
+.container {
+  padding: 20rpx 20rpx 0rpx 20rpx;
+  position: relative;
   background: white;
 }
 
-.tab{
+.tab {
   margin-top: 40px;
   bottom: 5px;
   width: 100%;
   display: flex;
   align-items: center;
 }
-.tab :nth-child(2) {
-  margin-left:10px ;
+
+.tab-item {
+  color: rgb(168, 170, 175);
+  font-size: 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.list{
+
+.tab-item hr {
+  width: 32rpx;
+  height: 8rpx;
+}
+
+.active hr {
+  background: rgb(43, 44, 45);
+  margin-top: 8rpx;
+  border-radius: 4rpx;
+}
+.active text{
+  color: black;
+}
+
+.tab :nth-child(2) {
+  margin-left: 10px;
+}
+
+.list {
   overflow-y: hidden;
   background-color: #f8f8f8;
 }
-.search--result{
+
+.search--result {
   display: flex;
   flex-direction: column;
 }
-.search--item{
+
+.search--item {
   display: flex;
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid rgba(175, 175, 175, 0.3);
 }
-.station--item{
+
+.station--item {
   display: flex;
   height: 50px;
   align-items: center;
@@ -48,34 +74,40 @@ page{
   border-radius: 5px;
   background: white;
 }
-.i-swipeout-demo-item{
-  margin: 5px 10px 8px 10px; 
+
+.i-swipeout-demo-item {
+  margin: 5px 10px 8px 10px;
   border-style: none;
   border-radius: 8rpx;
   border: 1rpx solid #ffffff;
 }
-.i-swipeout-des-h2{
+
+.i-swipeout-des-h2 {
   margin-left: 20px;
   font-size: 20px;
   align-content: center;
 }
+
 .i-swipeout-content {
   display: flex;
   align-items: center;
 }
-.i-swipeout-des{
+
+.i-swipeout-des {
   display: flex;
   align-items: center;
 }
-.detail{
+
+.detail {
   margin-left: auto
 }
 
-.bottom-button{
+.bottom-button {
   width: 160px;
   height: 40px;
 }
-::-webkit-scrollbar{
+
+::-webkit-scrollbar {
   width: 0;
   height: 0;
   color: transparent;

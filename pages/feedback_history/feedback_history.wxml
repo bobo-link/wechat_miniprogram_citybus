@@ -1,0 +1,14 @@
+<!--pages/feedback_history/feedback_history.wxml-->
+<wxs src="../../utils/tools.wxs" module="tools" />
+<view class="content">
+  <block wx:for="{{feedback}}" wx:key="index">
+    <view class="item">
+      <view class="time">{{tools.formatTime(item.uptime)}}</view>
+      <view style="font-size: 14px;display: flex;flex-direction: column;">
+        <view style="margin-top: 5px;">问题:</view>
+        <view style="margin-top: 10px;word-break: break-all" max-width="100%" >{{item.text}}</view>
+      </view>
+      <view class="status {{item.status == 1? 'read': item.status ==2 ? 'reply':''}}"></view>
+    </view>
+  </block>
+</view>

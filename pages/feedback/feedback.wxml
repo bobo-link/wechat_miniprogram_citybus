@@ -1,0 +1,13 @@
+<!--pages/feedback/feedback.wxml-->
+<view class="title">问题反馈</view>
+<view class="section">
+  <textarea placeholder="请详细描述你遇到的问题并告知具体操作步骤，我们会尽快答复您的问题" placeholder-style="color:#aaa;font-size:13px" style="width:92%" maxlength='200' bindinput="textinput" 	bindblur="textblur" />
+  <view class="wordnumber">{{currentWordNumber ? currentWordNumber: 0}}/200</view>
+</view>
+<view class="title">联系方式 (至少填写一项)</view>
+<view style="background-color: white;height: 40px;padding:0 20px">
+  <input class="weui-input" maxlength="10" bindinput="bindKeyInput" placeholder="QQ号/微信号/手机号" placeholder-style="font-size:13px;color:#aaa" style="height: 100%;background-color: white" bindinput="contact_input"/>
+</view>
+<view style="display: flex;align-items: center;justify-content: center;position: absolute; bottom: 80px;left:50%;margin-left: -92px;">
+  <van-button type="primary" size="large" bindtap="submit" >提交</van-button>
+</view>

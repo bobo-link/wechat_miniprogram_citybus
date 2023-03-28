@@ -20,6 +20,22 @@ page{
   padding:30rpx 20rpx 0rpx 20rpx;
   
 }
+.feedback{
+  height: 60px;
+  display: flex;
+  align-items: center;
+  margin: 30px 40rpx 0 40rpx;
+  background-color: white;
+  border-radius:5px 
+}
+
+.feedback view{
+  width: 50%;
+  display: flex;
+  align-items: center;
+  font-family:宋体;
+  font-size: 15px;
+}
 .permission{   
   height: 50px;  
   padding:0 0 0 0;
@@ -28,7 +44,12 @@ page{
   flex-wrap: nowrap;
   background-color:white;
 }
+.b1{
+  margin: 0 40rpx;
+  background-color: white;
+}
 .title {
+  width: 50px;
   margin-left: 10px;
   font-size: 20px;
   font-weight:normal;
@@ -38,6 +59,7 @@ page{
   font-size: 15px;
   font-weight:normal;  
   color: #bfbfbf;
+  
 }
 .clear{
   padding-left:10px ;
@@ -55,6 +77,7 @@ page{
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
+  border-top: 1px solid #5757573a;
   background-color:white;
 }
 .btn_hover{

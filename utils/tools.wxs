@@ -94,6 +94,20 @@ function ifworking(start,end){
   }
   return true
 }
+function formatTime(date) {
+  if (date == undefined) {
+    return 
+  }
+  var date = getDate(date)
+  var year = date.getFullYear()
+  var month = date.getMonth() + 1
+  var day = date.getDate()
+  var hour = date.getHours()
+  var minute = date.getMinutes()
+  var second = date.getSeconds()
+
+  return year + '-' + month + '-' + day +'  ' + hour +':' + minute + ':' + second
+}
 function echo(param){
   console.log(param)
   return param
@@ -112,5 +126,6 @@ module.exports = {
   trim:trim,
   seperate_addredss:seperate_addredss,
   seperate_station:seperate_station,
-  ifworking:ifworking
+  ifworking:ifworking,
+  formatTime:formatTime
 }

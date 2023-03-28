@@ -22,7 +22,9 @@
     "pages/transit_detail/transit_detail",
     "pages/transit_list/transit_list",
     "pages/route_map/route_map",
-    "pages/busline_detail/busline_detail"
+    "pages/busline_detail/busline_detail",
+    "pages/feedback/feedback",
+    "pages/feedback_history/feedback_history"
   ],
   "permission": {
     "scope.userLocation": {
@@ -72,12 +74,6 @@
         "text": "Transit",
         "iconPath": "img/tabbar_icon/transit.png",
         "selectedIconPath": "img/tabbar_icon/transit_active.png"
-      },
-      {
-        "pagePath": "pages/weather/weather",
-        "text": "Weather",
-        "iconPath": "img/tabbar_icon/weather.png",
-        "selectedIconPath": "img/tabbar_icon/weather_active.png"
       },
       {
         "pagePath": "pages/setting/setting",
