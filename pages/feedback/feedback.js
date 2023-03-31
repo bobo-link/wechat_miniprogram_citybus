@@ -1,4 +1,5 @@
 // pages/feedback/feedback.js
+import Notify from '@vant/weapp/notify/notify';
 Page({
 
   /**
@@ -9,6 +10,20 @@ Page({
   },
   submit() {
     let _this = this
+    if(!_this.data.text || !this.data.contact){
+      Notify({
+        type: 'warning',
+        message: '请完整填写内容'
+      });
+      return
+    }
+    if (_this.data.limit == 0){
+      Notify({
+        type: 'danger',
+        message: '反馈失败，反馈次数不足'
+      });
+      return
+    }
     wx.request({
       url: wx.prefix + '/feedback',
       data:{
@@ -24,6 +39,14 @@ Page({
       header: {
        "content-type": "application/json"
      },
+      success:function({data:res}){
+        if (res.statusCode == 0){
+          Notify({
+            type: 'success',
+            message: '反馈成功'
+          });
+        }
+      },
       complete:function(res){
         console.log(res)
       }
@@ -59,7 +82,25 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    wx.p.request({
+      url: wx.prefix + '/feedback',
+      data:{
+        query:{
+          openid: wx.getStorageSync('usrinfo').openid,
+        },
+        method:'limit',
+      },
+       method:'GET',
+       header: {
+        "content-type": "application/json"
+      },
+    }).then(({data:res})=>{
+      if (res.statusCode == 0){
+        this.setData({
+          limit:res.limit
+        })
+      }
+    })
   },
 
   /**

@@ -6,7 +6,7 @@ from flask_session import Session
 import pymongo
 import redis
 
-
+csrf = None
 #创建redis连接对象
 redis_store=None
 
@@ -52,7 +52,8 @@ def create_app(config_name):
     # Session(app)
     
     #为flask补充csrf防护
-    CSRFProtect(app)
+    # global csrf
+    # csrf = CSRFProtect(app)
 
     print(api_1_0.api)
     #注册蓝图

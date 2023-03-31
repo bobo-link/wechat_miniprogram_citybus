@@ -117,6 +117,7 @@ Page({
         if (res.statusCode == 0) {
           station.push(item)
           wx.setStorageSync('station', station)
+          wx.setStorageSync('collect_time', new Date())
           this.update_collect()
           Notify({
             type: 'success',

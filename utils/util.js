@@ -137,8 +137,15 @@ const collectver = async function () {
   await BMap.collectSync({
     method: 'ver',
   }).then(res => {
-    let local_time = new Date(wx.getStorageSync('collect_time'))
-    let server_time = new Date(res.db_data.uptime)
+    let local_time = wx.getStorageSync('collect_time')
+    console.log(local_time)
+    if (!local_time || res.db_data == null){
+      ver = true
+      return true
+    }
+    let server_time = res.db_data.uptime 
+    local_time = new Date(local_time)
+    server_time = new Date(server_time)
     ver = local_time < server_time
     console.log({
       local_time:local_time,
@@ -152,8 +159,8 @@ const collectSync = async function () {
   await BMap.collectSync({
     method: 'get',
   }).then(res => {
-    wx.setStorageSync('busline', res.db_data.busline)
-    wx.setStorageSync('route', res.db_data.route)
+    wx.setStorageSync('busline', res.db_data.busline )
+    wx.setStorageSync('route', res.db_data.route )
     wx.setStorageSync('station', res.db_data.station)
     wx.setStorageSync('collect_time', res.db_data.uptime)
   })

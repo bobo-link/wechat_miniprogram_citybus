@@ -23,7 +23,7 @@ class Config(object):
 class DevelopmentConfig(Config):
     DEBUG = True
     WEB_AK = cf.get('default', 'web_ak')
-    WX_APPID = cf.get('default', 'web_ak')
+    WX_APPID = cf.get('default', 'appid')
     WX_SECRET = cf.get('default', 'secret') 
     
 class ProductionConfig(Config):

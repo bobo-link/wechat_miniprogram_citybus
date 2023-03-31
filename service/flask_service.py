@@ -98,8 +98,8 @@ def login():
         db = mongodb_col({"host":[mongodb_uri],"usr":mongodb_usr,"pwd":mongodb_pwd,"db":"citybus"})
         if list(db.usrinfo.find({"openid":res['openid']})) == []:        
             db.usrinfo.insert_one({ 'openid': res['openid'], 'unionid': res['unionid'], 'uptime': parser.isoparse(eval(data['uptime'])), 'nickname': data['nickname'], 'avatarUrl':data['filename'].split('/').pop() })
-            db.collect.insert_one({ 'openid': res['openid'],'busline':[],'route':[],'station':[]})
-            db.feedback.insert_one({ 'openid': res['openid'],'content':[],'uptime': parser.isoparse(eval(data['uptime']))})
+            db.collect.insert_one({ 'openid': res['openid'],'busline':[],'route':[],'station':[], 'uptime': parser.isoparse(eval(data['uptime']))})
+            db.feedback.insert_one({ 'openid': res['openid'],'content':[]},'uptime': parser.isoparse(eval(data['uptime'])))
         else:        
             tmp = { 'uptime': parser.isoparse(eval(data['uptime'])), 'nickname': data['nickname']}
             if ('filename' in data):
@@ -176,7 +176,8 @@ def avatar():
         f.save(os.path.curdir + os.path.sep +'service'+ os.path.sep + 'avatar' + os.path.sep + f.filename)
         response['status'] = 0
         response['msg'] = 'avatar storage complete'
-    except: 
+    except Exception as e: 
+        print(e)
         response['status'] = 101
         response['msg'] = 'avatar storage fail'
     return response

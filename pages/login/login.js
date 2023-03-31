@@ -91,7 +91,7 @@ Page({
                 tools.collectver().then(res => {
                   if (res) {  
                     tools.collectSync().then(res=>{
-                      this.update_collect()
+                      that.update_collect()
                     })  
                   }
                 })

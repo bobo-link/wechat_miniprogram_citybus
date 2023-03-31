@@ -188,13 +188,14 @@ Page({
             }
           })
         } else if (res.status === 101) {
+          wx.navigateTo({
+            url: '/pages/login/login',
+          })
+          
+        } else {
           wx.showToast({
             title: '无法连接服务器',
             icon: 'none'
-          })
-        } else {
-          wx.navigateTo({
-            url: '/pages/login/login',
           })
         }
       }, (res) => {
@@ -216,6 +217,7 @@ Page({
         this.login_switch(false)
         this.storeBindings.updateStoreBindings()
         wx.removeStorageSync("usrinfo")
+        wx.removeStorageSync("collect_time")
         this.updata_login_msg_fuse(true)
         Notify({
           type: 'warning',

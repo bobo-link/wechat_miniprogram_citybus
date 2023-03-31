@@ -118,6 +118,7 @@ Page({
         if (res.statusCode == 0) {
           busline.push(item)
           wx.setStorageSync('busline', busline)
+          wx.setStorageSync('collect_time', new Date())
           this.update_collect()
           Notify({
             type: 'success',

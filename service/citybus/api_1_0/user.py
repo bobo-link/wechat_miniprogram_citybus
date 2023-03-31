@@ -34,14 +34,13 @@ def login():
     try:
         if list(db.usrinfo.find({"openid":res['openid']})) == []:        
             db.usrinfo.insert_one({ 'openid': res['openid'], 'unionid': res['unionid'], 'uptime': parser.isoparse(eval(data['uptime'])), 'nickname': data['nickname'], 'avatarUrl':data['filename'].split('/').pop() })
-            db.collect.insert_one({ 'openid': res['openid'],'busline':[],'route':[],'station':[]})
-            db.feedback.insert_one({ 'openid': res['openid'],'content':[],'uptime': parser.isoparse(eval(data['uptime']))})
+            db.collect.insert_one({ 'openid': res['openid'],'busline':[],'route':[],'station':[],'uptime': parser.isoparse(eval(data['uptime']))})
+            db.feedback.insert_one({ 'openid': res['openid'],'content':[],'limit':3,'uptime': parser.isoparse(eval(data['uptime']))})
         else:        
             tmp = { 'uptime': parser.isoparse(eval(data['uptime'])), 'nickname': data['nickname']}
             if ('filename' in data):
-                os.remove(os.path.curdir + os.path.sep +'service'+ os.path.sep + 'avatar' + os.path.sep + db.usrinfo.find_one({'openid':res['openid'] },{"_id": 0 ,'avatarUrl':1})['avatarUrl'])
+                os.remove(os.path.curdir + os.path.sep + 'avatar' + os.path.sep + db.usrinfo.find_one({'openid':res['openid'] },{"_id": 0 ,'avatarUrl':1})['avatarUrl'])
                 tmp['avatarUrl'] = data['filename'].split('/').pop()
-            db.usrinfo.update_one({'openid': res['openid']},{ "$set" : tmp})
     except Exception as e:
         print(e)
         if (isinstance(e,pymongo.errors.OperationFailure)):  
@@ -51,6 +50,8 @@ def login():
         else:
             res['status'] = 5
             res['msg'] = 'old avatar remove fail'
+    finally:
+         db.usrinfo.update_one({'openid': res['openid']},{ "$set" : tmp})
     return res
 
 @api.route('/login_check')
@@ -78,7 +79,7 @@ def login_check():
     try: 
         col = db.usrinfo
         usr = col.find_one({'openid': r_data['openid']},{"_id": 0})
-        if list(usr) == []:        
+        if usr ==None or list(usr) == []:        
             res['status'] = 101
             res['msg'] = 'user is not exist'
         else:
@@ -95,11 +96,11 @@ def login_check():
 
 
 @api.route('/avatar',methods=['GET', 'POST'])
-def avatar():    
+def avatar(): 
     f = request.files['file']
     response ={}
     try:
-        f.save(os.path.curdir + os.path.sep +'service'+ os.path.sep + 'avatar' + os.path.sep + f.filename)
+        f.save(os.path.curdir + os.path.sep + 'avatar' + os.path.sep + f.filename)
         response['status'] = 0
         response['msg'] = 'avatar storage complete'
     except: 
@@ -116,7 +117,7 @@ def download_avatar():
     try:
         col = db.usrinfo
         filename = col.find_one({'openid':openid },{"_id": 0 ,'avatarUrl':1})['avatarUrl']
-        with open(os.path.curdir + os.path.sep +'service'+ os.path.sep + 'avatar' + os.path.sep + filename , 'rb') as f:
+        with open(os.path.curdir + os.path.sep + 'avatar' + os.path.sep + filename , 'rb') as f:
             stream = f.read()
         response = Response(stream, content_type='application/octet-stream')
         response.headers['Content-disposition'] = 'attachment; filename=' + filename
@@ -199,10 +200,19 @@ def feedback():
                     'uptime':eval(data['uptime']),
                     'text':data['text'],
                     'status':0,
-                    'contact':data['contact']                   
+                    'contact':data['contact'],                
                  }
             }
-            res['db_data'] = col.update_one(query,{'$push':item}).raw_result
+            query['limit'] = {'$gt':0}
+            res['db_data'] = col.update_one(query,{'$push':item,'$inc': {'limit': -1 },}).raw_result
+            if  res['db_data']['nModified'] == 0 :
+                del res['db_data']
+                res['errMsg'] = '反馈次数不足'
+                res['statusCode'] = 6
+        elif method == 'limit':
+            limit = col.find_one(query,{"_id": 0,'limit':1})
+            res.update(limit)
+            res['statusCode'] = 0
         else:
             res['errMsg'] = 'the value of method (' + method +') is invalid'
             res['statusCode'] = -1
@@ -218,5 +228,3 @@ def feedback():
             
     return res
 
-
-    return db

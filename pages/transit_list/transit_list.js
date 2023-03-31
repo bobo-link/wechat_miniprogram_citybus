@@ -182,6 +182,7 @@ Page({
         if (res.statusCode == 0) {
           route.push(item)
           wx.setStorageSync('route', route)
+          wx.setStorageSync('collect_time', new Date())
           this.update_collect()
           Notify({
             type: 'success',

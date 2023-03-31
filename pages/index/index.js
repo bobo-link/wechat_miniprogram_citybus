@@ -148,6 +148,7 @@ Page({
   collect_refresh(){
     if(this.data.if_login){
       tools.collectver().then(res => {
+        console.log(res)
         if (res) {  
           tools.collectSync().then(res=>{
             this.update_collect()
