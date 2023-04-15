@@ -16,3 +16,5 @@ node_modules/
 #service
 service/citybus.ini
 service/avatar/
+service/data.json
+service/dbtest.py

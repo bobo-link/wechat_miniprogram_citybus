@@ -2,6 +2,8 @@
 from . import CurrentConfig,api,headers
 from citybus.utils import format_dict
 from flask import request
+from citybus import db
+import pymongo
 import requests
 
 
@@ -60,6 +62,19 @@ def suggestion():
     data['ak'] = ak
     response = requests.get('https://api.map.baidu.com/place/v2/suggestion',params=data,headers=headers).json()
     return response
+
+@api.route('/busline')
+def busline():
+    data = format_dict(request.args.to_dict())
+    res = {}
+    busline = db.busline.find_one({"name":{'$regex':'^' + data['name']}},{'_id':0})
+    if busline != None:
+        res['busline'] = busline
+        res['statusCode'] = 0
+    else :
+        res['statusCode'] = 101
+        res['errMsg'] = data['name'] + '线路未录入数据库'
+    return res
 
 @api.route("/echo",methods=['GET', 'POST','OPTIONS'])
 def echo():

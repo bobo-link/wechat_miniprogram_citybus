@@ -1,6 +1,8 @@
 <!--pages/busline_detail/busline_detail.wxml-->
-<van-notify id="van-notify" />
+
 <wxs src="../../utils/tools.wxs" module="tools" />
+<van-notify id="van-notify" />
+<cus-dialog id="cus-dialog" />
 <view class="busline--info">
   <view class="busline--dirction">
     <text class="start">{{busline.direction[0]}}</text>

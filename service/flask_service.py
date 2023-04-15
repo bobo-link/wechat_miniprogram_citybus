@@ -9,6 +9,8 @@ from dateutil import parser
  status | detail
     0   | 正常
     5   | 文件操作错误
+    6   | 反馈次数不足
+    7   | 用户不存在
     10  | 数据库错误
     101 | 其他错误
 """

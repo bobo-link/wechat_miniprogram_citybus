@@ -1,4 +1,6 @@
 {
-  "usingComponents": {},
+  "usingComponents": {
+    "cus-dialog": "../../Components/dialog/dialog"
+  },
   "enablePullDownRefresh": true
 }

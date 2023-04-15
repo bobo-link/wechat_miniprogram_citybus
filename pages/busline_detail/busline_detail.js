@@ -8,6 +8,7 @@ import {
 import Notify from '@vant/weapp/notify/notify';
 const tools = require('~/utils/util.js')
 var bmap = require('../../libs/bmap-wx.js');
+import Dialog from '../../libs/dialog';
 const BMap = new bmap.BMapWX();
 var location
 Page({
@@ -16,7 +17,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    item_idx:10
+    item_idx: 10
 
   },
   reverse_direction() {
@@ -30,36 +31,65 @@ Page({
         direction: direction,
         BusStations: BusStations,
       }),
-      item_idx:BusStations.length - this.data.item_idx -1
+      item_idx: BusStations.length - this.data.item_idx - 1
     })
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    let busline = wx.getStorageSync('buslines')
-    let reg = /\((\S*)\)/
-    let direction = busline.name.match(reg)[1]
-    busline.direction = [direction.split('-')[0], direction.split('-')[1]]
-    busline.name = busline.name.split('(')[0]
-    location = {
-      lat: busline.BusStations[0].position.lat,
-      lng: busline.BusStations[0].position.lng,
-    }
-    this.setData({
-      busline: busline
-    })
-    wx.setNavigationBarTitle({
-      title: busline.name,
-    })
     this.storeBindings = createStoreBindings(this, {
       store,
-      fields: ["bus_station","if_login"],
+      fields: ["bus_station", "if_login"],
       actions: ["update_collect"]
     });
-    this.setData({
-      item_idx:11
+    this.storeBindings.updateStoreBindings()
+    wx.p.request({
+      url: wx.prefix + 'busline',
+      data: {
+        name: options.name
+      },
+      header: {
+        "content-type": "application/json"
+      },
+      method: 'GET'
+    }).then(({
+      data: res
+    }) => {
+      console.log(res)
+      if (res.statusCode == undefined || res.statusCode == 101){
+        Dialog.confirm({
+          message: res.errMsg || '该线路数据获取失败',
+          selector: '#cus-dialog',
+          confirmCallback: function () {
+            wx.navigateBack()
+          }
+        });
+        return
+      } 
+      let busline = res.busline
+      let reg = /\((\S*)\)/
+      let direction = busline.name.match(reg)[1]
+      busline.direction = [direction.split('-')[0], direction.split('-')[1]]
+      busline.name = busline.name.split('(')[0]
+      location = {
+        lat: busline.BusStations[0].position.lat,
+        lng: busline.BusStations[0].position.lng,
+      }
+      this.setData({
+        busline: busline
+      })
+      wx.setNavigationBarTitle({
+        title: busline.name,
+      })     
+      let item_idx = busline.BusStations.findIndex((item) => {
+        return item.name == this.data.bus_station.name
+      })
+      this.setData({
+        item_idx: item_idx
+      })
     })
+
   },
 
   /**
@@ -101,13 +131,13 @@ Page({
       type: 'busline',
       uptime: new Date()
     }
-    if(!this.data.if_login){
+    if (!this.data.if_login) {
       Notify({
         type: 'warning',
         message: '请先登录'
       });
       wx.stopPullDownRefresh()
-      return 
+      return
     }
     if (busline.length < 10 && !tools.ifexist(item, busline)) {
       BMap.collectSync({
