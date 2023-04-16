@@ -67,7 +67,7 @@ def suggestion():
 def busline():
     data = format_dict(request.args.to_dict())
     res = {}
-    busline = db.busline.find_one({"name":{'$regex':'^' + data['name']}},{'_id':0})
+    busline = db.busline.find_one({"name":{'$regex':'^' + data['name'] + '\\('}},{'_id':0})
     if busline != None:
         res['busline'] = busline
         res['statusCode'] = 0

@@ -191,7 +191,6 @@ Page({
     })
   },
   collect_todetail(e) {
-    console.log(e)
     let index = e.currentTarget.dataset.index
     let type = this.data.collect[index].type
     switch (type) {
@@ -206,6 +205,9 @@ Page({
         });
         break;
       default:
+        wx.navigateTo({
+          url: '/pages/busline_detail/busline_detail?Referer=collect&name='+this.data.collect[index].name,
+        });
         break;
     }
   },

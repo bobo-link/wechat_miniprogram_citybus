@@ -5,6 +5,7 @@ from flask_wtf import CSRFProtect
 from flask_session import Session
 import pymongo
 import redis
+from citybus.utils.common import ReConverter
 
 csrf = None
 #创建redis连接对象
@@ -55,10 +56,14 @@ def create_app(config_name):
     # global csrf
     # csrf = CSRFProtect(app)
 
-    print(api_1_0.api)
-    #注册蓝图
-    app.register_blueprint(api_1_0.api)
+    #为flask添加自定义的转换器
+    app.url_map.converters["re"] = ReConverter
 
+    #注册蓝图
+    from citybus import api_1_0
+    app.register_blueprint(api_1_0.api)
+    from citybus import web_html
+    app.register_blueprint(web_html.html)
     
     
     return app

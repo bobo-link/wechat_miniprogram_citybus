@@ -121,7 +121,6 @@ def download_avatar():
             stream = f.read()
         response = Response(stream, content_type='application/octet-stream')
         response.headers['Content-disposition'] = 'attachment; filename=' + filename
-#这里的filename是用户下载之后显示的文件名称，可以自己随意修改，而上边的test.xlsx是要你本地的文件，名称必须要对应。
     except Exception as e:
         print(e)
         response = {"code":10,"msg":"error"}

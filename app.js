@@ -9,9 +9,9 @@ import {
   promisifyAll
 } from 'miniprogram-api-promise'
 const wxp = wx.p = {}
-const uri = ['http://47.115.213.83:4040/', 'http://192.168.123.199:59/', 'http://172.20.10.4:59/']
+const uri = ['https://bobolink.top:4040/', 'http://192.168.123.199:59/', 'http://172.20.10.4:59/']
 const tools = require('~/utils/util.js')
-const prefix = wx.prefix = uri[1];
+const prefix = wx.prefix = uri[0];
 promisifyAll(wx, wxp)
 App({
   onLaunch() {

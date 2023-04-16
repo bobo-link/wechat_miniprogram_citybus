@@ -17,7 +17,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    item_idx: 10
+    item_idx: 0
 
   },
   reverse_direction() {
