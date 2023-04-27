@@ -1,4 +1,5 @@
 // pages/feedback_history/feedback_history.js
+import Dialog from '../../libs/dialog';
 Page({
 
   /**
@@ -7,19 +8,22 @@ Page({
   data: {
 
   },
-
+  reply(e){
+    console.log(e)
+    Dialog.confirm({
+      title:'回复',
+      message: this.data.feedback[e.currentTarget.dataset.index].reply,
+      selector: '#cus-dialog',
+      confirmCallback: function () {
+      }
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
     wx.p.request({
-      url: wx.prefix + '/feedback',
-      data:{
-       query:{
-         openid: wx.getStorageSync('usrinfo').openid,
-       },
-       method:'get'
-     },
+      url: wx.prefix + '/feedback' + '/' + wx.getStorageSync('usrinfo').openid,
       method:'GET',
       header: {
        "content-type": "application/json"

@@ -19,6 +19,7 @@ const Dialog = (options) => {
   delete options.context;
   delete options.selector;
   if (dialog) {
+     
       dialog.setData(options);
       wx.nextTick(() => {
           dialog.setData({ show: true });

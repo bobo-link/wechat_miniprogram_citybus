@@ -84,7 +84,7 @@ Page({
   i_tap(e) {
     this.update_bus_station(this.data.searchinfo[e.currentTarget.dataset.index])
     wx.navigateTo({
-      url: '../../pages/buslinelist/buslinelist?referer=index&uid=' + this.data.searchinfo[e.currentTarget.dataset.index].uid
+      url: '../../pages/buslinelist/buslinelist?Referer=index&uid=' + this.data.searchinfo[e.currentTarget.dataset.index].uid
     })
   },
   search_focus(){
@@ -110,7 +110,7 @@ Page({
     let uid = this.data.searchResults[index].uid
     this.search_cancel()
     wx.navigateTo({
-      url: '/pages/buslinelist/buslinelist?referer=suggestionsuggestion&uid='+ uid,
+      url: '/pages/buslinelist/buslinelist?Referer=suggestionsuggestion&uid='+ uid,
     })
   },
   search_change(e) {
@@ -196,7 +196,7 @@ Page({
     switch (type) {
       case 'station':
         wx.navigateTo({
-          url: '/pages/buslinelist/buslinelist?referer=collect&uid=' + this.data.collect[index].uid,
+          url: '/pages/buslinelist/buslinelist?Referer=collect&uid=' + this.data.collect[index].uid,
         })
         break;
       case "route":

@@ -28,6 +28,12 @@ Page({
       });
     }).exec();
   },
+  station_detail(e){
+   wx.navigateTo({
+    url: '/pages/buslinelist/buslinelist?referer=transit&uid=' + e.currentTarget.dataset.uid,
+  })
+  },
+  
   /**
    * 生命周期函数--监听页面加载
    */

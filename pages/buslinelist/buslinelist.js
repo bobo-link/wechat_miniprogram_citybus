@@ -34,7 +34,7 @@ Page({
       actions: ["update_bus_station","update_collect"]
     });
     this.storeBindings.updateStoreBindings()
-    if (valid.includes(options.referer)) {
+    if (valid.includes(options.Referer)) {
       wx.setNavigationBarTitle({
         title: this.data.bus_station.name || this.data.bus_station.title,
       })

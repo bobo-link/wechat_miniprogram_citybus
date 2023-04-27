@@ -33,6 +33,19 @@ Page({
       url: '/pages/transit_detail/transit_detail?origin=' + this.data.origin.name + '&destination=' + this.data.destination.name,
     })
   },
+  busline_detail(e){
+    if (e.currentTarget.dataset.type ==3){
+      wx.navigateTo({
+        url: '/pages/busline_detail/busline_detail?Referer=transit&name='+e.currentTarget.dataset.name,
+      });
+    }else{
+      wx.showToast({
+        title: '该类型的交通不支持站点查询',
+        icon:'none'
+      })
+    }
+   
+   },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -94,6 +107,7 @@ Page({
           price:transit.routes[route].price
         })
         for (let step in steps) {
+          let circle = []
           for (let index in steps[step]) {
             if (steps[step].length > 1 && index == 0 && preview_info.flag) {
               preview_info.swiper[count++] = steps[step][0].distance
@@ -116,9 +130,17 @@ Page({
               item.name = ((item.vehicle_info.detail && item.vehicle_info.detail.name) || null) + direction
             }
             if (item.vehicle_info.type == 3 || item.vehicle_info.type == 1) {
-              preview_info.linename[i++] = {
-                name:(item.vehicle_info.detail && item.vehicle_info.detail.name) || null,
-                type:item.vehicle_info.type
+              circle[step] = (circle[step] || 0 ) + 1
+              if (circle[step] > 1 && preview_info.flag){
+                preview_info.linename[i-1].push({
+                  name:(item.vehicle_info.detail && item.vehicle_info.detail.name) || null,
+                  type:item.vehicle_info.type
+                })
+              }else{
+                preview_info.linename[i++] = [{
+                  name:(item.vehicle_info.detail && item.vehicle_info.detail.name) || null,
+                  type:item.vehicle_info.type
+                }]
               }
             }
           }

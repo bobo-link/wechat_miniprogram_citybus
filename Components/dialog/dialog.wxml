@@ -4,13 +4,13 @@
 <view class="dialog-overlay-view" style="width: {{ windowWidth }}px; height: {{ windowHeight }}px; display: {{ show ? 'block' : 'none' }};"></view>
 
 <view class="col-center" style="width: {{ windowWidth }}px; height: {{ windowHeight }}px; display: {{ show ? 'flex' : 'none' }};">
-    <view>
-        <view class="dialog-content-view">
-            <view class="dialog-content-text">
+    <view>   
+        <view class="dialog-content-view {{title ? 'content_title_style': ''}}">
+          <view wx:if="{{title}}" class="title">{{ title }}</view>
+            <view class="dialog-content-text {{title ? 'title_style': ''}}">
                 <text >{{ message }}</text>
             </view>
-
-            <view class="operation-view">
+            <view class="operation-view {{title ? 'operation_title_style': ''}}">
               <block wx:if="{{showcancelButton}}">
                 <view class="operation-col-view" bindtouchend="onCancel">
                     <text class="cancel-text">{{ cancelButtonText }}</text>

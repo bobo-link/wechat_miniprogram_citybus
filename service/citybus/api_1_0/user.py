@@ -156,74 +156,140 @@ def collectsync():
             res['errMsg'] = e.details
     return res
 
-@api.route('/feedback')
-def feedback():
+# @api.route('/feedback')
+# def feedback():
+#     data = format_dict(request.args.to_dict())
+#     query = {}
+#     method = data['method'] or None
+#     if 'query' in data:
+#         query = data['query'] 
+#     res = {}
+#     try: 
+#         col = db.feedback
+#         res['statusCode'] = 0
+        # if method == 'change':
+        #     update = {}
+        #     update['content.' + data['index'] + '.status'] = 1
+        #     res['db_data'] = col.update_one(query,{'$set':update}).raw_result
+        # elif method == 'reply':
+        #     update = {}
+        #     update['content.' + data['index'] + '.status'] = 2
+        #     update['content.' + data['index'] + '.reply'] = data['reply']
+        #     res['db_data'] = col.update_one(query,{'$set':update}).raw_result
+#         elif method == 'close':
+#             update = {}
+#             update['content.' + data['index'] + '.status'] = 3
+#             res['db_data'] = col.update_one(query,{'$set':update}).raw_result
+        
+#     except Exception as e:
+#         print(e)
+#         if method is None:
+#             res['errMsg'] = 'the param method is necessary '
+#         if (isinstance(e,pymongo.errors.OperationFailure)): 
+#             res['statusCode'] = 10
+#             res['errMsg'] = e.details
+#         else:
+#             res['statusCode'] = -1
+#             res['errMsg'] = eval(str(e)) 
+#             res['request_param'] = data
+            
+#     return res
+
+@api.route('/feedback',defaults={'openid': None},methods =["GET"])
+@api.route('/feedback/<openid>',methods =["GET"])
+def feedback_get(openid):
     data = format_dict(request.args.to_dict())
     query = {}
-    method = data['method'] or None
-    if 'query' in data:
-        query = data['query'] 
-    res = {}
-    try: 
-        col = db.feedback
-        res['statusCode'] = 0
-        if method == 'get':
-            res_cursor = col.find(query,{"_id": 0})
-            feedback = []
-            for item in res_cursor:
-                idx = 0
-                content_item = []
-                for content in item['content']:
-                    tmp = content
-                    tmp['index'] = idx
-                    idx = idx +1
-                    content_item.append(tmp)
-                feedback.append(item)   
-            res['feedback'] = feedback
-        elif method == 'change':
-            update = {}
-            update['content.' + data['index'] + '.status'] = 1
-            res['db_data'] = col.update_one(query,{'$set':update}).raw_result
-        elif method == 'reply':
-            update = {}
-            update['content.' + data['index'] + '.status'] = 2
-            update['content.' + data['index'] + '.reply'] = data['reply']
-            res['db_data'] = col.update_one(query,{'$set':update}).raw_result
-        elif method == 'close':
-            update = {}
-            update['content.' + data['index'] + '.status'] = 3
-            res['db_data'] = col.update_one(query,{'$set':update}).raw_result
-        elif method == 'add':
-            item ={
-                 'content':{
-                    'uptime':eval(data['uptime']),
-                    'text':data['text'],
-                    'status':0,
-                    'contact':data['contact'],                
-                 }
-            }
-            query['limit'] = {'$gt':0}
-            res['db_data'] = col.update_one(query,{'$push':item,'$inc': {'limit': -1 },}).raw_result
-            if  res['db_data']['nModified'] == 0 :
-                del res['db_data']
-                res['errMsg'] = '反馈次数不足'
-                res['statusCode'] = 6
-        elif method == 'limit':
-            limit = col.find_one(query,{"_id": 0,'limit':1})
-            res.update(limit)
-            res['statusCode'] = 0
+    if openid is not None:
+        query['openid'] = openid
+    col = db.feedback
+    if data.get('action') == 'limit':
+        if openid == None:
+            return jsonify(statusCode = 0,errMSg = "缺少参数")
+        try:
+           res_cursor = col.find_one(query,{"_id": 0,'limit':1})
+        except Exception as e:
+          return jsonify(statusCode = 10,errMsg = eval(str(e)))
         else:
-            res['errMsg'] = 'the value of method (' + method +') is invalid'
-            res['statusCode'] = -1
+            if res_cursor == None:
+                 return jsonify(statusCode = 0,errMSg = "用户不存在")
+            return jsonify(statusCode = 0,limit = res_cursor.get('limit'))
+    try:
+        res_cursor = col.aggregate([{ "$match":query},{'$lookup':{'from': "usrinfo", "localField": "openid", "foreignField": "openid", "as": "inventory_docs"}},{"$project":{'nickname':{"$arrayElemAt":['$inventory_docs.nickname', 0]},"_id":0,"content":1,"uptime":1,"openid":1}}])           
     except Exception as e:
-        print(e)
-        if method is None:
-            res['errMsg'] = 'the param method is necessary '
-        if (isinstance(e,pymongo.errors.OperationFailure)): 
-            res['statusCode'] = 10
-            res['errMsg'] = e.details
+        return jsonify(statusCode = 10,errMsg = eval(str(e)))
+    else:
+        feedback = []
+        for item in res_cursor:
+            idx = 0
+            content_item = []
+            for content in item['content']:
+                tmp = content
+                tmp['index'] = idx
+                idx = idx +1
+                content_item.append(tmp)
+            feedback.append(item)  
+        return jsonify(statusCode = 0,feedback =feedback)
+
+@api.route('/feedback',defaults={'openid': None},methods =["POST"])
+@api.route('/feedback/<openid>',methods =["POST"])
+def feedback_post(openid):
+    data = request.json
+    query = {}
+    if openid is not None:
+        query['openid'] = openid
+    else:
+        return jsonify(statusCode = 0,errMSg = "缺少参数")    
+    col = db.feedback
+    item ={
+            'content':{
+                'uptime':data['uptime'],
+                'text':data['text'],
+                'status':0,
+                'contact':data['contact'],                
+            }
+    }
+    query['limit'] = {'$gt':0}
+    try:
+        db_data = col.update_one(query,{'$push':item,'$inc': {'limit': -1 },}).raw_result
+    except Exception as e:
+        return jsonify(statusCode = -1,errMsg = eval(str(e)))
+    else:
+        if  db_data.get('nModified') == 0 :
+            return jsonify(statusCode = -1,errMsg = "反馈次数不足")
+        return jsonify(statusCode = 0,errMsg = "反馈成功")
+
+@api.route('/feedback/<openid>/<index>',methods =["PUT"])
+def feedback_put(openid,index):
+    data = request.get_json()
+    query = {}
+    if all([openid,index,data.get('action')]) :
+        query['openid'] = openid
+    else:
+        return jsonify(statusCode = -1,errMSg = "缺少参数")    
+    col = db.feedback
+    update = {}
+
+    if data.get('action') == 'status_change':
+        update['content.' + index + '.status'] = 1
+        try: 
+            db_data = col.update_one(query,{'$set':update}).raw_result
+        except Exception as e:
+            return jsonify(statusCode = -1,errMsg = eval(str(e)))
         else:
-            res['statusCode'] = -1
-            
-    return res
+            if  db_data.get('nModified') == 0 :
+                return jsonify(statusCode = -1,errMsg = '状态更新失败')
+            return jsonify(statusCode = 0,errMsg = '状态更新成功')
+    
+    if data.get('action') == 'reply':
+        update['content.' + index + '.status'] = 2
+        update['content.' + index + '.reply'] = data['reply']
+        try:
+            db_data = col.update_one(query,{'$set':update}).raw_result
+        except Exception as e:
+            return jsonify(statusCode = -1,errMsg = eval(str(e)))
+        else:
+            if  db_data.get('nModified') == 0 :
+                return jsonify(statusCode = -1,errMsg = '回复失败')
+            return jsonify(statusCode = 0,errMsg = '回复成功')
 

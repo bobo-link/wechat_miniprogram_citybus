@@ -20,7 +20,7 @@ Page({
       console.log('触发双击')
       this.update_bus_station(this.data.searchinfo[e.detail.markerId])
       wx.navigateTo({
-        url: '../../pages/buslinelist/buslinelist?referer=search'
+        url: '../../pages/buslinelist/buslinelist?Referer=search'
       })
     }
     this.setData({

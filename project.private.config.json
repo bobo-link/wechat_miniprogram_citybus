@@ -3,6 +3,6 @@
   "projectname": "project_citybus",
   "setting": {
     "compileHotReLoad": true,
-    "urlCheck": true
+    "urlCheck": false
   }
 }

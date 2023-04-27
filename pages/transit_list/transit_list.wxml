@@ -16,13 +16,16 @@
             <text class="price--num">{{route.preview_info.price > 0 ?route.preview_info.price + ' 元':'暂无数据'}}</text>
           </view>
           <view class="route--line">
-            <block wx:for="{{route.preview_info.linename}}" wx:key="name">
-              <view class="route--linename">
-                <iconfont name="{{item.type == 1 ? 'huoche':'gongjiao' }}" size="40" color="{{'rgba(46, 156, 241,0.9)'}}" style="padding: 0 2px 0 0;"></iconfont>
-                <text>{{item.name}}</text>
-              </view>
+            <block wx:for="{{route.preview_info.linename}}" wx:key="index">
+              <block wx:for="{{item}}" wx:key="name">
+                <text wx:if="{{index >0}}" style="color: rgba(154, 154, 155,0.5);font-size: 10px;">/</text>
+                <view class="route--linename" catchtap="busline_detail" data-name="{{item.name}}" data-type="{{item.type}}">
+                  <iconfont name="{{item.type == 1 ? 'huoche':'gongjiao' }}" size="40" color="{{'rgba(46, 156, 241,0.9)'}}" style="padding: 0 2px 0 0;"></iconfont>
+                  <text>{{item.name}}</text>
+                </view>
+                <!-- <text class=" _text dot" decode='true'> &nbsp;·&nbsp; </text> -->
+              </block>
               <text wx:if="{{index < (route.preview_info.linename.length - 1)}}" style="color: rgba(154, 154, 155,0.5);font-size: 10px;">▶</text>
-              <!-- <text class=" _text dot" decode='true'> &nbsp;·&nbsp; </text> -->
             </block>
           </view>
         </view>

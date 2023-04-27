@@ -25,17 +25,13 @@ Page({
       return
     }
     wx.request({
-      url: wx.prefix + '/feedback',
+      url: wx.prefix + '/feedback' + '/' + wx.getStorageSync('usrinfo').openid,
       data:{
-       query:{
-         openid: wx.getStorageSync('usrinfo').openid,
-       },
        uptime:new Date(),
        text:_this.data.text,
-       method:'add',
        contact:_this.data.contact
      },
-      method:'GET',
+      method:'POST',
       header: {
        "content-type": "application/json"
      },
@@ -45,6 +41,9 @@ Page({
             type: 'success',
             message: '反馈成功'
           });
+          _this.setData({
+            limit:_this.data.limit -1
+          })
         }
       },
       complete:function(res){
@@ -83,14 +82,9 @@ Page({
    */
   onLoad(options) {
     wx.p.request({
-      url: wx.prefix + '/feedback',
-      data:{
-        query:{
-          openid: wx.getStorageSync('usrinfo').openid,
-        },
-        method:'limit',
-      },
+      url: wx.prefix + '/feedback' + '/' + wx.getStorageSync('usrinfo').openid,
        method:'GET',
+       data:{action:'limit'},
        header: {
         "content-type": "application/json"
       },

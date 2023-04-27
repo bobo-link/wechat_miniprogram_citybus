@@ -15,12 +15,24 @@
 }
 .dialog-content-view {
   width: 210px;
+  position: relative;
   background: #FFFFFF;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 40px 40px 20px 40px;
+  padding: 40px 40px 10px 40px;
+}
+.content_title_style{
+  padding-top: 50px;
+ 
+}
+.title{
+  position:absolute;
+  left: 5%;
+  top:7%;
+  font:"Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #888;
 }
 .dialog-content-text {
   font-size: 14px;
@@ -30,6 +42,9 @@
   line-height: 20px;  
   text-align: center;
 }
+.title_style{
+  text-align: left;
+}
 
 .operation-view {
   display: flex;
@@ -37,6 +52,9 @@
   justify-content: space-between;
   margin-top: 30px;
   align-items: center;  
+}
+.operation_title_style{
+  margin-top: 20px;
 }
 
 .operation-col-view {

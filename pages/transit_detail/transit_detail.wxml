@@ -68,7 +68,7 @@
     <view class="busline--body _body">
       <view class="busline--body--stops _body--stops">
         <view class="stop departure_stop">
-          <text class="_text stopName">{{vehicle_info.detail.on_station}}</text>
+          <text class="_text stopName" bindtap="station_detail" data-uid="{{vehicle_info.detail.start_info.start_uid}}">{{vehicle_info.detail.on_station}}</text>
         </view>
         <view class="more">
           <text class="_text text">{{'途径 ' + (vehicle_info.detail.stop_num -1) +' 个站点'}}</text>
@@ -86,7 +86,7 @@
           </block>
         </view>
         <view class="stop _view data-v-698a2b28 stop arrival_stop">
-          <text class="_text stopName">{{vehicle_info.detail.off_station}}</text>
+          <text class="_text stopName" bindtap="station_detail" data-uid="{{vehicle_info.detail.end_info.end_uid}}">{{vehicle_info.detail.off_station}}</text>
         </view>
       </view>
     </view>

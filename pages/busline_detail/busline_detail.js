@@ -45,10 +45,7 @@ Page({
     });
     this.storeBindings.updateStoreBindings()
     wx.p.request({
-      url: wx.prefix + 'busline',
-      data: {
-        name: options.name
-      },
+      url: wx.prefix + 'busline/' + options.name ,
       header: {
         "content-type": "application/json"
       },
@@ -57,7 +54,7 @@ Page({
       data: res
     }) => {
       console.log(res)
-      if (res.statusCode == undefined || res.statusCode == 101){
+      if (res.statusCode == undefined || res.statusCode == 101) {
         Dialog.confirm({
           message: res.errMsg || '该线路数据获取失败',
           selector: '#cus-dialog',
@@ -66,7 +63,10 @@ Page({
           }
         });
         return
-      } 
+      }
+      this.setData({
+        item_idx: 0
+      })
       let busline = res.busline
       let reg = /\((\S*)\)/
       let direction = busline.name.match(reg)[1]
@@ -81,13 +81,15 @@ Page({
       })
       wx.setNavigationBarTitle({
         title: busline.name,
-      })     
-      let item_idx = busline.BusStations.findIndex((item) => {
-        return item.name == this.data.bus_station.name
       })
-      this.setData({
-        item_idx: item_idx
-      })
+      if (options.Referer == 'busline') {
+        let item_idx = busline.BusStations.findIndex((item) => {
+          return item.name == this.data.bus_station.name
+        })
+        this.setData({
+          item_idx: item_idx
+        })
+      }
     })
 
   },

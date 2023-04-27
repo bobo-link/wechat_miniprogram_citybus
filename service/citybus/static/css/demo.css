@@ -8,7 +8,7 @@
 body {
 	font-family: 'Overpass Mono', monospace;
 	color: #666;
-	background: #fff;
+	background: #ffffff;
 }
 
 a {
@@ -27,6 +27,7 @@ a:focus {
 	overflow: hidden;
 	width: 0;
 	height: 0;
+	opacity: 0;
 	pointer-events: none;
 }
 
@@ -114,10 +115,32 @@ a:focus {
 
 .grid__item {
 	padding: 1em;
-	text-align: center;
+	/* text-align: center; */
 	display: grid;
-    align-items: center;
+    align-items: end;
 	justify-items: center;
+}
+.direction_symbol{
+	cursor: pointer;
+	
+}
+.direction_symbol svg{
+	width:20px;
+	height:20px;
+	
+}
+
+.direction_symbol svg path{
+	fill:currentColor;
+	color: rgb(250,222,95);
+}
+.disable{
+	pointer-events: none;
+}
+.disable svg path{
+	fill:currentColor;
+    /* color:#9dd9f7; */
+	color: rgba(250,239,145,0.8)
 }
 
 /* Content */

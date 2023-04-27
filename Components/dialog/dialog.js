@@ -33,6 +33,10 @@ Component({
           type: Boolean,
           value: false,
       },
+      title: {
+        type: String,
+        value: '',
+    },
       confirmCallback: null,
       cancelCallback: null,
   },

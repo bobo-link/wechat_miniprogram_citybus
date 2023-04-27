@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Tooltip Animations | Codrops</title>
+	<meta name="description" content="Some inspiration for tooltip shapes and animations with SVG and anime.js" />
+	<meta name="keywords"
+		content="svg, animation, tooltip, shape, elastic, inspiration, web design, web development, javascript" />
+	<meta name="author" content="Codrops" />
+	<link rel="shortcut icon" href="favicon.ico">
+	<link href="https://fonts.googleapis.com/css?family=Overpass+Mono:400,700" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="static/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="static/css/demo.css" />
+	<link rel="stylesheet" type="text/css" href="static/css/component.css" />
+	<script>document.documentElement.className = 'js';</script>
+	<script src="/static/js/util.js"></script>
+	<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+	</script>
+	 <style type="text/css">
+		.content{
+			padding: 1em 0 3em;
+		}
+        .Content-Main{
+            max-width: 60%;
+            margin: auto;
+            padding: 20px 30px 20px 30px;
+            font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+            text-shadow: 1px 1px 1px #FFF;
+            border: 1px solid #DDD;
+            border-radius: 5px;
+            color: #888;
+            background: #FFF;
+        }
+        .Content-Main h1{
+            display: block;
+            padding: 0px 0px 10px 40px;
+            margin: -10px -30px 30px -30px;
+            font: 25px "Helvetica Neue", Helvetica, Arial, sans-serif;
+            border-bottom: 1px solid #DADADA;
+            color: #888;
+        }
+        .Content-Main h1>span{
+            display: block;
+            font-size: 11px;
+        }
+        .Content-Main label{
+            display: flex;
+            margin: 0px 0px 1em;
+        }
+		.Content-Main .reply, .Content-Main .uptime{
+			margin: 0px 0px 3em;
+		}
+        .Content-Main label>span{
+            float: left;
+            width: 20%;
+            padding-right: 10px;
+            margin-top: 10px;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: bold;
+            text-align: right;
+            color: #333;
+        }
+        .Content-Main input[type="text"],.Content-Main textarea,.info{
+            width: 70%;
+            padding: 5px 0px 5px 5px;
+            margin-bottom: 16px;
+            margin-right: 6px;
+            margin-top: 2px;
+            line-height: 15px;
+            border-radius: 4px;
+            border: 1px solid #CCC;
+            color: #888;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        }
+        .select1{
+            width: 71%;
+            height: 35px;
+            margin-bottom: 16px;
+            margin-right: 6px;
+            margin-top: 2px;
+            line-height: 15px;
+            padding: 5px 0px 5px 5px;
+            border-radius: 4px;
+            border: 1px solid #CCC;
+            color: #888;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        }
+        .select2{
+            width: 13%;
+            border-radius: 4px;
+            border: 1px solid #CCC;
+            color: #888;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        }
+        .Content-Main textarea{
+            width: 70%;
+            height: 100px;
+            padding: 5px 0px 0px 5px;
+        }
+        .button{
+            padding: 10px 25px 10px 25px;
+            margin-left: 111px;
+            border-radius: 4px;
+            border:1px solid #CCC;
+            background: #FFF;
+            color: #333;
+        }
+        .button:hover{
+            color: #333;
+            background-color: #EBEBEB;
+            border-color: #ADADAD;
+        }
+		.codrops-header__title{
+			font: 1.2em "Helvetica Neue", Helvetica, Arial, sans-serif;
+			color: #888;
+			
+		}
+		
+    </style>
+</head>
+
+<body>
+	<svg class="hidden">
+		<symbol id="icon-arrow" viewBox="0 0 24 24">
+			<title>arrow</title>
+			<polygon points="6.3,12.8 20.9,12.8 20.9,11.2 6.3,11.2 10.2,7.2 9,6 3.1,12 9,18 10.2,16.8 " />
+		</symbol>
+		<symbol id="icon-drop" viewBox="0 0 24 24">
+			<title>drop</title>
+			<path
+				d="M12,21c-3.6,0-6.6-3-6.6-6.6C5.4,11,10.8,4,11.4,3.2C11.6,3.1,11.8,3,12,3s0.4,0.1,0.6,0.3c0.6,0.8,6.1,7.8,6.1,11.2C18.6,18.1,15.6,21,12,21zM12,4.8c-1.8,2.4-5.2,7.4-5.2,9.6c0,2.9,2.3,5.2,5.2,5.2s5.2-2.3,5.2-5.2C17.2,12.2,13.8,7.3,12,4.8z" />
+			<path
+				d="M12,18.2c-0.4,0-0.7-0.3-0.7-0.7s0.3-0.7,0.7-0.7c1.3,0,2.4-1.1,2.4-2.4c0-0.4,0.3-0.7,0.7-0.7c0.4,0,0.7,0.3,0.7,0.7C15.8,16.5,14.1,18.2,12,18.2z" />
+		</symbol>
+	</svg>
+	<main>
+		<header class="codrops-header">
+			<div class="codrops-links">
+				<a class="codrops-icon codrops-icon--prev"
+				href="#" onClick="javascript :history.go(-1);"  title="Previous Page"><svg
+						class="icon icon--arrow">
+						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow"></use>
+					</svg></a>
+				<a class="codrops-icon codrops-icon--drop" href="https://tympanus.net/codrops/?p=31283"
+					title="Back to the article"><svg class="icon icon--drop">
+						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-drop"></use>
+					</svg></a>
+			</div>
+			<h1 class="codrops-header__title">用户反馈</h1>
+			<p class="codrops-header__tagline"></p>
+			<!-- <a class="github" href="https://github.com/codrops/TooltipAnimations/">/Github</a> -->
+		</header>
+		<div class="content">
+			<div class="Content-Main">				
+				<form  class="form-report">
+					<label>
+						<span>Contact:</span>						
+						<div class="info"><text id="contact"></text></div>
+					</label>
+					<label>
+						<span>Message:</span>
+						<textarea id="mesaage" name="message" disabled ></textarea>
+					</label>
+					<label class="uptime">
+						<span>Uptime:</span>
+						<div class="info"><text id="uptime">2000.10.1</text></div>
+					</label>
+					<label class="reply">
+						<span>Reply:</span>
+						<textarea id="reply" name="reply" ></textarea>
+					</label>
+					<label>
+						<input type="submit" class="button" value="Send">
+					</label>
+				</form>
+			</div>
+		</div>
+		<!-- Related demos -->
+
+	</main>
+	
+	<script src="static/js/anime.min.js"></script>
+	<script src="static/js/charming.min.js"></script>
+	<script src="static/js/reply.js"></script>
+
+</body>
+
+</html>

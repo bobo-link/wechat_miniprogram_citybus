@@ -1,7 +1,7 @@
 #coding:utf-8
 from . import CurrentConfig,api,headers
 from citybus.utils import format_dict
-from flask import request
+from flask import request,jsonify
 from citybus import db
 import pymongo
 import requests
@@ -63,17 +63,31 @@ def suggestion():
     response = requests.get('https://api.map.baidu.com/place/v2/suggestion',params=data,headers=headers).json()
     return response
 
-@api.route('/busline')
-def busline():
-    data = format_dict(request.args.to_dict())
+@api.route('/busline',defaults={'uid': None},methods =["GET"])
+@api.route('/busline/<uid>',methods =["GET"] )
+def busline(uid):
     res = {}
-    busline = db.busline.find_one({"name":{'$regex':'^' + data['name'] + '\\('}},{'_id':0})
-    if busline != None:
-        res['busline'] = busline
-        res['statusCode'] = 0
-    else :
-        res['statusCode'] = 101
-        res['errMsg'] = data['name'] + '线路未录入数据库'
+    if not uid:
+        try :
+            result = db.busline.find({},{'_id':0})
+        except Exception as e :
+            return jsonify(statusCode = 1,errMsg = eval(str(e)))
+        else:
+            res['statusCode'] = 0
+            res['busline'] = []
+            for busline in result:
+                res['busline'].append(busline)
+    else:
+        try:
+            busline = db.busline.find_one({"name":{'$regex':'^' + uid + '\\('}},{'_id':0})
+        except Exception as e:
+            return jsonify(statusCode = 1,errMsg = eval(str(e)))
+        else:
+            if busline != None:
+                res['busline'] = busline
+                res['statusCode'] = 0
+            else : 
+                return jsonify(statusCode = 1,errMsg = uid + '线路未录入数据库')             
     return res
 
 @api.route("/echo",methods=['GET', 'POST','OPTIONS'])
@@ -101,3 +115,19 @@ def echo():
        print(request.__dict__)    
     print(data)
     return data
+
+@api.route("/feedbacktest",methods=['GET', 'POST','OPTIONS'])
+def fed():
+    return [{
+        "nickname":"wen",
+        "content": ["1","2","3"],
+        "reply":"ok",
+        "uuid":1
+    },
+    {
+        "nickname":"w",
+        "content": ["dssdsd","sdsdsdsdfgf","fgfgfgfdgrgd"],
+        "reply":"smdiso",
+        "uuid":2
+    }
+    ]
