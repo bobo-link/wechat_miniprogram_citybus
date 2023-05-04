@@ -21,10 +21,10 @@
   width: 8px;
   height: 8px;
   border-radius: 100%;
-  background: rgb(8, 250, 0);
+  background: rgb(253, 125, 5);
 }
 .read{
-  background: rgb(253, 125, 5);
+  background: rgb(8, 250, 0);
 }
 .reply{
   background: rgb(139, 138, 138);

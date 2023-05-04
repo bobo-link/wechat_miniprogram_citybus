@@ -12,11 +12,9 @@ const tools = require('~/utils/util.js')
 
 Page({
   data: {
-    search:false,
-    searchempty:false,
-    item: 0,
+    search: false,
+    searchempty: false,
     tab: 0,
-    item_idx: '',
     actions: [{
         name: '删除',
         color: '#fff',
@@ -87,42 +85,42 @@ Page({
       url: '../../pages/buslinelist/buslinelist?Referer=index&uid=' + this.data.searchinfo[e.currentTarget.dataset.index].uid
     })
   },
-  search_focus(){
+  search_focus() {
     this.setData({
       search: true
     })
   },
-  search_cancel(){
+  search_cancel() {
     this.setData({
       search: false,
-      searchResults:[],
-      searchempty:false
+      searchResults: [],
+      searchempty: false
     })
   },
-  search_clear(){
+  search_clear() {
     this.setData({
-      searchResults:[],
-      searchempty:false
+      searchResults: [],
+      searchempty: false
     })
   },
-  search_todetail(e){
+  search_todetail(e) {
     let index = e.currentTarget.dataset.index
     let uid = this.data.searchResults[index].uid
     this.search_cancel()
     wx.navigateTo({
-      url: '/pages/buslinelist/buslinelist?Referer=suggestionsuggestion&uid='+ uid,
+      url: '/pages/buslinelist/buslinelist?Referer=suggestionsuggestion&uid=' + uid,
     })
   },
   search_change(e) {
-    if (e.detail !=undefined && e.detail.length < 1){
+    if (e.detail != undefined && e.detail.length < 1) {
       return
     }
     wx.showLoading({
       title: '加载中',
     })
     this.setData({
-      searchResults:[],
-      searchempty:false
+      searchResults: [],
+      searchempty: false
     })
     BMap.suggestion_promisify({
       query: e.detail + '公交',
@@ -140,27 +138,24 @@ Page({
       console.log(res)
       wx.hideLoading()
       this.setData({
-        searchResults:valid_data,
-        searchempty:true
+        searchResults: valid_data,
+        searchempty: true
       })
     })
   },
-  collect_refresh(){
-    if(this.data.if_login){
-      tools.collectver().then(res => {
-        console.log(res)
-        if (res) {  
-          tools.collectSync().then(res=>{
-            this.update_collect()
-            wx.showToast({
-              title: '更新完成',
-              icon:'none'
-            })
-          })  
-        }else{
+  collect_refresh() {
+    if (this.data.if_login) {
+      tools.collectSync().then(res => {
+        if (res.statusCode == 0) {
+          this.update_collect()
+          wx.showToast({
+            title: '更新完成',
+            icon: 'none'
+          })
+        } else {
           wx.showToast({
             title: '已经是最新',
-            icon:'none'
+            icon: 'none'
           })
         }
       })
@@ -169,7 +164,7 @@ Page({
   collect_del(e) {
     let index = e.currentTarget.dataset.index
     let param = {
-      method: 'del'
+      uptime:new Date()
     }
     let type = this.data.collect[index].type
     let item = {
@@ -177,9 +172,9 @@ Page({
     }
     param[type] = item
     console.log(param)
-    BMap.collectSync(param).then((res) => {
+    BMap.collection(param,'/' + wx.getStorageSync('usrinfo').openid, 'DELETE' ).then((res) => {
       console.log(res)
-      if (res.statusCode != undefined && res.statusCode == 0 && res.db_data.nModified > 0) {
+      if (res.statusCode == 0) {
         let array = this.data.collect
         array.splice(index, 1)
         wx.setStorageSync(type, array.filter(x => {
@@ -206,7 +201,7 @@ Page({
         break;
       default:
         wx.navigateTo({
-          url: '/pages/busline_detail/busline_detail?Referer=collect&name='+this.data.collect[index].name,
+          url: '/pages/busline_detail/busline_detail?Referer=collect&name=' + this.data.collect[index].name,
         });
         break;
     }
@@ -214,12 +209,12 @@ Page({
   //切换标签页函数
   changeItem: function (e) {
     this.setData({
-      item: e.currentTarget.dataset.item
+      tab: e.currentTarget.dataset.item
     })
   },
   changeTab: function (e) {
     this.setData({
-      tab: e.detail.current
+      tab: e.detail.current,
     })
   },
   //数据初始化的封装函数

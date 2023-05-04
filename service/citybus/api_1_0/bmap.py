@@ -90,6 +90,57 @@ def busline(uid):
                 return jsonify(statusCode = 1,errMsg = uid + '线路未录入数据库')             
     return res
 
+@api.route('/busline',methods =["POST"])
+def busline_post():
+    data = request.get_json()
+    col = db.busline
+    if data.get('buslines') is None and data.get('busline') is None:
+        return jsonify(statusCode = -1,errMsg ='缺少参数')
+    
+    if data.get('buslines'):
+        try:
+            db_data = col.insert_many(data.get('buslines'),False).raw_result
+        except pymongo.errors.PyMongoError as e:    
+            if isinstance(e, pymongo.errors.BulkWriteError) and e.timeout == False :
+                del_items = []
+                #获取存在的item数组
+                for erro in e.details.get('writeErrors'):
+                    del_items.append(erro.get('keyValue'))
+                #删除存在的itme
+                try:
+                    col.delete_many({'$or':del_items}).raw_result  
+                except pymongo.errors.PyMongoError as e :
+                    return jsonify(statusCode = -1,errMsg = e.details)
+                else:
+                    #插入存在的item
+                    buslines = [busline for busline in data.get('buslines') if {'name':busline.get('name')} in del_items ]
+                    try:
+                        col.insert_many(buslines,False)
+                    except pymongo.errors.PyMongoError as e :
+                        if isinstance(e,pymongo.errors.BulkWriteError):
+                             return jsonify(statusCode = 0,errMsg = '录入成功(二层)')
+                        return jsonify(statusCode = -1,errMsg = e.details)
+                    else:
+                        return jsonify(statusCode = 0,errMsg = '录入成功(一层)')
+            else:
+                errMsg = [item.get('errmsg') for item in e.details.get('writeErrors')]
+                return jsonify(statusCode = -1,errMsg = errMsg)  
+        else:
+            if db_data.get('nModified') == 0 :
+                return jsonify(statusCode = -1,errMsg = '录入失败')
+            return jsonify(statusCode = 0,errMsg = '录入成功')
+                                         
+    if data.get('busline'):
+        try:
+            db_data = col.update_one({'name':data.get('busline').get('name')},{'$set':data.get('busline')},upsert=True).raw_result
+        except Exception as e:
+            if isinstance(e,pymongo.errors.PyMongoError):
+                return jsonify(statusCode = -1, errMsg = e.details)
+        else:
+            return jsonify(statusCode = 0,errMsg = '录入成功')
+           
+
+
 @api.route("/echo",methods=['GET', 'POST','OPTIONS'])
 def echo():
     headers = {
@@ -115,19 +166,3 @@ def echo():
        print(request.__dict__)    
     print(data)
     return data
-
-@api.route("/feedbacktest",methods=['GET', 'POST','OPTIONS'])
-def fed():
-    return [{
-        "nickname":"wen",
-        "content": ["1","2","3"],
-        "reply":"ok",
-        "uuid":1
-    },
-    {
-        "nickname":"w",
-        "content": ["dssdsd","sdsdsdsdfgf","fgfgfgfdgrgd"],
-        "reply":"smdiso",
-        "uuid":2
-    }
-    ]

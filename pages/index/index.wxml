@@ -16,7 +16,7 @@
       <text>收藏</text>
       <hr/>
     </view>
-    <view wx:if="{{if_login && tab ==1}}" class="collect--refresh" style="margin-left: auto;padding-right: 10px;" bindtap="changeItem">
+    <view wx:if="{{if_login && tab ==1}}" class="collect--refresh" style="margin-left: auto;padding-right: 10px;">
       <iconfont name="shuaxin" size="25" bindtap="collect_refresh"></iconfont>
     </view>
   </view>
@@ -39,7 +39,7 @@
 
 
 <view wx:if="{{!search}}" class="content">
-  <swiper current="{{item}}" bindchange="changeTab" style="height:{{scrollHeight}}px">
+  <swiper current="{{tab}}" bindchange="changeTab" style="height:{{scrollHeight}}px">
     <!-- 每个滑块(swiper-item)都有一个index，也就是current要获取的值 -->
     <swiper-item id='swiper-item'>
       <!-- 滑动列表 -->

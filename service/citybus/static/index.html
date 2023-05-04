@@ -12,10 +12,10 @@
 		<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
 		<link rel="stylesheet" type="text/css" href="/static/css/demo.css" />
 		<link rel="stylesheet" type="text/css" href="/static/css/component.css" />
-		<script>document.documentElement.className = 'js';</script>
+		<script>document.documentElement.className = 'js';</script>		
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script src="//cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
 		<script src="/static/js/util.js"></script>
-		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
-		</script>
 	</head>
 	<body>
 		<svg class="hidden">
@@ -40,43 +40,13 @@
 			</header>
 			<div class="content">
 				<div class="grid">
-					<div class="grid__item">
-						<div class="tooltip tooltip--uldor" data-type="uldor">
-							<div class="tooltip__trigger" role="tooltip" aria-describedby="info-uldor">
-								<span class="tooltip__trigger-text">Uldor</span>
-							</div>
-							<div style="position:absolute;bottom: 7.5em;left: 50%;margin-left: -10.5em;"><</div>
-							<div class="tooltip__base">
-								<!-- <svg class="tooltip__shape" width="100%" height="100%" viewBox="0 0 400 300">
-									<path d="M 79.5,66 C 79.5,66 128,106 202,105 276,104 321,66 321,66 321,66 287,84 288,155 289,226 318,232 318,232 318,232 258,198 200,198 142,198 80.5,230 80.5,230 80.5,230 112,222 111,152 110,82 79.5,66 79.5,66 Z"/>
-								</svg> -->
-								
-								<div class="tooltip__content" id="info-uldor">It does not do to dwell on dreams and forget to live.</div>
-							</div>
-							<div style="position:absolute;bottom: 7.5em;right: 50%;margin-right:-10.5em;">></div>
-						</div>
-					</div>
-					<div class="grid__item">
-						<div class="tooltip tooltip--uldor" data-type="uldor">
-							<div class="tooltip__trigger" role="tooltip" aria-describedby="info-uldor">
-								<span class="tooltip__trigger-text">Uldor</span>
-							</div>
-							<div style="position:absolute;bottom: 7.5em;left: 50%;margin-left: -10.5em;"><</div>
-							<div class="tooltip__base">
-								<!-- <svg class="tooltip__shape" width="100%" height="100%" viewBox="0 0 400 300">
-									<path d="M 79.5,66 C 79.5,66 128,106 202,105 276,104 321,66 321,66 321,66 287,84 288,155 289,226 318,232 318,232 318,232 258,198 200,198 142,198 80.5,230 80.5,230 80.5,230 112,222 111,152 110,82 79.5,66 79.5,66 Z"/>
-								</svg> -->
-								<div class="tooltip__content" id="info-uldor">It does not do to dwell on dreams and forget to live.</div>
-							</div>
-							<div style="position:absolute;bottom: 7.5em;right: 50%;margin-right:-10.5em;">></div>
-						</div>
-					</div>
+					
 				</div><!-- /grid -->
 			</div>
 			<!-- Related demos -->
 			<section class="content content--related">
 				<p>If you enjoyed this demo you might also like:</p>
-				<a class="media-item" href="https://tympanus.net/Development/TooltipStylesInspiration/">
+				<a class="media-item" href="/busline.html">
 					<img class="media-item__img" src="static/img/related/TooltipStyles.jpg">
 					<h3 class="media-item__title">Tooltip Styles</h3>
 				</a>
@@ -88,7 +58,7 @@
 		</main>
 		<template>
 			<div class="grid__item">
-				<div class="tooltip tooltip--uldor" data-type="uldor">
+				<div class="tooltip tooltip--uldor">
 					<div class="tooltip__trigger" role="tooltip" aria-describedby="info-uldor">
 						<span class="tooltip__trigger-text">Uldor</span>
 					</div>

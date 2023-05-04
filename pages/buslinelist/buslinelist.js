@@ -108,10 +108,12 @@ Page({
       return 
     }
     if (station.length < 10 && !tools.ifexist(item, station)) {
-      BMap.collectSync({
-        method: 'add',
+      BMap.collection({
         station: item,
-      }).then(res => {
+        uptime:new Date()
+      },
+       '/'+  wx.getStorageSync('usrinfo').openid,'POST',
+      ).then(res => {
         console.log(res)
         if (res.statusCode == 0) {
           station.push(item)

@@ -829,6 +829,28 @@ class BMapWX {
     })
     return Data
   };
+
+  async collection(param,suffix,method){
+    let Data = null;
+    let data_param = {
+      ...param,
+    }
+    await wx.p.request({
+      url: wx.prefix + 'collection' + suffix,
+      data:data_param,
+      header: {
+        "content-type": "application/json"
+      },
+      method: method || 'GET'
+    }).then(({
+      data: res
+    }) => {
+      Data = res
+    }, (res) => {
+      Data = res
+    })
+    return Data
+  };
   
 }
 module.exports.BMapWX = BMapWX;

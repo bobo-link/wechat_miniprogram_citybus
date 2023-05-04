@@ -132,38 +132,41 @@ const ifexist = function (obj, arr) {
   return flag
 }
 
-const collectver = async function () {
-  let ver
-  await BMap.collectSync({
-    method: 'ver',
-  }).then(res => {
-    let local_time = wx.getStorageSync('collect_time')
-    console.log(local_time)
-    if (!local_time || res.db_data == null){
-      ver = true
-      return true
-    }
-    let server_time = res.db_data.uptime 
-    local_time = new Date(local_time)
-    server_time = new Date(server_time)
-    ver = local_time < server_time
-    console.log({
-      local_time:local_time,
-      server_time:server_time,
-      ver:ver
-    })
-  })
-  return ver
-}
+// const collectver = async function () {
+//   let ver
+//   await BMap.collectSync({
+//     method: 'ver',
+//   }).then(res => {
+//     let local_time = wx.getStorageSync('collect_time')
+//     console.log(local_time)
+//     if (!local_time || res.db_data == null){
+//       ver = true
+//       return true
+//     }
+//     let server_time = res.db_data.uptime 
+//     local_time = new Date(local_time)
+//     server_time = new Date(server_time)
+//     ver = local_time < server_time
+//     console.log({
+//       local_time:local_time,
+//       server_time:server_time,
+//       ver:ver
+//     })
+//   })
+//   return ver
+// }
 const collectSync = async function () {
-  await BMap.collectSync({
-    method: 'get',
-  }).then(res => {
-    wx.setStorageSync('busline', res.db_data.busline )
-    wx.setStorageSync('route', res.db_data.route )
-    wx.setStorageSync('station', res.db_data.station)
-    wx.setStorageSync('collect_time', res.db_data.uptime)
+  var data = {}
+  await BMap.collection({uptime:wx.getStorageSync('collect_time')},'/'+wx.getStorageSync('usrinfo').openid).then(res => {
+    data = res
+    if (res.statusCode == 0){
+      wx.setStorageSync('busline', res.collection.busline )
+      wx.setStorageSync('route', res.collection.route )
+      wx.setStorageSync('station', res.collection.station)
+      wx.setStorageSync('collect_time', new Date(res.collection.uptime))
+    }
   })
+  return data
 }
 module.exports = {
   formatTime,
@@ -172,6 +175,6 @@ module.exports = {
   unique_list,
   isEmptyObject,
   ifexist,
-  collectver,
+  // collectver,
   collectSync
 }

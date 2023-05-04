@@ -177,13 +177,11 @@ Page({
                   message: '登录成功'
                 });
                 this.updata_login_msg_fuse(false)
-                tools.collectver().then(res => {
-                  if (res) {  
-                    tools.collectSync().then(res=>{
-                      this.update_collect()
-                    })  
+                tools.collectSync().then(res=>{
+                  if (res.statusCode == 0){
+                    that.update_collect()
                   }
-                })
+                }) 
               }
             }
           })
@@ -232,6 +230,18 @@ Page({
   bindViewTap(e) {
     this.setData({
       if_login: true
+    })
+  },
+  clear(e){
+    wx.request({
+      url: 'http://192.168.123.200:59/collection/ozMCH5XJmo1VZ6mnT1eC3utoVOx8',
+      method:'GET',
+      data:{
+        uptime:wx.getStorageSync('collect_time')
+      },
+      complete:function(res){
+        console.log(res)
+      }
     })
   },
   feedback(e){

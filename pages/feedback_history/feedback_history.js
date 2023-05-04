@@ -23,15 +23,16 @@ Page({
    */
   onLoad(options) {
     wx.p.request({
-      url: wx.prefix + '/feedback' + '/' + wx.getStorageSync('usrinfo').openid,
+      url: wx.prefix + 'feedback' + '/' + wx.getStorageSync('usrinfo').openid,
       method:'GET',
+      data:{action:'all'},
       header: {
        "content-type": "application/json"
      }
     }).then(({data:res})=>{
       console.log(res)
       this.setData({
-        feedback:res.feedback[0].content
+        feedback:res.feedback.content
       })
     })
   

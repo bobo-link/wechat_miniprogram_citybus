@@ -1,0 +1,38 @@
+.codrops-header{
+    padding: 1.5em 1.5em 1em;
+}
+.content{
+    padding: 6em 0 3em;
+    margin: auto;
+    width: 70%;
+    
+    
+}
+.busline_parse{
+    width: fit-content;
+    display: flex;
+    margin:auto;
+    padding-right: 60px;
+}
+.busline_name {
+    margin-right: 80px;
+}
+#busline_name {
+    width: 400px;
+    height: 60px;
+}
+.button{
+    margin-top: 5px;
+    margin-left: 10px;
+    font: inherit;
+    font-weight: 700;
+}
+.button:hover{
+    color: #333;
+    background-color: #EBEBEB;
+    border-color: #ADADAD;
+}
+.disable{
+    color: #ADADAD;
+
+}

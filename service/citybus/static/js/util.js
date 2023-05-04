@@ -1,12 +1,13 @@
 
 //获取feedback 信息
-const feedback_info = (param) => {
+const feedback_info = (param,index) => {
     let feedback = {}
     if (param && param != 'all') {
         const suffix = '/' + param
         $.ajax({
             type: "get",
-            url: '/feedback' + suffix,
+            url: '/feedback' + suffix ,
+            data:{index:index},
             dataType: "json",
             contentType: 'application/json;charset=UTF-8',
             // contentType:'application/x-www-form-urlencoded',
@@ -31,7 +32,7 @@ const feedback_info = (param) => {
                             nickname: item.nickname,
                             reply: item.reply,
                             content: item.content,
-                            content_length: item.content.length,
+                            content_length: item.content_length,
                         }
                     });
                 } else {
@@ -103,3 +104,18 @@ function requestUrlParam(argname) {
     }
     return ""
 }
+toastr.options = { // toastr配置
+    "closeButton": false, //是否显示关闭按钮
+    "debug": false, //是否使用debug模式
+    "progressBar": false, //是否显示进度条，当为false时候不显示；当为true时候，显示进度条，当进度条缩短到0时候，消息通知弹窗消失
+    "positionClass": "toast-top-right",//显示的动画位置
+    "showDuration": "400", //显示的动画时间
+    "hideDuration": "1000", //消失的动画时间
+    "timeOut": "1500", //展现时间
+    "extendedTimeOut": "1000", //加长展示时间
+    "showEasing": "swing", //显示时的动画缓冲方式
+    "hideEasing": "linear", //消失时的动画缓冲方式
+    "showMethod": "fadeIn", //显示时的动画方式
+    "hideMethod": "fadeOut" //消失时的动画方式
+}
+

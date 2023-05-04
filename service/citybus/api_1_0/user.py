@@ -156,50 +156,82 @@ def collectsync():
             res['errMsg'] = e.details
     return res
 
-# @api.route('/feedback')
-# def feedback():
-#     data = format_dict(request.args.to_dict())
-#     query = {}
-#     method = data['method'] or None
-#     if 'query' in data:
-#         query = data['query'] 
-#     res = {}
-#     try: 
-#         col = db.feedback
-#         res['statusCode'] = 0
-        # if method == 'change':
-        #     update = {}
-        #     update['content.' + data['index'] + '.status'] = 1
-        #     res['db_data'] = col.update_one(query,{'$set':update}).raw_result
-        # elif method == 'reply':
-        #     update = {}
-        #     update['content.' + data['index'] + '.status'] = 2
-        #     update['content.' + data['index'] + '.reply'] = data['reply']
-        #     res['db_data'] = col.update_one(query,{'$set':update}).raw_result
-#         elif method == 'close':
-#             update = {}
-#             update['content.' + data['index'] + '.status'] = 3
-#             res['db_data'] = col.update_one(query,{'$set':update}).raw_result
-        
-#     except Exception as e:
-#         print(e)
-#         if method is None:
-#             res['errMsg'] = 'the param method is necessary '
-#         if (isinstance(e,pymongo.errors.OperationFailure)): 
-#             res['statusCode'] = 10
-#             res['errMsg'] = e.details
-#         else:
-#             res['statusCode'] = -1
-#             res['errMsg'] = eval(str(e)) 
-#             res['request_param'] = data
-            
-#     return res
 
+@api.route('/collection/<openid>',methods =["GET"])
+def collection_get(openid):
+    data = format_dict(request.args.to_dict())
+    if_send = False
+    col = db.collect
+    if data.get('uptime') is None:
+        if_send = True
+    try:
+        collection = col.find_one({'openid': openid},{"_id": 0,"openid":0})
+    except Exception as e:
+        return jsonify(statusCode = 10,errMsg = e.details)
+    else:
+        try: 
+            diff =(parser.isoparse(eval(data.get('uptime'))).replace(tzinfo=None)) - collection.get('uptime').replace(microsecond = 0)
+            if diff.days < 0:
+                if_send = True
+        except Exception as e:
+             print(e)
+             if_send = True
+        finally:
+            if if_send:
+                return jsonify(statusCode = 0, collection = collection)
+            else:
+                return jsonify(statusCode = -1,errMsg = '收藏数据已经是最新')   
+            
+@api.route('/collection/<openid>',methods =["POST"])
+def collection_post(openid):
+    data = request.get_json()
+    col = db.collect
+    item ={}
+    if 'station' in data.keys():
+        item['station'] = data['station']
+    if 'busline' in data.keys():
+        item['busline'] = data['busline']
+    if 'route' in data.keys():
+        item['route'] = data['route']  
+    try:
+        db_data = col.update_one({'openid': openid},{"$push":item,"$set":{'uptime': parser.isoparse(data.get('uptime'))}}).raw_result 
+    except Exception as e:
+        return jsonify(statusCode = 10,errMsg = e.details)
+    else:
+        if db_data.get('nModified') == 0 :
+            return jsonify(statusCode = -1,errMsg = "添加失败")
+        return jsonify(statusCode = 0,errMsg = "添加成功")
+    
+@api.route('/collection/<openid>',methods =["DELETE"])
+def collection_delete(openid):
+    data = request.get_json()
+    col = db.collect
+    item ={}
+    if 'station' in data.keys():
+        item['station'] = data['station']
+    if 'busline' in data.keys():
+        item['busline'] = data['busline']
+    if 'route' in data.keys():
+        item['route'] = data['route']  
+    try:
+        db_data = col.update_one({'openid': openid},{"$pull":item,"$set":{'uptime': parser.isoparse(data['uptime'])}}).raw_result
+    except Exception as e:
+        return jsonify(statusCode = 10,errMsg = e.details)
+    else:
+        print(db_data)
+        if  db_data.get('nModified') == 0 :
+            return jsonify(statusCode = -1,errMsg = "删除失败")
+        return jsonify(statusCode = 0,errMsg = "删除成功")
+
+# feedback 视图函数
 @api.route('/feedback',defaults={'openid': None},methods =["GET"])
 @api.route('/feedback/<openid>',methods =["GET"])
 def feedback_get(openid):
     data = format_dict(request.args.to_dict())
     query = {}
+    index = 0
+    if data.get('index') is not None:
+        index = data.get('index')
     if openid is not None:
         query['openid'] = openid
     col = db.feedback
@@ -214,27 +246,36 @@ def feedback_get(openid):
             if res_cursor == None:
                  return jsonify(statusCode = 0,errMSg = "用户不存在")
             return jsonify(statusCode = 0,limit = res_cursor.get('limit'))
+    if data.get('action') == 'all':
+        try:
+            res_cursor = col.find_one(query,{"_id":0,"content":1,"uptime":1,"openid":1,"reply":1})
+        except Exception as e:
+            return jsonify(statusCode = 10,errMsg = eval(str(e)))
+        else:
+            return jsonify(statusCode = 0,feedback = res_cursor)
     try:
-        res_cursor = col.aggregate([{ "$match":query},{'$lookup':{'from': "usrinfo", "localField": "openid", "foreignField": "openid", "as": "inventory_docs"}},{"$project":{'nickname':{"$arrayElemAt":['$inventory_docs.nickname', 0]},"_id":0,"content":1,"uptime":1,"openid":1}}])           
+        res_cursor = col.aggregate([{"$match":query},{'$lookup':{'from': "usrinfo", "localField": "openid", "foreignField": "openid", "as": "inventory_docs"}},{"$project":{'nickname':{"$arrayElemAt":['$inventory_docs.nickname', 0]},"_id":0,"content":{"$arrayElemAt":['$content',int(index)]},"uptime":1,"openid":1,"content_length":{'$size':'$content'}}}])           
     except Exception as e:
         return jsonify(statusCode = 10,errMsg = eval(str(e)))
     else:
-        feedback = []
-        for item in res_cursor:
-            idx = 0
-            content_item = []
-            for content in item['content']:
-                tmp = content
-                tmp['index'] = idx
-                idx = idx +1
-                content_item.append(tmp)
-            feedback.append(item)  
+        feedback = [item for item in res_cursor]
+        # for item in res_cursor:
+        #     idx = 0
+        #     content_item = []
+        #     for content in item['content']:
+        #         tmp = content
+        #         tmp['index'] = idx
+        #         idx = idx +1
+        #         content_item.append(tmp)
+        #     feedback.append(item) 
+        
+         
         return jsonify(statusCode = 0,feedback =feedback)
 
 @api.route('/feedback',defaults={'openid': None},methods =["POST"])
 @api.route('/feedback/<openid>',methods =["POST"])
 def feedback_post(openid):
-    data = request.json
+    data = request.get_json()
     query = {}
     if openid is not None:
         query['openid'] = openid

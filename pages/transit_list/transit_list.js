@@ -196,10 +196,10 @@ Page({
       uptime: new Date()
     }
     if (route.length < 10 && !tools.ifexist(item, route)) {
-      BMap.collectSync({
-        method: 'add',
+      BMap.collection({
+        uptime: new Date(),
         route: item,
-      }).then(res => {
+      },'/'+  wx.getStorageSync('usrinfo').openid,'POST',).then(res => {
         console.log(res)
         if (res.statusCode == 0) {
           route.push(item)

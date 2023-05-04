@@ -207,6 +207,7 @@
 			nickname.setAttribute('data-openid', item[0])
 			$(temp.content).find('.tooltip').attr('data-index', 0) 
 			let direction_symbol = temp.content.querySelectorAll(".direction_symbol")
+
 			Array.from(direction_symbol).forEach((value, index) => {				
 				if (index) {
 					value.setAttribute('data-action', 'up')
@@ -216,11 +217,13 @@
 				direction_symbol_status(value, 0, item[1].content_length)
 			})
 			let content = temp.content.querySelector(".tooltip__content")
-			content.textContent = content_text_format(item[1].content[0].text)
+			content.textContent = content_text_format(item[1].content.text)
 			$(temp.content).find(".tooltip__trigger-text").text(item[1].nickname) 
 			let clon = temp.content.cloneNode(true);
-			grid.appendChild(clon);
-			$(grid).on("click", ".direction_symbol", e => {
+			grid.append(clon);
+
+			// 点击事件监听
+			grid.children().eq(-1).on("click", ".direction_symbol", e => {
 				const action_config = {
 					'up': index => {
 						return ++index
@@ -230,17 +233,20 @@
 						
 					}
 				}
-				let feedback = feedback_info()
+				// 发起网络请求，获取当前下标的content内容
 				let dataset = $(e.currentTarget).parent()[0].dataset
 				let current_index = action_config[e.currentTarget.dataset.action](dataset.index)
-				$(e.currentTarget).parent().find('.tooltip__content').text(content_text_format(feedback.content[current_index].text))
+				let feedback = feedback_info(dataset.openid,current_index)[0]
+				// 改变content框内容
+				$(e.currentTarget).parent().find('.tooltip__content').text(content_text_format(feedback.content.text))
+				// 改变按钮样式
 				Array.from($(e.currentTarget).parent().find('.direction_symbol')).forEach(item => {
-					direction_symbol_status(item, current_index, feedback.content.length)
+					direction_symbol_status(item, current_index, feedback.content_length)
 				})
 
 			})
-			$(grid).on("click", ".tooltip__base", e => {
-				let dataset = $(e.currentTarget).parent()[0].dataset
+			grid.on("click", ".tooltip__base", e => {
+				let dataset = $(e.currentTarget).parent().data()
 				location.href='reply.html?' + 'openid=' + dataset.openid + '&index=' + dataset.index
 
 			})
@@ -268,7 +274,7 @@
 	// const init = (() => tooltips.forEach(t => new Tooltip(t)))();
 	
 
-	let grid = $(".grid")[0]
+	let grid = $(".grid")
 	showContent(grid, feedback_info('all'))
 	
 	

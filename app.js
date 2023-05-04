@@ -57,13 +57,11 @@ App({
 
     let usrinfo = wx.getStorageSync('usrinfo')
     if (usrinfo) {
-      tools.collectver().then(res => {
-        if (res) {  
-          tools.collectSync().then(res=>{
-            this.update_collect()
-          })  
+      tools.collectSync().then(res=>{
+        if (res.statusCode == 0){
+          that.update_collect()
         }
-      })
+      }) 
       console.log(usrinfo)
       this.update_usr(usrinfo)
       this.storeBindings.updateStoreBindings()

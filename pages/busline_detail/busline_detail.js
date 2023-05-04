@@ -54,7 +54,7 @@ Page({
       data: res
     }) => {
       console.log(res)
-      if (res.statusCode == undefined || res.statusCode == 101) {
+      if (res.statusCode == undefined || res.statusCode !=0) {
         Dialog.confirm({
           message: res.errMsg || '该线路数据获取失败',
           selector: '#cus-dialog',
@@ -142,11 +142,11 @@ Page({
       return
     }
     if (busline.length < 10 && !tools.ifexist(item, busline)) {
-      BMap.collectSync({
-        method: 'add',
+      BMap.collection({
         busline: item,
-      }).then(res => {
-        console.log(res)
+        uptime: new Date()
+      },
+      '/'+  wx.getStorageSync('usrinfo').openid,'POST',).then(res => {
         if (res.statusCode == 0) {
           busline.push(item)
           wx.setStorageSync('busline', busline)
