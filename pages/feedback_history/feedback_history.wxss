@@ -29,3 +29,6 @@
 .reply{
   background: rgb(139, 138, 138);
 }
+._empty{
+  margin-top: 100px;
+}

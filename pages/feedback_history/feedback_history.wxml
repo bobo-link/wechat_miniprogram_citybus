@@ -12,4 +12,9 @@
       <view class="status {{item.status == 1? 'read': item.status ==2 ? 'reply':''}}"></view>
     </view>
   </block>
+  <block wx:if="{{!feedback}}">
+  <view class="_empty">
+    <van-empty description="无反馈信息" />
+  </view>
+</block>
 </view>

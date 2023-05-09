@@ -89,7 +89,6 @@ Page({
         "content-type": "application/json"
       },
     }).then(({data:res})=>{
-      console.log(res)
       if (res.statusCode == 0){
         this.setData({
           limit:res.limit

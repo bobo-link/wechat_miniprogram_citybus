@@ -160,10 +160,19 @@ const collectSync = async function () {
   await BMap.collection({uptime:wx.getStorageSync('collect_time')},'/'+wx.getStorageSync('usrinfo').openid).then(res => {
     data = res
     if (res.statusCode == 0){
-      wx.setStorageSync('busline', res.collection.busline )
-      wx.setStorageSync('route', res.collection.route )
-      wx.setStorageSync('station', res.collection.station)
-      wx.setStorageSync('collect_time', new Date(res.collection.uptime))
+      let busline = {}
+      let route = {}
+      let station = {}
+      if(res.collection){
+        busline =  res.collection.busline 
+        route = res.collection.route 
+        station = res.collection.station
+        wx.setStorageSync('collect_time', new Date(res.collection.uptime))
+      }
+      wx.setStorageSync('busline',busline )
+      wx.setStorageSync('route', route )
+      wx.setStorageSync('station', station)
+      
     }
   })
   return data

@@ -29,7 +29,7 @@
     <view class="title">设置</view>
     <view class="info">不能查询请点击,允许使用地理位置</view>
   </button>
-  <view class="clear" bindtap="clear">清楚缓存</view>
+  <view class="clear" bindtap="clear">清除缓存</view>
   <button class="share" hover-class="btn_hover" open-type="share" style="padding:0;width: 100%;">
   <view class='title'>分享</view>
 </button>

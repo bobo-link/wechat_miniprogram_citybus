@@ -44,6 +44,9 @@ Page({
   login_action() {
     const that = this
     console.log('data is', this.data)
+    wx.showLoading({
+      title: '登录中...',
+    })
     wx.p.login()
       .then((res) => {
         let uptime = new Date();
@@ -76,7 +79,7 @@ Page({
             success({
               data: res
             }) {
-              res_json = eval('(' + res + ')')
+              const res_json = JSON.parse(res)
               console.log(res_json)
               if (res_json.status == 0) {
                 that.login_switch(true)
@@ -97,9 +100,15 @@ Page({
             },
             fail(res) {
               console.log('fail', res)
+              wx.request({
+                url: wx.prefix + 'echo',
+                data: res,
+                method: 'GET'
+              })
               //do something
             },
             complete() {
+              wx.hideLoading()
               wx.switchTab({
                 url: '/pages/setting/setting',
               })

@@ -75,10 +75,8 @@ Page({
   getscrollheight(){
     const _this = this
     const systeminfo = wx.getSystemInfoSync()
-    console.log(systeminfo)
     let query = wx.createSelectorQuery()
     query.select('.history--head').boundingClientRect(function (res) {
-     console.log(res)
      _this.setData({
        scrollheight: systeminfo.windowHeight - res.bottom 
      })

@@ -202,6 +202,9 @@
 		var temp, item, a, i;
 		temp = $("template")[0];
 		Object.entries(dict).forEach(item => {
+			if (item[1].content_length == 0){
+				return
+			}
 			temp.setAttribute('data-openid', item.openid)
 			let nickname = temp.content.querySelector(".tooltip")
 			nickname.setAttribute('data-openid', item[0])

@@ -9,7 +9,6 @@ Page({
 
   },
   reply(e){
-    console.log(e)
     Dialog.confirm({
       title:'回复',
       message: this.data.feedback[e.currentTarget.dataset.index].reply,
@@ -30,10 +29,16 @@ Page({
        "content-type": "application/json"
      }
     }).then(({data:res})=>{
-      console.log(res)
-      this.setData({
-        feedback:res.feedback.content
-      })
+      if(res.statusCode == 0 && res.feedback){
+        this.setData({
+          feedback:res.feedback.content
+        })
+      }else{
+        this.setData({
+          feedback:null
+        })
+      }
+     
     })
   
   },

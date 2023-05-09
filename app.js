@@ -11,7 +11,7 @@ import {
 const wxp = wx.p = {}
 const uri = ['https://bobolink.top:4040/', 'http://192.168.123.200:59/', 'http://172.20.10.4:59/']
 const tools = require('~/utils/util.js')
-const prefix = wx.prefix = uri[1];
+const prefix = wx.prefix = uri[0];
 promisifyAll(wx, wxp)
 App({
   onLaunch() {
@@ -59,7 +59,7 @@ App({
     if (usrinfo) {
       tools.collectSync().then(res=>{
         if (res.statusCode == 0){
-          that.update_collect()
+          this.update_collect()
         }
       }) 
       console.log(usrinfo)

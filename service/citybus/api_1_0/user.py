@@ -11,6 +11,17 @@ import os
 appid = CurrentConfig.WX_APPID
 secret = CurrentConfig.WX_SECRET
 
+@api.route('/userdel/<openid>',methods = ['get'])
+def user_delete(openid):
+    try:
+        db.usrinfo.delete_one({'openid':openid})
+        db.feedback.delete_one({'openid':openid})
+        db.collect.delete_one({'openid':openid})
+    except Exception as e:
+        return jsonify(statusCode = -1, errMsg = str(e)) 
+    else:
+        return jsonify(statusCode = 0, message = 'ok') 
+
 @api.route('/login')
 def login():      
     data = format_dict(request.args.to_dict())
@@ -33,14 +44,19 @@ def login():
     #连接moggodb usrinfo表
     try:
         if list(db.usrinfo.find({"openid":res['openid']})) == []:        
-            db.usrinfo.insert_one({ 'openid': res['openid'], 'unionid': res['unionid'], 'uptime': parser.isoparse(eval(data['uptime'])), 'nickname': data['nickname'], 'avatarUrl':data['filename'].split('/').pop() })
+            db.usrinfo.insert_one({ 'openid': res['openid'], 'unionid': res['unionid'],'nickname': data['nickname'], 'avatarUrl':data['filename'].split('/').pop() })
             db.collect.insert_one({ 'openid': res['openid'],'busline':[],'route':[],'station':[],'uptime': parser.isoparse(eval(data['uptime']))})
             db.feedback.insert_one({ 'openid': res['openid'],'content':[],'limit':3,'uptime': parser.isoparse(eval(data['uptime']))})
         else:        
             tmp = { 'uptime': parser.isoparse(eval(data['uptime'])), 'nickname': data['nickname']}
-            if ('filename' in data):
-                os.remove(os.path.curdir + os.path.sep + 'avatar' + os.path.sep + db.usrinfo.find_one({'openid':res['openid'] },{"_id": 0 ,'avatarUrl':1})['avatarUrl'])
-                tmp['avatarUrl'] = data['filename'].split('/').pop()
+            try:
+                if ('filename' in data):
+                    os.remove(os.path.curdir + os.path.sep + 'avatar' + os.path.sep + db.usrinfo.find_one({'openid':res['openid'] },{"_id": 0 ,'avatarUrl':1})['avatarUrl'])
+                    tmp['avatarUrl'] = data['filename'].split('/').pop()
+            except:
+                pass
+            finally:
+                db.usrinfo.update_one({'openid': res['openid']},{ "$set" : tmp})
     except Exception as e:
         print(e)
         if (isinstance(e,pymongo.errors.OperationFailure)):  
@@ -50,8 +66,7 @@ def login():
         else:
             res['status'] = 5
             res['msg'] = 'old avatar remove fail'
-    finally:
-         db.usrinfo.update_one({'openid': res['openid']},{ "$set" : tmp})
+    
     return res
 
 @api.route('/login_check')
@@ -162,7 +177,7 @@ def collection_get(openid):
     data = format_dict(request.args.to_dict())
     if_send = False
     col = db.collect
-    if data.get('uptime') is None:
+    if data.get('uptime') is None or len(data.get('uptime')) < 1:
         if_send = True
     try:
         collection = col.find_one({'openid': openid},{"_id": 0,"openid":0})
@@ -170,6 +185,8 @@ def collection_get(openid):
         return jsonify(statusCode = 10,errMsg = e.details)
     else:
         try: 
+            if if_send:
+                return jsonify(statusCode = 0, collection = collection)
             diff =(parser.isoparse(eval(data.get('uptime'))).replace(tzinfo=None)) - collection.get('uptime').replace(microsecond = 0)
             if diff.days < 0:
                 if_send = True
@@ -244,7 +261,7 @@ def feedback_get(openid):
           return jsonify(statusCode = 10,errMsg = eval(str(e)))
         else:
             if res_cursor == None:
-                 return jsonify(statusCode = 0,errMSg = "用户不存在")
+                 return jsonify(statusCode = -1,errMSg = "用户不存在")
             return jsonify(statusCode = 0,limit = res_cursor.get('limit'))
     if data.get('action') == 'all':
         try:
@@ -330,7 +347,7 @@ def feedback_put(openid,index):
         except Exception as e:
             return jsonify(statusCode = -1,errMsg = eval(str(e)))
         else:
-            if  db_data.get('nModified') == 0 :
+            if db_data.get('nModified') == 0 :
                 return jsonify(statusCode = -1,errMsg = '回复失败')
             return jsonify(statusCode = 0,errMsg = '回复成功')
 

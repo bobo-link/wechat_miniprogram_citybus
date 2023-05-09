@@ -53,7 +53,6 @@ Page({
     }).then(({
       data: res
     }) => {
-      console.log(res)
       if (res.statusCode == undefined || res.statusCode !=0) {
         Dialog.confirm({
           message: res.errMsg || '该线路数据获取失败',

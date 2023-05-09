@@ -2384,6 +2384,7 @@ var time = 0
 const option =  {
     onGetBusListComplete: function (result) {
         if (result) {
+            console.log(result)
             var fstLine = result.getBusListItem(0);//获取第一个公交列表显示到map上
             if (!fstLine) {
                 return
@@ -2398,6 +2399,7 @@ const option =  {
         }
     },
     onGetBusLineComplete: function (result) {
+        console.log(result)
         let array = []    
         if (result.endTime.length <1){
             console.log('非规范',result)
@@ -2504,7 +2506,6 @@ $(function () {
         }
     })
     $('#busline_name').change(function(e){
-        console.log($(this).val())
         if ($(this).val().length > 0 ){
             $('#query').removeClass('disable')
         }else{
@@ -2519,10 +2520,7 @@ $(function () {
         } 
         let busline_names = ($("#busline_name").val()).split(";")   
         busline_names.forEach(function(item,index,arr){ 
-            setTimeout(() => {
-                console.log(item)
-                BusSearch.getBusList(item)
-            }, 300);
+            BusSearch.getBusList(item,0)
         })
     })
     $('#clear').on('click',function(e){

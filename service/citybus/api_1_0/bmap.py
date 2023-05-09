@@ -96,11 +96,10 @@ def busline_post():
     col = db.busline
     if data.get('buslines') is None and data.get('busline') is None:
         return jsonify(statusCode = -1,errMsg ='缺少参数')
-    
     if data.get('buslines'):
         try:
-            db_data = col.insert_many(data.get('buslines'),False).raw_result
-        except pymongo.errors.PyMongoError as e:    
+            db_data = col.insert_many(data.get('buslines'),False).inserted_ids
+        except pymongo.errors.PyMongoError as e:   
             if isinstance(e, pymongo.errors.BulkWriteError) and e.timeout == False :
                 del_items = []
                 #获取存在的item数组
@@ -108,7 +107,7 @@ def busline_post():
                     del_items.append(erro.get('keyValue'))
                 #删除存在的itme
                 try:
-                    col.delete_many({'$or':del_items}).raw_result  
+                    col.delete_many({'$or':del_items}).raw_result
                 except pymongo.errors.PyMongoError as e :
                     return jsonify(statusCode = -1,errMsg = e.details)
                 else:
@@ -126,7 +125,7 @@ def busline_post():
                 errMsg = [item.get('errmsg') for item in e.details.get('writeErrors')]
                 return jsonify(statusCode = -1,errMsg = errMsg)  
         else:
-            if db_data.get('nModified') == 0 :
+            if len(db_data) < 2 :
                 return jsonify(statusCode = -1,errMsg = '录入失败')
             return jsonify(statusCode = 0,errMsg = '录入成功')
                                          
