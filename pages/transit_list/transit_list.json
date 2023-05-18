@@ -1,5 +1,6 @@
 {
   "usingComponents": {},
   "enablePullDownRefresh": true,
-  "style": "v2"
+  "style": "v2",
+  "navigationBarTitleText": "方案列表"
 }

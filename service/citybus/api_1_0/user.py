@@ -52,10 +52,10 @@ def login():
             try:
                 if ('filename' in data):
                     os.remove(os.path.curdir + os.path.sep + 'avatar' + os.path.sep + db.usrinfo.find_one({'openid':res['openid'] },{"_id": 0 ,'avatarUrl':1})['avatarUrl'])
-                    tmp['avatarUrl'] = data['filename'].split('/').pop()
             except:
                 pass
             finally:
+                tmp['avatarUrl'] = data['filename'].split('/').pop()
                 db.usrinfo.update_one({'openid': res['openid']},{ "$set" : tmp})
     except Exception as e:
         print(e)
@@ -117,6 +117,7 @@ def avatar():
     try:
         f.save(os.path.curdir + os.path.sep + 'avatar' + os.path.sep + f.filename)
         response['status'] = 0
+        
         response['msg'] = 'avatar storage complete'
     except: 
         response['status'] = 101

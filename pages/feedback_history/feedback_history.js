@@ -21,6 +21,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    wx.showLoading({
+      title: '获取信息ing...',
+    })
     wx.p.request({
       url: wx.prefix + 'feedback' + '/' + wx.getStorageSync('usrinfo').openid,
       method:'GET',
@@ -38,6 +41,7 @@ Page({
           feedback:null
         })
       }
+      wx.hideLoading()
      
     })
   

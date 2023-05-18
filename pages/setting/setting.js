@@ -160,11 +160,17 @@ Page({
                 wx.getFileSystemManager().accessSync(usrinfo['avatarUrl'])              
               } catch (error) {
                 //文件不存在，从服务器拉取文件
+                console.log('文件不存在')
                 wx.downloadFile({
                   url: wx.prefix + 'download_avatar' + '?openid=' + this.data.usrinfo.openid,
                   filePath: this.data.usrinfo.avatarUrl,
-                  success(res) {
-                    console.log(res)
+                  success(res) {                    
+                    setTimeout(() => {
+                      that.login_switch(false)
+                    }, 200);
+                    setTimeout(() => {
+                      that.login_switch(true)
+                    }, 300);
                   },
                   fail(res) {
                     console.log(res)
@@ -233,16 +239,12 @@ Page({
     })
   },
   clear(e){
-    wx.request({
-      url: 'http://192.168.123.200:59/collection/ozMCH5XJmo1VZ6mnT1eC3utoVOx8',
-      method:'GET',
-      data:{
-        uptime:wx.getStorageSync('collect_time')
-      },
-      complete:function(res){
-        console.log(res)
-      }
-    })
+    // wx.getFileSystemManager().unlink({
+    //   filePath:wx.env.USER_DATA_PATH + '/tmp_2baa16916649a0d0a88c2553cc8b3191.jpg',
+    //   complete:(res)=>{
+    //     console.log('文件参数res',res)
+    //   }
+    // })
   },
   feedback(e){
     wx.navigateTo({
