@@ -3,5 +3,5 @@
     "cus-dialog": "../../Components/dialog/dialog"
   },
   "navigationBarBackgroundColor": "#f3aa0d",
-  "navigationBarTitleText": "公交路线"
+  "navigationBarTitleText": "路线规划"
 }
